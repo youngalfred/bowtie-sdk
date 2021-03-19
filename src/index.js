@@ -220,14 +220,12 @@ function maybeLocalstore() {
     // a submit button, a "highlight errors" button, and an event handler
     // for every object on the form.
     function setupSubmitButton() {
-        const token = new URLSearchParams(window.location.search).get("integration") || "";
         document.getElementById("ya-submit-button").addEventListener("click", function () {
             fetch("/portfolio/submit", {
                 method: "POST",
                 body: JSON.stringify({ data: portfolio.payload }),
                 headers: {
                     "Content-Type": "application/json",
-                    "x-integration-token": token,
                 },
             })
                 .then(function (response) {
@@ -256,12 +254,10 @@ function maybeLocalstore() {
             return;
         }
 
-        const token = new URLSearchParams(window.location.search).get("integration") || "";
         fetch(`/portfolio/status?id=${portfolioId}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
-                "x-integration-token": token,
             },
         }).then(function (response) {
             if (response.ok) {
