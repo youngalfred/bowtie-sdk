@@ -30,7 +30,11 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
+const Portfolio = require("@youngalfred/tlano-sdk").Portfolio;
+
+// Attempt to recover an item from the sessionStorage (the current
+// live browser tab or window _only_; this information will disappear
+// when you close the tab or window).
 
 function maybeLocalstore() {
     try {
@@ -43,92 +47,130 @@ function maybeLocalstore() {
 }
 
 (function () {
-    // Build a new portfolio object.
-    const portfolio = new Portfolio(maybeLocalstore());
+    // The portfolio object this session is managing.
+
+    portfolio = new Portfolio(maybeLocalstore());
 
     // When complete, we should get back a valid portfolio ID.
-    let portfolioId = null;
+
+    portfolioId = null;
 
     // After a round-trip through your local service, this will be
     // populated with the results of your submission.
-    let validationDetails = null;
+
+    validationDetails = null;
 
     // The next two fields are to help keep track of which field the
     // user recently touched.  Normally, a good framework such as
     // React or Vue keeps track of this for us.
-    let tabIndex = 0;
-    let lastTabEvent = null;
+
+    tabIndex = 0;
+    lastTabEvent = null;
 
     // If set to true, adds the 'invalid' class to any fieldgroups that
     // are invalid.
-    let highlightValidity = false;
 
-    // Utility function to turn the dotted fieldnames of the Bowtie
-    // input objects into dashed names suitable to HTML and CSS.
+    highlightValidity = false;
+
+    // Bowtie uses a JSON-driven dotted format for its naming scheme.
+    // This function turns the dotted fieldnames of the Bowtie input
+    // objects into dashed names suitable to HTML and CSS.
+
     function m(s) {
         return s.replace(/\./g, "-");
     }
 
-    // Utility function to build a label if necessary.
+    // This is a pure HTML implementation.  Most of our input objects have a
+    // fairly standard behavior: an object with an ID generates an event that
+    // will then trigger an update.  The event handler has four side-effects:
+    // - it updates the portfolio
+    // - it saves the portfolio to sessionStorage
+    // - it pushes a "focus on next render" event into the state handler.
+    // - it pushes a "render" call onto the execution queue.
+
+    function makeHandler(node) {
+        function update(event, direction) {
+            direction = direction ? direction : 0;
+            event.preventDefault();
+            portfolio.set(node, event.target.value);
+            window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+
+            // Because the portfolio tree of questions may change on
+            // every update, requiring a re-render, the focus of the
+            // application must be managed manually.  Here, we store
+            // the information of the event to determine what object
+            // should be focused on next.  Because we could be adding
+            // new inputs, we only keep the ID of the current object
+            // and the direction of focus change, if any.
+            //
+            // If there is a relatedTarget, the user deliberately
+            // interacted with that target, and the focus must be
+            // moved there.
+
+            lastTabEvent =
+                event.relatedTarget === null || event.relatedTarget === undefined
+                    ? { target: event.target.id, direction: direction }
+                    : { target: event.relatedTarget.id, direction: 0 };
+            setTimeout(renderPortfolio, 0);
+        }
+
+        return function (event) {
+            // A special handler to assist with tabbing through the application.
+
+            if (event.type === "keydown") {
+                if (event.key === "Tab") {
+                    update(event, event.shiftKey ? -1 : +1);
+                }
+                return;
+            }
+            update(event, 0);
+        };
+    }
+
+    // Returns an HTML label if label text is present; an empty string
+    // otherwise.
+
     function maybeLabel(node) {
         return node.label ? '<label class="label">' + node.label + ": </label>" : "";
     }
 
-    // Render a <select> input object for enumerated fields.
-    function renderSelect(node) {
-        const mid = m(node.id);
-        tabIndex++;
+    // The renderers for our application.  Each renderer is
+    // responsible for generating two things: An HTML respresentation
+    // of the field, and a detached event handler,along with the
+    // metadata needed to make the event handler behave correctly.  We
+    // create *detached* event handlers in this phase because we're
+    // going to re-draw the entire form first, and then attach the
+    // event handlers afterward.  Note that the ID being passed here
+    // is the HTML ID Attribute of the object that _will be_ attached
+    // to the DOM during the draw phase of the render task.
 
-        // The list of enumerated options may need to be
-        // modified if the user has not yet interacted
-        // with the input object, so we make a shallow copy
-        // of the options list (to avoid mutating the
-        // original list) and, if necessary, splice in the
-        // blank value at the top.
-
-        const options = node.options.map(function (a) {
-            return a;
-        });
-
-        // A select box with an empty value has not yet been
-        // interacted with.  Provide an empty value to
-        // emphasize this fact.
-        if (node.value === "") {
-            options.splice(0, 0, { name: "", label: "" });
-        }
-
-        const renderedOptions = options
-            .map(function (opt) {
-                const selected = node.value !== "" && node.value == opt.name;
-                return `<option value="${opt.name}"${selected ? " selected" : ""}>${opt.label}</option>`;
-            })
-            .join("\n");
-
-        const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}">${renderedOptions}</select>`;
-
+    function mapObjectEventToHandler(event, id, node) {
         return {
-            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
-            id: m(node.id),
-            node: node,
-            events: ["change", "keydown"],
+            event: event,
+            id: id,
+            handler: makeHandler(node),
         };
     }
 
-    // Render an <input type="text" ... /> field for free-form input
+    // Render an <input type="text" ... /> field for free-form input.
+    // What's important to note here is that the value of an input
+    // object is always stored in, and retrieved from, the portfolio.
+    // The value of the input object is only relevant to the HTML
+    // in order to display it to the customer.
+
     function renderText(node) {
         const mid = m(node.id);
         tabIndex++;
         const input = `<input id="${mid}" name="${mid}" value="${node.value}" tabindex="${tabIndex}"/>`;
         return {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
-            id: m(node.id),
-            node: node,
-            events: ["blur", "keydown"],
+            events: ["blur", "keydown"].map(function (event) {
+                return mapObjectEventToHandler(event, mid, node);
+            }),
         };
     }
 
-    // Render an <input type="checkbox" ... /> field for boolean input.
-    function renderCheck(node) {
+    function renderCheckbox(node) {
         const mid = m(node.id);
         tabIndex++;
 
@@ -148,9 +190,116 @@ function maybeLocalstore() {
 
         return {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
-            id: m(node.id),
-            node: node,
-            events: ["click", "keydown"],
+            events: ["click", "keydown"].map(function (event) {
+                return mapObjectEventToHandler(event, mid, node);
+            }),
+        };
+    }
+
+    // Render a <select> input object for enumerated fields.
+
+    function renderSelect(node) {
+        const mid = m(node.id);
+        tabIndex++;
+
+        // The list of enumerated options may need to be modified if
+        // the user has not yet interacted with the input object. In
+        // that case, we make a shallow copy of the options list (to
+        // avoid mutating the original list) and, if necessary, splice
+        // in the blank value at the top.
+        //
+        // This may seem unnecessary, since the option list for any
+        // given object is re-built with every iteration, but that's
+        // an internal implementation detail that you or I, as
+        // consumers of the API, should not rely upon.
+
+        let options = node.options;
+        if (node.value === "") {
+            options = node.options.map(function (a) {
+                return a;
+            });
+            options.splice(0, 0, { name: "", label: "" });
+        }
+
+        // Draw (as strings) all the '<option>' objects, and join them
+        // together into one long string, then assemble the input
+        // object together.
+
+        const renderedOptions = options
+            .map(function (opt) {
+                const selected = node.value !== "" && node.value == opt.name;
+                return `<option value="${opt.name}"${selected ? " selected" : ""}>${opt.label}</option>`;
+            })
+            .join("\n");
+        const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}">${renderedOptions}</select>`;
+
+        return {
+            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
+            events: ["change", "keydown"].map(function (event) {
+                return mapObjectEventToHandler(event, mid, node);
+            }),
+        };
+    }
+
+    // This is an example of a custom fieldgroup: Types of Houses.
+
+    // A look at the source code will show you that house-type is a
+    // root fieldgroup, and that it has only one field, the list of
+    // house types. We can exploit that knowledge to create a custom
+    // fieldgroup display, and provide images associated with each
+    // house type.
+    //
+    // Choosing to use radio buttons for this sort of display is
+    // logical, but radio buttons have a different event mechanism
+    // from other input objects.  Both <select> and <radio> have the
+    // same purpose: to pick one object from a list.  But <select> has
+    // a single ID for an entire set of selections, and radios have
+    // one-ID-per-selection scheme.  We must compensate for that by
+    // creating a uniqueID per option, rather than for the whole
+    // field, and then mapping an event on a single option back to
+    // node associated with the whole field.
+
+    function renderHouses(node) {
+        let innerHTML = "<h3>" + node.label + "</h3>";
+        const field = node.children[0];
+        const mid = m(field.id);
+
+        function makeRadio(option) {
+            tabIndex++;
+            const checked = option.name === field.value ? "checked " : " ";
+            const radioId = `${mid}-${tabIndex}`;
+            const html = `
+<div class="${m(node.id)}">
+  <img src="./images/${option.name}.jpg" />
+  <div> 
+    <input type="radio" 
+           id="${radioId}"
+           class="${mid}" 
+           name="${mid}" 
+           value="${option.name}"
+           tabindex="${tabIndex}" 
+           ${checked}
+    />
+    <label for="${option.name}">${option.label}</label>
+  </div>
+</div>`;
+            return [html, radioId];
+        }
+
+        const radios = field.options.map(makeRadio);
+        const radioHTML = radios.map(function (r) {
+            return r[0];
+        });
+
+        const radioEvents = radios.reduce(function (accum, radio) {
+            accum.push(mapObjectEventToHandler("click", radio[1], field));
+            accum.push(mapObjectEventToHandler("keydown", radio[1], field));
+            return accum;
+        }, []);
+
+        return {
+            text: innerHTML + radioHTML.join("\n"),
+            events: radioEvents,
         };
     }
 
@@ -162,23 +311,23 @@ function maybeLocalstore() {
             innerHTML += "<h3>" + node.label + "</h3>";
         }
 
-        // The core of the renderer, and the inner loop of
-        // the Bowtie Application. For each field provided
-        // by the Bowtie Portfolio, the switch statement
-        // decides how to render it, collecting the HTML in a
-        // string and the events that must be attached after
-        // the render into an array.  Once this function is
-        // complete, the compiled results are returned to the
-        // `renderPortfolio` function, which then replaces the
-        // innerHTML of the page target with the newly
-        // rendered inputs, and then hooks up all the events
-        // as requested.
+        // The core of the renderer, and the inner loop of the Bowtie
+        // Application. For each child of a fieldgroup provided by the
+        // Bowtie Portfolio, the switch statement decides how to
+        // render it, collecting:
+        //
+        // - the HTML into a string,
+        // - the events that must be attached into an array.
+        //
+        // Once this function is complete, the compiled results are
+        // returned to the `renderPortfolio` function, which then
+        // replaces the innerHTML of the page target with the newly
+        // rendered inputs, and then hooks up all the events as
+        // requested.
 
         function addResult(result) {
             innerHTML += result.text;
-            result.events.forEach(function (event) {
-                events.push({ event: event, id: result.id, node: result.node });
-            });
+            events = events.concat(result.events);
         }
 
         node.children.forEach(function (childnode) {
@@ -192,7 +341,7 @@ function maybeLocalstore() {
                     addResult(renderText(childnode));
                     break;
                 case "check":
-                    addResult(renderCheck(childnode));
+                    addResult(renderCheckbox(childnode));
                     break;
                 case "fieldgroup":
                     result = renderFieldgroup(childnode);
@@ -219,6 +368,7 @@ function maybeLocalstore() {
     // After each render, we must set up the control.  In order, we set up
     // a submit button, a "highlight errors" button, and an event handler
     // for every object on the form.
+
     function setupSubmitButton() {
         document.getElementById("ya-submit-button").addEventListener("click", function () {
             fetch("/portfolio/submit", {
@@ -246,6 +396,10 @@ function maybeLocalstore() {
         });
     }
 
+    // We've put in a 250-millisecond delay (see above) before asking
+    // for the status of our submission.  In practice, this should be
+    // a loop with a timeout to "give up."
+
     function requestStatus() {
         if (portfolioId === null) {
             setTimeout(function () {
@@ -256,9 +410,7 @@ function maybeLocalstore() {
 
         fetch(`/portfolio/status?id=${portfolioId}`, {
             method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
         }).then(function (response) {
             if (response.ok) {
                 response.json().then(function (result) {
@@ -280,12 +432,7 @@ function maybeLocalstore() {
             } else {
                 validationDetails = {
                     valid: false,
-                    errors: [
-                        {
-                            field: null,
-                            title: "Unable to retrieve status",
-                        },
-                    ],
+                    errors: [{ field: null, title: "Unable to retrieve status" }],
                 };
                 renderPortfolio();
             }
@@ -294,9 +441,9 @@ function maybeLocalstore() {
 
     // "Highlight errors" is offered at the end, to avoid triggering a
     // random "you got it wrong" message when the user isn't finished
-    // with some text input. It interrupts their workflow and it
-    // mistakes "incomplete" for "incorrect," which is a terrible user
-    // experience.
+    // with some text input. Doing so mistakes "incomplete" for
+    // "incorrect," which can interrupt and annoy the user, causing a
+    // terrible user experience.
 
     function setupHighlightButton() {
         document.getElementById("ya-highlight-validity").addEventListener("click", function (event) {
@@ -306,43 +453,12 @@ function maybeLocalstore() {
         });
     }
 
-    // Every node gets its own handler.  For every event, we transfer
-    // the HTML input object's value to the portfolio, and then redraw
-    // the portfolio automatically.  This is actually far less
-    // intrusive that you'd think, but with a proper, reactive framework,
-    // this can be made faster and prettier.
-
-    function makeHandler(node) {
-        function update(event, direction) {
-            direction = direction ? direction : 0;
-            event.preventDefault();
-            portfolio.set(node, event.target.value);
-            window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
-            lastTabEvent =
-                event.relatedTarget === null || event.relatedTarget === undefined
-                    ? { target: event.target.id, direction: direction }
-                    : { target: event.relatedTarget.id, direction: 0 };
-            renderPortfolio();
-        }
-
-        return function (event) {
-            // A special handler to assist with tabbing through the application.
-            if (event.type === "keydown") {
-                if (event.key === "Tab") {
-                    update(event, event.shiftKey ? -1 : +1);
-                }
-                return;
-            }
-            update(event, 0);
-        };
-    }
-
-    // What to draw at the end when the portfolio has been validated.
     const submitButton =
         '<div class="fieldset" id="ya-fg-final-submit"><button id="ya-submit-button">' +
         "Submit Application</button></div>";
 
     // What to draw at the end when the portfolio hasn't been validated.
+
     function highlightButton() {
         const checked = highlightValidity ? " checked" : "";
         return (
@@ -351,6 +467,9 @@ function maybeLocalstore() {
             "<label>Show invalid questions</label></div>"
         );
     }
+
+    // What to draw after the form has been submitted and the
+    // validation results have been retrieved.
 
     function validationResults() {
         if (validationDetails.valid) {
@@ -370,9 +489,9 @@ function maybeLocalstore() {
 
     let previousEvents = [];
 
-    // The introductory renderer.  One thing you can be assured of is that
-    // the all objects of the `portfolio.view` root are Fieldgroups, and
-    /// calling the `renderFieldgroup()` function above is correct.
+    // The root renderer.  One thing you can be assured of is thatthe
+    // all objects of the `portfolio.view` root are Fieldgroups, and
+    // calling the `renderFieldgroup()` function above is correct.
 
     function renderPortfolio() {
         let innerHTML = "";
@@ -382,6 +501,7 @@ function maybeLocalstore() {
         // This frees the event/input relationship, which saves memory
         // by allowing the JS interpreter to free the associated HTML
         // objects.
+
         previousEvents.forEach(function (event) {
             const input = document.getElementById(event.id);
             input.removeEventListener(event.event, event.handler);
@@ -389,18 +509,21 @@ function maybeLocalstore() {
         previousEvents = [];
 
         // Construct the new HTML form.  Since the old HTML objects
-        // have no listeners anymore, they will now be correctly reaped
-        // by the Javascript VM.
+        // have no listeners anymore, they will now be correctly
+        // reaped by the Javascript VM.
+
         portfolio.view.forEach(function (node) {
-            const r = renderFieldgroup(node);
+            const renderer = node.id === "house-type" ? renderHouses : renderFieldgroup;
+            const r = renderer(node);
             const invalid = node.valid.valid === false && highlightValidity ? " invalid" : "";
             innerHTML += `<div class="fieldset${invalid}" id="ya-fg-${m(node.id)}">${r.text}</div>`;
             events = events.concat(r.events);
         });
 
-        // If the portfolio is completely valid, we offer a
-        // submit button, otherwise we offerthe user the option
-        // of highlighting invalid fieldgroups.
+        // If the portfolio is completely valid, we offer a submit
+        // button, otherwise we offerthe user the option of
+        // highlighting invalid fieldgroups.
+
         if (portfolioId !== null) {
             if (validationDetails !== null) {
                 innerHTML += validationResults();
@@ -413,23 +536,22 @@ function maybeLocalstore() {
             }
         }
 
-        // Render the new HTML form.
+        // Phase 1: Replace the current HTML DIV of our application
+        // with the newly rendered instance.
+
         const main = document.getElementById("main");
         main.innerHTML = innerHTML;
 
-        // For all the objects in the form, hook up the event
-        // listeners. Keep a copy of the event listener around so it
-        // can be removed and memory recovered.
+        // Phase 2: For all the objects in the form, hook up the event
+        // listeners. Then transfer the events into previousEvents, so
+        // the associated listeners can be removed and memory
+        // recovered on the next render.
+
         events.forEach(function (event) {
             const input = document.getElementById(event.id);
-            const handler = makeHandler(event.node);
-            input.addEventListener(event.event, handler);
-            previousEvents.push({
-                id: event.id,
-                event: event.event,
-                handler: handler,
-            });
+            input.addEventListener(event.event, event.handler);
         });
+        previousEvents = events;
 
         if (portfolioId !== null) {
             // no-top

@@ -17,6 +17,14 @@ const api_key = process.env.API_KEY;
 const partner_id = process.env.BOWTIE_PARTNER_ID;
 
 const app = express();
+
+app.use(function (req, res, next) {
+    var filename = path.basename(req.url);
+    var extension = path.extname(filename);
+    if (extension === ".js") console.log("The file " + filename + " was requested.");
+    next();
+});
+
 app.use(express.json());
 
 /* The static resources to be served to your customer.  If it has been

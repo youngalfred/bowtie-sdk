@@ -4,15 +4,15 @@
     "description": "A pure-Javascript demo showing how to use the Young Alfred Bowtie SDK",
     "main": "index.js",
     "scripts": {
-        "build": "rimraf build/* && webpack --config webpack.config.js",
+        "build": "rimraf build/* && webpack --config webpack.config.js && cp -R images build/",
         "server": "node server/server.js",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/orgs/youngalfred/bowtie-sdk"
+        "url": "https://github.com/orgs/youngalfred/bowtie-basic-demo"
     },
-    "author": "Young Alfred Inc. <bowtie@youngalfred.com>",
+    "author": "Kenneth \"Elf\" Sternberg <kenneth.sternberg@youngalfred.com>",
     "license": "UNLICENSED",
     "devDependencies": {
         "@babel/core": "^7.12.10",
@@ -26,6 +26,6 @@
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "@youngalfred/bowtie-sdk": "1.0.0"
+        "@youngalfred/tlano-sdk": "^0.0.29"
     }
 }
