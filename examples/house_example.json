@@ -1,0 +1,392 @@
+{
+   "data" : {
+      "autoApplications" : [],
+      "boatPwcApplications" : [],
+      "earthquakeApplications" : [],
+      "email" : "john.johnson@email.com",
+      "floodApplications" : [],
+      "homeApplications" : [
+         {
+            "additionalCoverageRequests" : [
+               "jewelry",
+               "furs",
+               "flood"
+            ],
+            "applicationId" : "ca935a22-a62e-4fa4-a5c9-454071c70e20",
+            "carrierCanceledLast5years" : false,
+            "claimsLast5Years" : [
+               {
+                  "claimPayout" : 3312,
+                  "date" : "2020-07",
+                  "peril" : "explosion"
+               }
+            ],
+            "claimsLast5YearsCount" : "n1",
+            "comments" : "Some comment here...",
+            "estimatedNetWorth" : "n100kTo200k",
+            "fileIds" : [],
+            "includeAdvancedShopperDiscount" : true,
+            "loanOfficerEmails" : [
+               "loanofficer@mortgage.com"
+            ],
+            "mostRecentPolicy" : {
+               "annualPremium" : 1234,
+               "expirationDate" : "2022-10-01",
+               "insurer" : "stateFarm",
+               "liability" : "n300Gt",
+               "policyNumber" : "ABC123"
+            },
+            "numberOfMortgages" : "n1",
+            "plan" : {
+               "requestedCoverage" : 500000,
+               "requestedDeductible" : "n1500",
+               "requestedPlanType" : "premium",
+               "requestedPolicyStart" : "on",
+               "requestedPolicyStartDate" : "2021-03-01",
+               "requiredCoverage" : 400000
+            },
+            "previousAddress" : {
+               "city" : "Smallville",
+               "country" : "USA",
+               "county" : "King",
+               "floodZone" : null,
+               "lat" : null,
+               "long" : null,
+               "state" : "CA",
+               "streetName" : "Side St",
+               "streetNumber" : "550",
+               "unit" : null,
+               "zipCode" : "98765"
+            },
+            "primaryAddress" : {
+               "city" : "Summerville",
+               "country" : "USA",
+               "county" : "Sumter",
+               "floodZone" : null,
+               "lat" : null,
+               "long" : null,
+               "state" : "FL",
+               "streetName" : "Main St",
+               "streetNumber" : "1234",
+               "unit" : "FL 12",
+               "zipCode" : "31024"
+            },
+            "primaryApplicant" : {
+               "birthDate" : "1965-07-01",
+               "careerStatus" : "unemployed",
+               "emailAddress" : "john.johnson@youngalfred.com",
+               "firstName" : "John",
+               "gender" : "male",
+               "gpaBetterThan3" : null,
+               "lastName" : "Testing YA",
+               "maritalStatus" : "married",
+               "occupation" : "bookkeeper",
+               "phoneNumber" : "7777777777",
+               "ssn" : "247-58-7458"
+            },
+            "property" : {
+               "address" : {
+                  "city" : "Summerville",
+                  "country" : "USA",
+                  "county" : "Sumter",
+                  "floodZone" : null,
+                  "lat" : null,
+                  "long" : null,
+                  "state" : "FL",
+                  "streetName" : "Main St",
+                  "streetNumber" : "1234",
+                  "unit" : "FL 12",
+                  "zipCode" : "31024"
+               },
+               "currentlyConstructionOnProperty" : true,
+               "dateOfPurchase" : "2018-01-01",
+               "discounts" : {
+                  "barsOnWindowsDoors" : true,
+                  "deadbolts" : true,
+                  "doorman" : true,
+                  "gatedCommunity" : {
+                     "inGatedCommunity" : true,
+                     "mannedSecurityGates" : true,
+                     "passkeyGates" : true,
+                     "securityPatrol" : true,
+                     "singleEntry" : true
+                  },
+                  "hailResistantRoof" : true,
+                  "impactGlass" : true,
+                  "smokerFree" : true,
+                  "stormShutters" : true,
+                  "windMitigationReport" : {
+                     "aBuildingPermitApplicationDate" : "2020",
+                     "aHipRoofTotalLengthOfNonHipFeatures" : 100,
+                     "aHipRoofTotalRoofSystemPerimeter" : 100,
+                     "aSubclass" : "a1",
+                     "aToeNailsMetalConnectors" : false,
+                     "aToeNailsTrussRafter" : true,
+                     "aYearBuilt" : "1980-02-15",
+                     "bBuildingPermitApplicationDate" : "1998",
+                     "bClipsMin1Strap" : true,
+                     "bClipsNoWrap" : false,
+                     "bFlatRoofSlopeLessThan212" : 1000,
+                     "bFlatRoofTotalRoofArea" : 1000,
+                     "bSubclass" : "b3",
+                     "bYearBuilt" : "2000",
+                     "buildingCode" : "A",
+                     "cSubclass" : "c2",
+                     "dDoubleWraps1Strap" : true,
+                     "dDoubleWraps2Straps" : false,
+                     "eOtherDescription" : "Other description",
+                     "fOtherDescription" : "Other description",
+                     "inspectionCompany" : "Windmitigation Inspectors LLC",
+                     "inspectionDate" : "2018-01-01",
+                     "inspectorLicense" : "ABCD",
+                     "inspectorName" : "John Sullivan",
+                     "minConditionsBCDAttached" : true,
+                     "minConditionsBCDSecured" : true,
+                     "nSubclass" : "n3",
+                     "openingProtection" : "n",
+                     "openingProtectionA" : "a2",
+                     "openingProtectionB" : "b1",
+                     "openingProtectionC" : "c3",
+                     "openingProtectionN" : "n2",
+                     "roofCovering" : "a",
+                     "roofCoveringType" : "1",
+                     "roofDeckAttachment" : "b",
+                     "roofGeometry" : "b",
+                     "roofToWallAttachment" : "b",
+                     "secondaryWaterResistance" : "a"
+                  }
+               },
+               "legalEntityOwnership" : {
+                  "deedName" : "Deed name",
+                  "hasLegalEntityOwnership" : true,
+                  "hasOtherEntitiesOnDeed" : false,
+                  "otherEntitiesOnDeed" : "None",
+                  "typeOfEntity" : "trustee",
+                  "youOrSpouseListedOnDeed" : true
+               },
+               "occupants" : {
+                  "adults" : "n2",
+                  "children" : "n3",
+                  "otherFamilies" : null,
+                  "tenants" : null
+               },
+               "propertyFeatures" : {
+                  "bathrooms" : "n2_5",
+                  "constructionType" : "frameLess10PercentBrick",
+                  "deck" : {
+                     "deckArea" : 1200,
+                     "hasDeck" : true,
+                     "material" : "redwood"
+                  },
+                  "electrical" : {
+                     "hasUpdate" : true,
+                     "updateComplete" : "partial",
+                     "updatedYear" : 2005
+                  },
+                  "exteriorSiding" : "cementFiber",
+                  "familyUnits" : "n3",
+                  "fireplace" : {
+                     "hasFireplaceOrSolidFuel" : true,
+                     "installedByProfessional" : "selfInstalled"
+                  },
+                  "foundation" : "slab",
+                  "garage" : {
+                     "hasGarage" : true,
+                     "size" : "n3Gte",
+                     "type" : "attached"
+                  },
+                  "heating" : {
+                     "fuelType" : "oil",
+                     "hasUpdate" : true,
+                     "primarySource" : "furnace",
+                     "undergroundOilTank" : true,
+                     "updateComplete" : "complete",
+                     "updatedYear" : 2009
+                  },
+                  "livingArea" : 3200,
+                  "percentageOfBasementFinished" : "n0_75",
+                  "plumbing" : {
+                     "hasUpdate" : true,
+                     "updateComplete" : "complete",
+                     "updatedYear" : 2002
+                  },
+                  "propertyStyle" : "colonial",
+                  "roof" : {
+                     "hasUpdate" : true,
+                     "roofAnyPartFlat" : false,
+                     "roofMaterial" : "metal",
+                     "roofMaterialType" : "tin",
+                     "roofShape" : "complex",
+                     "secondaryFlatRoof" : false,
+                     "updateComplete" : "complete",
+                     "updatedYear" : 2011
+                  },
+                  "screenedEnclosure" : {
+                     "attached" : true,
+                     "enclosedArea" : 1500,
+                     "enclosedHeight" : 10,
+                     "hasScreenEnclosure" : true,
+                     "requestedCoverage" : "n50k"
+                  },
+                  "solarPanels" : {
+                     "count" : 10,
+                     "hasSolarPanels" : true,
+                     "ownedOrLeased" : "owned",
+                     "panelArea" : "n0_75"
+                  },
+                  "stories" : "n1_5"
+               },
+               "propertyUse" : {
+                  "anyPartRentedOut" : false,
+                  "businessAtHome" : {
+                     "businessType" : "artisan",
+                     "customersVisitPerWeek" : 50,
+                     "describeBusiness" : "I make decorations",
+                     "farmOrRanchActivity" : false,
+                     "homeBusiness" : true,
+                     "kidsAttendDayCare" : null
+                  },
+                  "careTakerVisitsPerMonth" : "n2",
+                  "domesticWorkers" : true,
+                  "domesticWorkersType" : "fullTime",
+                  "farmingActivity" : false,
+                  "isShortTermRental" : true,
+                  "portionLeasedTo3rdParty" : false,
+                  "rental" : {
+                     "adultTenants" : 2,
+                     "allTenantsRelated" : false,
+                     "numberOfUnrelatedTenants" : 5,
+                     "requireAnnualRentalTerm" : true,
+                     "requireCreditCheck" : true,
+                     "requireCriminalBackgroundCheck" : true,
+                     "requireEvictionSearch" : true,
+                     "requireRentersInsurance" : true,
+                     "requireSmokerFree" : true,
+                     "tenantsUnder21" : 3,
+                     "usedForStudentHousing" : true
+                  },
+                  "shortTermRental" : {
+                     "daysRentedOutPerYear" : 100,
+                     "entireHomeRentedOut" : true,
+                     "maxRentersAtOneTime" : 15,
+                     "minimumLeaseTerm" : "days5",
+                     "rentalRoomsLocation" : null,
+                     "timesRentedOutPerYear" : 25
+                  },
+                  "typeOfUse" : "primary",
+                  "vacantOrUnoccupied60days" : false
+               },
+               "protectionSystems" : {
+                  "burglarAlarmSystemType" : "direct",
+                  "fireAlarmSystemType" : "direct",
+                  "hasBurglarAlarmSystem" : true,
+                  "hasCoDetector" : true,
+                  "hasFireAlarmSystem" : true,
+                  "hasFireExtinguisher" : true,
+                  "hasSmokeDetector" : true,
+                  "hasSprinklerSystem" : true,
+                  "smokeDetectorType" : "hardwired",
+                  "sprinklerSystemCoverage" : "n0_75"
+               },
+               "purchasePrice" : null,
+               "risks" : {
+                  "aluminumWiring" : false,
+                  "eifsOrSyntheticStuccoSiding" : false,
+                  "electricalFuseBox" : false,
+                  "fireHydrantWithin1000ft" : "yes",
+                  "fireStationDistance" : 1.5,
+                  "galvanizedPiping" : false,
+                  "hasPets" : true,
+                  "historicalHome" : false,
+                  "knobAndTubeOrClothWiring" : true,
+                  "locatedInHistoricalDistrict" : false,
+                  "moreThan100Amps" : true,
+                  "pets" : [
+                     {
+                        "bittenBefore" : false,
+                        "breed" : "akita",
+                        "description" : "really nice dog",
+                        "name" : "doggie",
+                        "petType" : "dog"
+                     }
+                  ],
+                  "pexPipingPrior2010" : true,
+                  "polybutylenePiping" : false,
+                  "sinkholeOrEarthMovementLoss" : false,
+                  "sumpPump" : true,
+                  "swimmingPool" : {
+                     "aboveGround" : false,
+                     "divingBoard" : false,
+                     "enclosedByFenceOver4ft" : true,
+                     "hasSwimmingPool" : true,
+                     "isScreened" : true,
+                     "latchingGate" : false,
+                     "moreThan1000ftAway" : true,
+                     "slide" : true,
+                     "unfilledUnmaintained" : false
+                  },
+                  "trampoline" : true,
+                  "trampolineSafetyNet" : false,
+                  "unrepairedDamages" : true,
+                  "unrepairedDamagesDescription" : "Hole in the floor near dining room"
+               },
+               "seasonalUse" : {
+                  "monthsOccupiedByOwner" : "n2",
+                  "monthsOccupiedByTenant" : "n3",
+                  "monthsVacant" : "n7"
+               },
+               "type" : "House",
+               "underConstructionNewHome" : false,
+               "underRenovation" : true,
+               "vacancy" : {
+                  "propertyIntention" : "occupy",
+                  "propertySecured" : true,
+                  "reasonForVacancy" : "underRenovation",
+                  "workByLicensedContractor" : true
+               },
+               "valuables" : {
+                  "belongingsOver2k" : [
+                     {
+                        "category" : "computerEquipment",
+                        "value" : "n10kGt"
+                     },
+                     {
+                        "category" : "jewelry",
+                        "value" : "n6k"
+                     }
+                  ],
+                  "totalValueOfBelongings" : 50000
+               },
+               "yearBuilt" : 2018
+            },
+            "reasonNoPriorInsurance" : null,
+            "reasonsForCarrierCancellation" : [],
+            "secondaryApplicant" : {
+               "birthDate" : "1970-02-20",
+               "careerStatus" : "employed",
+               "emailAddress" : "linda.johnson@youngalfred.com",
+               "firstName" : "Linda",
+               "gender" : "female",
+               "gpaBetterThan3" : null,
+               "lastName" : "Johnson",
+               "maritalStatus" : "married",
+               "occupation" : "architect",
+               "phoneNumber" : "7777777777",
+               "ssn" : "203-14-3652"
+            },
+            "secondaryApplicantRelationship" : "spouse"
+         }
+      ],
+      "motorcycleApplications" : [],
+      "partnerId" : "edf10b04-1769-472f-b348-5067838ecb86",
+      "partnerReferenceId" : "partner-portfolio-id-1",
+      "petApplications" : [],
+      "phoneNumber" : "1234567890",
+      "rvTrailerApplications" : [],
+      "version" : {
+         "major" : 0,
+         "minor" : 0,
+         "revision" : 5
+      }
+   }
+}

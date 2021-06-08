@@ -46,7 +46,7 @@ app.use(express.static(STATIC_CONTENT));
 
 app.post("/portfolio/submit", (req, res) => {
     const requestData = req.body.data;
-    console.log("Request:\n\n", JSON.stringify(req.body.data, null, 2));
+    console.log("Request:\n\n", JSON.stringify(req.body, null, 2));
     requestData.partnerId = partner_id;
     axios
         .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
@@ -59,11 +59,25 @@ app.post("/portfolio/submit", (req, res) => {
             // This information is forwarded to the client.  The
             // resulting portfolioId can be used to retrieve the
             // portfolio.
-            res.status(202).json({
-                message: "Portfolio was successfully submitted",
-                portfolioId: result.data.objectId,
-                kind: "success",
-            });
+            const data = result.data;
+            if ("validationResult" in data && data.validationResult.length > 0) {
+                res.status(400).json({
+                    message: "Portfolio was not successfully submitted",
+                    portfolioId: data.objectId,
+                    kind: "failure",
+                    errors: data.validationResult.map(({ field, path, title, detail }) => ({
+                        field: `${path || "?"}.${field || "?"}`,
+                        title: title || "?",
+                        detail: detail || "?",
+                    })),
+                });
+            } else {
+                res.status(202).json({
+                    message: "Portfolio was successfully submitted",
+                    portfolioId: result.data.objectId,
+                    kind: "success",
+                });
+            }
         })
         .catch((error) => {
             if (error.response && error.response.status === 400) {
@@ -80,29 +94,6 @@ app.post("/portfolio/submit", (req, res) => {
                 res.status(500).json({ message: "Server error. Please contact an administrator." });
             }
         });
-});
-
-app.get("/portfolio/status", (req, res) => {
-    const portfolioId = req.query.id;
-    if (portfolioId === undefined) {
-        res.status(400).json({ message: "Portfolio id was not provided" });
-    } else {
-        axios
-            .get(`${BOWTIE_API_URL}/v1/portfolio_status?portfolioId=${portfolioId}`, {
-                headers: {
-                    "Content-Type": "application/json",
-                    "x-api-key": api_key,
-                },
-            })
-            .then((result) => {
-                const status = result.data.portfolioStatus;
-                res.status(200).json(status);
-            })
-            .catch((error) => {
-                console.log("Error: ", error);
-                res.status(500).json({ message: "Internal server error." });
-            });
-    }
 });
 
 app.listen(PORT, () => {
