@@ -1,4 +1,4 @@
-const application = require("./application").application;
+const application = require("../application").application;
 
 const config = {
     headless: true,
