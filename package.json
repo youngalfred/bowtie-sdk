@@ -17,15 +17,22 @@
     "devDependencies": {
         "@babel/core": "^7.12.10",
         "@babel/preset-env": "^7.13.10",
+        "@wdio/cli": "^7.7.3",
+        "@wdio/local-runner": "^7.7.3",
+        "@wdio/mocha-framework": "^7.7.3",
+        "@wdio/spec-reporter": "^7.7.3",
+        "@wdio/sync": "^7.7.3",
         "axios": "^0.21.1",
         "babel-loader": "^8.2.2",
+        "chromedriver": "^91.0.0",
         "express": "^4.17.1",
         "html-webpack-plugin": "^5.3.1",
         "rimraf": "^3.0.2",
+        "wdio-chromedriver-service": "^7.1.0",
         "webpack": "^5.25.0",
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "@youngalfred/bowtie-sdk": "1.0.0"
+        "@youngalfred/tlano-sdk": "0.0.65"
     }
 }
