@@ -107,11 +107,13 @@ module.exports = {
         ["home-risks-swimmingPool-unfilledUnmaintained", "No"],
         ["home-risks-swimmingPool-latchingGate", "No"],
         ["home-risks-swimmingPool-moreThan1000ftAway", "Yes"],
-        ["home-screenedEnclosure-hasScreenEnclosure", "Yes"],
+        ["home-screenedEnclosure-hasScreenEnclosure", "No"],
+        /*
         ["home-screenedEnclosure-attached", "Yes"],
         ["home-screenedEnclosure-enclosedArea", "1500"],
         ["home-screenedEnclosure-enclosedHeight", "10"],
         ["home-screenedEnclosure-requestedCoverage", "$50,000"],
+		*/
         ["home-dateOfPurchase", daysFromNow(-640)],
         ["home-previousAddress-city", "Smallville"],
         ["home-previousAddress-state", "California"],

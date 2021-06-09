@@ -30,7 +30,7 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const Portfolio = require("@youngalfred/tlano-sdk").Portfolio;
+const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
 
 // Attempt to recover an item from the sessionStorage (the current
 // live browser tab or window _only_; this information will disappear
