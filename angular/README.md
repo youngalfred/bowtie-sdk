@@ -22,8 +22,8 @@ are automatically checked, validated, and updated.
 The implementation consists of several components that generate the standard
 HTML input objects:
 
-- the root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
-- parent container to all field groups (and individual fields) (`field-group.component`)
+- root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
+- parent component to all field groups (and individual fields) (`field-group.component`)
 - text box (`text-field.component`)
 - check box (`checkbox-field.component`)
 - select dropdown (`select-field.component`)
