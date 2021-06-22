@@ -1,18 +1,25 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { onChange } from 'src/utilities';
-import { emptyField, Field, OptionType } from '../../types';
+import { Field, OptionType } from '../../types';
+import { emptyField, makeClasses } from '../shared/fields';
 
 @Component({
   selector: 'select-field',
   templateUrl: './select-field.component.html',
   styleUrls: ['./select-field.component.css']
 })
-export class SelectFieldComponent implements OnInit {
+export class SelectFieldComponent implements OnInit, OnChanges {
 
   public options: OptionType[] = [];
   constructor() { }
 
   @Input("field") field: Field = emptyField;
+  @Input("highlightErrors") highlightErrors = false;
+  classes: string = makeClasses(this.field, this.highlightErrors);
+
+  ngOnChanges(_: SimpleChanges) {
+    this.classes = makeClasses(this.field, this.highlightErrors);
+  }
 
   ngOnInit(): void {
     const options = this.field?.options || [];

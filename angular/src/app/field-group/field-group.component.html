@@ -7,25 +7,25 @@
     }
 </style>
 
-<div class="question" *ngFor="let field of fg.children">
-
+<div class="question" [class]="classes" *ngFor="let field of fg.children">
     <div *ngIf="field.kind === 'multigroup'">
-        <field-group *ngFor="let innerFg of field.children" [fg]="innerFg"></field-group>
+        <field-group *ngFor="let innerFg of field.children" [highlightErrors]="highlightErrors" [fg]="innerFg">
+        </field-group>
     </div>
 
     <field-label *ngIf="field.kind === 'fieldgroup'" [for]="field.id">{{field.label}}
-        <field-group [fg]="field"></field-group>
+        <field-group [fg]="field" [highlightErrors]="highlightErrors"></field-group>
     </field-label>
 
     <field-label *ngIf="field.kind === 'check'" [for]="field.id">{{field.label}}
-        <checkbox-field [field]="field"></checkbox-field>
+        <checkbox-field [field]="field" [highlightErrors]="highlightErrors"></checkbox-field>
     </field-label>
 
     <field-label *ngIf="field.kind === 'text'" [for]="field.id">{{field.label}}
-        <text-field [field]="field"></text-field>
+        <text-field [field]="field" [highlightErrors]="highlightErrors"></text-field>
     </field-label>
 
     <field-label *ngIf="field.kind === 'select'" [for]="field.id">{{field.label}}
-        <select-field [field]="field"></select-field>
+        <select-field [field]="field" [highlightErrors]="highlightErrors"></select-field>
     </field-label>
 </div>

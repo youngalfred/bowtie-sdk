@@ -13,15 +13,17 @@ export class AppComponent implements OnInit {
   title = 'bowtie-sdk-angular-12-demo';
 
   public portfolio: Portfolio;
+  public invalidFieldsAreHighlighted: boolean = false;
+
   // These objects can be customized for your own purposes 
   // to update the portfolio within the constructor 
   // (but are only used currently to prevent field groups and questions from being displayed)
-  private prefilledFieldGroups: Record<string, string> = {
-    "policy-type": "home",
-  };
+  private hiddenFieldGroups: Set<string> = new Set([
+    "policy-type"
+  ]);
   private prefilledFields: Record<string, string> = {
     "start.policyType": "home",
-  }
+  };
 
   ngOnInit() { }
 
@@ -43,7 +45,7 @@ export class AppComponent implements OnInit {
     const context = this;
     return function (value = "") {
       const field = context.portfolio.find(fieldname) as InputFieldType;
-      if (field) {
+      if (field && field.value !== value) {
         context.portfolio.set(field, value);
         window.sessionStorage.setItem("young_alfred", JSON.stringify(context.portfolio.application));
       }
@@ -53,8 +55,8 @@ export class AppComponent implements OnInit {
   propsReducer() {
     const context = this;
     return function (acc: [], child: FieldType & { children?: [] }): any {
-      // Do not render prefilled fields
-      if (context.prefilledFields[child.id]) {
+      // Do not render prefilled or hidden fields
+      if (context.prefilledFields[child.id] || child.kind === "hidden") {
         return acc;
       }
 
@@ -72,8 +74,8 @@ export class AppComponent implements OnInit {
   // and add event handlers to the individual fields
   makeFieldGroups(portfolio: Portfolio) {
     return portfolio.view.reduce((acc: FieldGroup[], fg: any) => {
-      // Do not render prefilled fieldgroups
-      if (this.prefilledFieldGroups[fg.id]) {
+      // Filter out (controllably) hidden fieldgroups
+      if (this.hiddenFieldGroups.has(fg.id)) {
         return acc;
       }
 

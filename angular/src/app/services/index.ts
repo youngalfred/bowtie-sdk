@@ -11,6 +11,10 @@ export class HttpService {
         "Content-Type": "application/json",
     };
 
+    // Uncomment during local development or else you'll get 404
+    // private urlBase = "http://localhost:3001";
+    private urlBase = "";
+
     constructor(private http: HttpClient) { }
 
     makeHeaders(customHeaders: Record<string, string | string[]>) {
@@ -29,8 +33,7 @@ export class HttpService {
         const body = { data };
         const headers = this.makeHeaders(customHeaders);
 
-        // During local development, prepend "http://localhost:3001" to the url
-        return this.http.post("/portfolio/submit", body, {
+        return this.http.post(`${this.urlBase}/portfolio/submit`, body, {
             headers
         });
     }

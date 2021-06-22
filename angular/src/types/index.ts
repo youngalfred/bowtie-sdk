@@ -17,29 +17,18 @@ export type OptionType = {
 };
 
 export interface Field {
-    id: string;              // The field value as sent from the SDK.
+    id: string;              // The field id as sent from the SDK.
+    classes?: string[];      // Classes to distinguish the field's hierarchy; also offers more specific information beyond the "kind"
     value: string;           // The value as sent from the SDK
-    kind: string;
+    kind: string;            // The type of field, which is relevant for knowing how to render the field
     label?: string;          // The actual question.
     placeholder?: string;    // A placeholder if the input has not been handled.
     options?: OptionType[];  // Options for enumerated / listed values.
     onChange: (_: string) => void;  // The event handler.
     onFocus?: (_: boolean) => void;  // A handler for focus events.
+    valid?: { valid: boolean; msg?: string; }; // whether or not the field is valid, and a validation message
 }
 
 export type FieldGroup = {
     children: Field[];
-};
-
-// Ideally, this would be in some shared folder (so that both the text and select fields can use it) 
-// instead of the types file
-export const emptyField = {
-    id: "",
-    kind: "",
-    value: "",
-    label: "",
-    placeholder: "",    // A placeholder if the input has not been handled.
-    options: [],  // Options for enumerated / listed values.
-    onChange: (_: string) => { },  // The event handler.
-    onFocus: (_: boolean) => { } // The event handler
 };

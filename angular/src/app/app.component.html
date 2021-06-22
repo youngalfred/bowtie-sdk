@@ -1,7 +1,10 @@
 <div>
   <div *ngFor="let fg of makeFieldGroups(portfolio)" [id]="fg.id">
     <h3>{{fg.label}}</h3>
-    <field-group [fg]="fg"></field-group>
+    <field-group [fg]="fg" [highlightErrors]="invalidFieldsAreHighlighted"></field-group>
   </div>
-  <button (click)="submit()">Submit</button>
+  <div class="flex">
+    <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true;">Highlight Invalid Fields</button>
+    <button [disabled]="!portfolio.valid" (click)="submit()">Submit</button>
+  </div>
 </div>
