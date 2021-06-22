@@ -30,7 +30,7 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const Portfolio = require("@youngalfred/tlano-sdk").Portfolio;
+const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
 
 // Attempt to recover an item from the sessionStorage (the current
 // live browser tab or window _only_; this information will disappear
@@ -161,7 +161,7 @@ function maybeLocalstore() {
     function renderText(node) {
         const mid = m(node.id);
         tabIndex++;
-        const input = `<input id="${mid}" name="${mid}" value="${node.value}" tabindex="${tabIndex}"/>`;
+        const input = `<input id="${mid}" name="${mid}" value="${node.value}" data-automation-id="${mid}" tabindex="${tabIndex}"/>`;
         return {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["blur", "keydown"].map(function (event) {
@@ -186,7 +186,7 @@ function maybeLocalstore() {
         // HTML Form expects, but Bowtie isn't an HTML Form.
 
         const checked = node.value === "1" ? 'value="" checked' : 'value="1"';
-        const input = `<input type="checkbox" id="${mid}" name="${mid}" ${checked} tabindex="${tabIndex}" />`;
+        const input = `<input type="checkbox" id="${mid}" name="${mid}" ${checked} data-automation-id="${mid}" tabindex="${tabIndex}" />`;
 
         return {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
@@ -231,7 +231,7 @@ function maybeLocalstore() {
                 return `<option value="${opt.name}"${selected ? " selected" : ""}>${opt.label}</option>`;
             })
             .join("\n");
-        const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}">${renderedOptions}</select>`;
+        const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">${renderedOptions}</select>`;
 
         return {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
@@ -278,6 +278,7 @@ function maybeLocalstore() {
            name="${mid}" 
            value="${option.name}"
            tabindex="${tabIndex}" 
+           data-automation-id="${radioId}"
            ${checked}
     />
     <label for="${option.name}">${option.label}</label>
@@ -380,62 +381,27 @@ function maybeLocalstore() {
             })
                 .then(function (response) {
                     response.json().then(function (result) {
-                        console.log(result);
-                        if (result.kind === "success") {
-                            portfolioId = result.portfolioId;
-                        }
+                        portfolioId = result.portfolioId;
+                        validationDetails = {
+                            valid: result.kind === "success",
+                            errors: result.errors
+                                ? result.errors.map(function (r) {
+                                      return {
+                                          field: r.field,
+                                          path: r.path,
+                                          title: r.title,
+                                          details: r.detail,
+                                      };
+                                  })
+                                : [],
+                        };
+                        console.log(validationDetails);
+                        renderPortfolio();
                     });
                 })
                 .catch(function (response) {
                     console.log("Error: ", response);
                 });
-
-            setTimeout(function () {
-                requestStatus();
-            }, 250);
-        });
-    }
-
-    // We've put in a 250-millisecond delay (see above) before asking
-    // for the status of our submission.  In practice, this should be
-    // a loop with a timeout to "give up."
-
-    function requestStatus() {
-        if (portfolioId === null) {
-            setTimeout(function () {
-                requestStatus();
-            }, 500);
-            return;
-        }
-
-        fetch(`/portfolio/status?id=${portfolioId}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-        }).then(function (response) {
-            if (response.ok) {
-                response.json().then(function (result) {
-                    validationDetails = {
-                        valid: result.isValid,
-                        errors: result.validationResult
-                            ? result.validationResult.map(function (r) {
-                                  return {
-                                      field: r.field,
-                                      path: r.path,
-                                      title: r.title,
-                                      details: r.detail,
-                                  };
-                              })
-                            : [],
-                    };
-                    renderPortfolio();
-                });
-            } else {
-                validationDetails = {
-                    valid: false,
-                    errors: [{ field: null, title: "Unable to retrieve status" }],
-                };
-                renderPortfolio();
-            }
         });
     }
 
@@ -473,7 +439,7 @@ function maybeLocalstore() {
 
     function validationResults() {
         if (validationDetails.valid) {
-            return '<div class="fieldset"><h3>Your application has successfully been sent!</h3></div>';
+            return '<div class="fieldset" id="success-message"><h3>Your application has successfully been sent!</h3></div>';
         }
 
         return (
@@ -486,6 +452,8 @@ function maybeLocalstore() {
             "</div>"
         );
     }
+
+    function renderFinished() {}
 
     let previousEvents = [];
 
