@@ -1,7 +1,6 @@
 const application = require("../application").application;
 
 const config = {
-    headless: true,
     host: "http://localhost:3001/",
 };
 

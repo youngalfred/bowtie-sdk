@@ -13,7 +13,7 @@ const BOWTIE_API_URL = process.env.BOWTIE_API_URL
     : "https://bowtie-api-sandbox.youngalfred.com";
 
 const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
-const api_key = process.env.API_KEY;
+const api_key = process.env.BOWTIE_API_KEY;
 const partner_id = process.env.BOWTIE_PARTNER_ID;
 
 const app = express();
