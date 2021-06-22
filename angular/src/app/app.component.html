@@ -1,0 +1,7 @@
+<div>
+  <div *ngFor="let fg of makeFieldGroups(portfolio)" [id]="fg.id">
+    <h3>{{fg.label}}</h3>
+    <field-group [fg]="fg"></field-group>
+  </div>
+  <button (click)="submit()">Submit</button>
+</div>
