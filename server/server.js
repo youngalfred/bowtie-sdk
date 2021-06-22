@@ -14,7 +14,6 @@ const BOWTIE_API_URL = process.env.BOWTIE_API_URL
 
 const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
 const api_key = process.env.BOWTIE_API_KEY;
-const partner_id = process.env.BOWTIE_PARTNER_ID;
 
 const app = express();
 
@@ -47,7 +46,6 @@ app.use(express.static(STATIC_CONTENT));
 app.post("/portfolio/submit", (req, res) => {
     const requestData = req.body.data;
     console.log("Request:\n\n", JSON.stringify(req.body, null, 2));
-    requestData.partnerId = partner_id;
     axios
         .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
             headers: {

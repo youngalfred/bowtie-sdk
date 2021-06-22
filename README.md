@@ -73,14 +73,13 @@ After unpacking this archive and running `npm install` to acquire all
 dependencies, open a new terminal session and run the following:
 
 ``` shellsession
-$ export BOWTIE_PARTNER_ID="<Your Partner ID>"
 $ export BOWTIE_API_KEY="<Your Bowtie API Key>"
 $ npm run server
 ```
 
-Those two environment variables are required and have no defaults.  The
-application will be available on your local machine at port 3001:
-[http://localhost:3001/](http://localhost:3001/).
+The BOWTIE_API_KEY environment variable is required and has no default.
+The running application will be available on your local machine at port
+3001: [http://localhost:3001/](http://localhost:3001/).
 
 The server is less than a hundred lines of well-commented Javascript,
 written to the [Express app server](https://expressjs.com/) framework.
