@@ -19,4 +19,8 @@ export class FieldGroupComponent implements OnChanges {
     this.classes = makeClasses(this.fg, this.highlightErrors);
   }
 
+  // Necessary to maintain focus on text fields 
+  // when typing
+  trackBy = (_: number, item: any) => item.id;
+
 }

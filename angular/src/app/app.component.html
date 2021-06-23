@@ -1,5 +1,5 @@
 <div>
-  <div *ngFor="let fg of makeFieldGroups(portfolio)" [id]="fg.id">
+  <div *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [id]="fg.id">
     <h3>{{fg.label}}</h3>
     <field-group [fg]="fg" [highlightErrors]="invalidFieldsAreHighlighted"></field-group>
   </div>

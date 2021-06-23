@@ -7,7 +7,7 @@
     }
 </style>
 
-<div class="question" [class]="classes" *ngFor="let field of fg.children">
+<div class="question" [class]="classes" *ngFor="let field of fg.children; index as i; trackBy: trackBy">
     <div *ngIf="field.kind === 'multigroup'">
         <field-group *ngFor="let innerFg of field.children" [highlightErrors]="highlightErrors" [fg]="innerFg">
         </field-group>

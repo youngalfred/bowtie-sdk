@@ -109,4 +109,8 @@ export class AppComponent implements OnInit {
       });
   }
 
+  // Necessary to maintain focus on text fields 
+  // when typing
+  trackBy = (_: number, item: any) => item.id;
+
 }
