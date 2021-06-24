@@ -21,8 +21,37 @@ export class AppComponent implements OnInit {
   private hiddenFieldGroups: Set<string> = new Set([
     "policy-type"
   ]);
+  // Of course, you will receive the prefilledData data dynamically, 
+  // instead of having it hard coded, but the principles for
+  // prefilling the portofilio are the same:
+  // Use the prefilledFields data to update the portfolio in 
+  // the constructor OR ngOnInit()
   private prefilledFields: Record<string, string> = {
     "start.policyType": "home",
+    "start.zipCode": "33020",
+    "start.city": "Seattle",
+    "start.state": "MA",
+    "start.firstName": "Alfred",
+    "start.lastName": "Butler",
+    "start.streetAddress": "123 Main Street",
+    "start.emailAddress": "alfred@youngalfred.com",
+    "home.hasOccupants._adults": "1",
+    "home.occupants.adults": "n1",
+    "home.email": "alfred@youngalfred.com",
+    "home.primaryPolicyHolder.birthDate": "1980-05-17",
+    "home.primaryPolicyHolder.gender": "male",
+    "home.primaryPolicyHolder.maritalStatus": "separated",
+    "home.primaryPolicyHolder.careerStatus": "employed",
+    "home.primaryPolicyHolder.occupation": "photographerOrPhotographyStudio",
+    "home.secondaryPolicyHolder": "yes",
+    "home.propertyType": "House",
+    "home.propertyStyle": "duplex",
+    "home.propertyUse.typeOfUse": "primary",
+    "home.propertyUse.isShortTermRental": "no",
+    "home.plan.requestedPolicyStart": "on",
+    "home.plan.requestedPolicyStartDate": "2021-08-10",
+    "home.dateOfPurchase": "1999-01-01",
+    "home.numberOfMortgages": "n1",
   };
 
   ngOnInit() { }
@@ -56,7 +85,7 @@ export class AppComponent implements OnInit {
     const context = this;
     return function (acc: [], child: FieldType & { children?: [] }): any {
       // Do not render prefilled or hidden fields
-      if (context.prefilledFields[child.id] || child.kind === "hidden") {
+      if (child.kind === "hidden") {
         return acc;
       }
 
@@ -86,9 +115,13 @@ export class AppComponent implements OnInit {
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
   constructor(private httpService: HttpService) {
     this.portfolio = new Portfolio(this.maybeLocalstore());
+
     // Optional: prefill aspects of the portfolio here.
     // You will likely require a "mapper" to bridge the gap between
-    // your existing data and YA's portfolio ids 
+    // your existing data and YA's portfolio ids
+    Object.entries(this.prefilledFields).forEach(([fieldname, prefilledValue]) => {
+      this.updateField(fieldname)(prefilledValue);
+    });
   }
 
   // Once the portfolio has been completely filled out,
