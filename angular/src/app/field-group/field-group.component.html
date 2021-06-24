@@ -1,0 +1,31 @@
+<style>
+    .question {
+        box-shadow: 0 0 5px #e1e1e1;
+        border-radius: 5px;
+        padding: 20px 10px;
+        margin-bottom: 1em;
+    }
+</style>
+
+<div class="question" [class]="classes" *ngFor="let field of fg.children; index as i; trackBy: trackBy">
+    <div *ngIf="field.kind === 'multigroup'">
+        <field-group *ngFor="let innerFg of field.children" [highlightErrors]="highlightErrors" [fg]="innerFg">
+        </field-group>
+    </div>
+
+    <field-label *ngIf="field.kind === 'fieldgroup'" [for]="field.id">{{field.label}}
+        <field-group [fg]="field" [highlightErrors]="highlightErrors"></field-group>
+    </field-label>
+
+    <field-label *ngIf="field.kind === 'check'" [for]="field.id">{{field.label}}
+        <checkbox-field [field]="field" [highlightErrors]="highlightErrors"></checkbox-field>
+    </field-label>
+
+    <field-label *ngIf="field.kind === 'text'" [for]="field.id">{{field.label}}
+        <text-field [field]="field" [highlightErrors]="highlightErrors"></text-field>
+    </field-label>
+
+    <field-label *ngIf="field.kind === 'select'" [for]="field.id">{{field.label}}
+        <select-field [field]="field" [highlightErrors]="highlightErrors"></select-field>
+    </field-label>
+</div>

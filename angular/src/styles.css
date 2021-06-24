@@ -1,0 +1,7 @@
+.invalid {
+    outline: 2px solid red;
+}
+
+.flex {
+    display: flex;
+}
