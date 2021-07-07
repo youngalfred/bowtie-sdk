@@ -20,9 +20,9 @@ const BOWTIE_API_URL = process.env.BOWTIE_API_URL
     : "https://bowtie-api-sandbox.youngalfred.com";
 
 const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
-const api_key = process.env.API_KEY;
+const api_key = process.env.BOWTIE_API_KEY;
 if (!api_key) {
-    console.log("You must pass your api key as an environment variable for the app to work as expected (unless you are using an integration token, in which case, you may remove this if clause).");
+    console.log("You must pass your api key as an environment variable (BOWTIE_API_KEY) for the app to work as expected (unless you are using an integration token, in which case, you may remove this if clause).");
     process.exit(-1);
 }
 
