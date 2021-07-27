@@ -1,10 +1,24 @@
+<style>
+  .fg {
+    box-shadow: 0 0 5px #1e1e1e;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+  }
+</style>
+
 <div>
-  <div *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [id]="fg.id">
+  <div class="fg" *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [class]="fg.classes"
+    [id]="fg.id">
     <h3>{{fg.label}}</h3>
-    <field-group [fg]="fg" [highlightErrors]="invalidFieldsAreHighlighted"></field-group>
+    <field-group [fg]="fg"></field-group>
   </div>
   <div class="flex">
     <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true;">Highlight Invalid Fields</button>
-    <button [disabled]="!portfolio.valid" (click)="submit()">Submit</button>
+    <button id="ya-submit-button" [disabled]="!portfolio.valid" (click)="submit()">Submit</button>
+  </div>
+
+  <div id="success-message" *ngIf="isPortolioSubmitted">
+    Your application has successfully been sent
   </div>
 </div>

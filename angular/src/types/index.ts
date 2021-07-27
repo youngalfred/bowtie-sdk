@@ -1,4 +1,4 @@
-import Portfolio from "@youngalfred/bowtie-sdk";
+import Portfolio, { FieldType } from "@youngalfred/bowtie-sdk";
 
 export interface Application {
     portfolio: Portfolio;
@@ -16,19 +16,16 @@ export type OptionType = {
     label: string;
 };
 
-export interface Field {
-    id: string;              // The field id as sent from the SDK.
-    classes?: string[];      // Classes to distinguish the field's hierarchy; also offers more specific information beyond the "kind"
-    value: string;           // The value as sent from the SDK
-    kind: string;            // The type of field, which is relevant for knowing how to render the field
-    label?: string;          // The actual question.
+export type AppField = {
+    kind: string; // Essentially, the type of field (select, text, check, fieldgroup, multigroup)
+    value: string; // The field's value
+    classes: string; // A string of classes to assist the UI. Ex: phone number fields' classes => "input-phone ..."
     placeholder?: string;    // A placeholder if the input has not been handled.
     options?: OptionType[];  // Options for enumerated / listed values.
     onChange: (_: string) => void;  // The event handler.
-    onFocus?: (_: boolean) => void;  // A handler for focus events.
-    valid?: { valid: boolean; msg?: string; }; // whether or not the field is valid, and a validation message
-}
+    testId?: string;
+} & Pick<FieldType, "valid" | "kind" | "id" | "label">;
 
-export type FieldGroup = {
-    children: Field[];
-};
+export type AppFieldGroup = {
+    children: (AppFieldGroup | AppField)[];
+} & Pick<AppField, "kind" | "valid" | "id" | "label" | "classes">;

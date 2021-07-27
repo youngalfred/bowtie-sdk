@@ -1,26 +1,29 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { makeClasses } from '../shared/fields';
-const emptyGroup = { children: [], id: "", kind: "", label: "", classes: [], valid: { valid: true, msg: "" } };
+import { AppField, AppFieldGroup } from 'src/types';
+import { uniqueFGs } from 'src/utilities/groupModifiers';
+import { emptyField } from '../shared/fields';
+export const emptyGroup = { ...emptyField, children: [] };
 
 @Component({
   selector: 'field-group',
   templateUrl: './field-group.component.html',
   styleUrls: ['./field-group.component.css']
 })
+
 export class FieldGroupComponent implements OnChanges {
 
   constructor() { }
 
-  @Input("fg") fg = emptyGroup;
-  @Input("highlightErrors") highlightErrors = false;
-  classes: string = makeClasses(this.fg, this.highlightErrors);
+  @Input("fg") parentFg: AppFieldGroup = emptyGroup;
+
+  fg: AppFieldGroup = this.parentFg;
 
   ngOnChanges(_: SimpleChanges) {
-    this.classes = makeClasses(this.fg, this.highlightErrors);
+    this.fg = uniqueFGs[this.parentFg.id]?.(this.parentFg) || this.parentFg;
   }
 
   // Necessary to maintain focus on text fields 
   // when typing
-  trackBy = (_: number, item: any) => item.id;
+  trackBy = (_: number, item: AppField | AppFieldGroup) => item.id;
 
 }
