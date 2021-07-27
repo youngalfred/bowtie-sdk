@@ -33,6 +33,6 @@
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "@youngalfred/bowtie-sdk": "1.0.2"
+        "@youngalfred/bowtie-sdk": "1.0.3"
     }
 }
