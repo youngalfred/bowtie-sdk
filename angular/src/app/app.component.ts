@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services';
 import { Portfolio, FieldType, InputFieldType, FieldGroup } from "@youngalfred/bowtie-sdk";
-import { AppField, AppFieldGroup } from 'src/types';
-import { makeTestId, uniqueFGs } from 'src/utilities/groupModifiers';
-import { makeClasses } from './shared/fields';
+import { AppFieldGroup, GroupOrField } from 'src/types';
+import { makeTestId } from 'src/utilities/groupModifiers';
+import { combineClasses } from './shared/fields';
 
 @Component({
   selector: 'app-root',
@@ -81,16 +81,22 @@ export class AppComponent implements OnInit {
     }
   };
 
-  propsReducer = (acc: (AppField | AppFieldGroup)[], child: FieldType): (AppField | AppFieldGroup)[] => {
+  propsReducer = (acc: GroupOrField[], child: FieldType): GroupOrField[] => {
     // Do not render prefilled or hidden fields
     if (child.kind === "hidden") {
       return acc;
     }
 
     const { kind = "", children = [], ...groupRest } = child as FieldGroup;
-    // reduce the multigroup/fieldgroup's children (they need an onChange event handler)
+    // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
     if (["multigroup", "fieldgroup"].includes(kind)) {
-      return [...acc, { kind, ...groupRest, classes: makeClasses(child, this.invalidFieldsAreHighlighted), children: children.reduce(this.propsReducer, []) }];
+      return [...acc,
+      {
+        ...groupRest,
+        kind,
+        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
+        children: children.reduce(this.propsReducer, [])
+      }];
     }
 
     const { id = "", ...rest } = child as InputFieldType;
@@ -99,19 +105,18 @@ export class AppComponent implements OnInit {
       {
         ...rest,
         id,
-        classes: makeClasses(child, this.invalidFieldsAreHighlighted),
+        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
-        placeholder: "",
         onChange: this.updateField(id)
       }
-    ] as AppField[];
+    ];
   };
 
   // Filter out any questions that shouldn't be rendered
   // and add event handlers to the individual fields
   makeFieldGroups = (portfolio: Portfolio) => {
     return portfolio.view.reduce((acc: AppFieldGroup[], fg: FieldGroup): AppFieldGroup[] => {
-      // Filter out (controllably) hidden fieldgroups
+      // Filter out any fieldgroups you wish to hide/prefill
       if (this.hiddenFieldGroups.has(fg.id)) {
         return acc;
       }
@@ -120,7 +125,7 @@ export class AppComponent implements OnInit {
         ...acc,
         {
           ...fg,
-          classes: makeClasses(fg, this.invalidFieldsAreHighlighted),
+          classes: combineClasses(fg, this.invalidFieldsAreHighlighted),
           children: fg.children.reduce(this.propsReducer, [])
         }
       ];
@@ -160,6 +165,6 @@ export class AppComponent implements OnInit {
 
   // Necessary to maintain focus on text fields 
   // when typing
-  trackBy = (_: number, item: AppField | AppFieldGroup) => item.id;
+  trackBy = (_: number, item: GroupOrField) => item.id;
 
 }

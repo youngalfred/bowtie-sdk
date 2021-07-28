@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { AppField, AppFieldGroup } from 'src/types';
+import { AppFieldGroup, GroupOrField } from 'src/types';
 import { uniqueFGs } from 'src/utilities/groupModifiers';
 import { emptyField } from '../shared/fields';
 export const emptyGroup = { ...emptyField, children: [] };
@@ -24,6 +24,6 @@ export class FieldGroupComponent implements OnChanges {
 
   // Necessary to maintain focus on text fields 
   // when typing
-  trackBy = (_: number, item: AppField | AppFieldGroup) => item.id;
+  trackBy = (_: number, item: GroupOrField) => item.id;
 
 }
