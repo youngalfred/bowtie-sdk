@@ -264,10 +264,10 @@ function maybeLocalstore() {
         const field = node.children[0];
         const mid = m(field.id);
 
-        function makeRadio(option) {
+        function makeRadio(option, optionIdx) {
             tabIndex++;
             const checked = option.name === field.value ? "checked " : " ";
-            const radioId = `${mid}-${tabIndex}`;
+            const radioId = `${mid}-${optionIdx + 1}`;
             const html = `
 <div class="${m(node.id)}">
   <img src="./images/${option.name}.jpg" />
@@ -386,13 +386,13 @@ function maybeLocalstore() {
                             valid: result.kind === "success",
                             errors: result.errors
                                 ? result.errors.map(function (r) {
-                                      return {
-                                          field: r.field,
-                                          path: r.path,
-                                          title: r.title,
-                                          details: r.detail,
-                                      };
-                                  })
+                                    return {
+                                        field: r.field,
+                                        path: r.path,
+                                        title: r.title,
+                                        details: r.detail,
+                                    };
+                                })
                                 : [],
                         };
                         console.log(validationDetails);
@@ -453,7 +453,7 @@ function maybeLocalstore() {
         );
     }
 
-    function renderFinished() {}
+    function renderFinished() { }
 
     let previousEvents = [];
 

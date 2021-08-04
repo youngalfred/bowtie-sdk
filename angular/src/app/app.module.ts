@@ -8,6 +8,7 @@ import { LabelComponent } from './label/label.component';
 import { FieldGroupComponent } from './field-group/field-group.component';
 import { CheckboxFieldComponent } from './checkbox-field/checkbox-field.component';
 import { HttpClientModule } from '@angular/common/http';
+import { RadioFieldComponent } from './radio-field/radio-field.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -15,7 +16,8 @@ import { HttpClientModule } from '@angular/common/http';
     SelectFieldComponent,
     LabelComponent,
     FieldGroupComponent,
-    CheckboxFieldComponent
+    CheckboxFieldComponent,
+    RadioFieldComponent
   ],
   imports: [
     BrowserModule,

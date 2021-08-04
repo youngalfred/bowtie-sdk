@@ -1,3 +1,4 @@
-<select [id]="field.id" [name]="field.id" [class]="classes" (change)="onChangeInternal($event)">
+<select [id]="field.id" [name]="field.id" [class]="field.classes" [attr.data-automation-id]="field.testId"
+    (change)="onChangeInternal($event)">
     <option *ngFor="let o of options" [selected]="o.name === field.value" [value]="o.name">{{o.label}}</option>
 </select>

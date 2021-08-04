@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services';
-import { Portfolio, FieldType, InputFieldType } from "@youngalfred/bowtie-sdk";
-import { FieldGroup } from 'src/types';
+import { Portfolio, FieldType, InputFieldType, FieldGroup } from "@youngalfred/bowtie-sdk";
+import { AppFieldGroup, GroupOrField } from 'src/types';
+import { makeTestId } from 'src/utilities/groupModifiers';
+import { combineClasses } from './shared/fields';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +16,7 @@ export class AppComponent implements OnInit {
 
   public portfolio: Portfolio;
   public invalidFieldsAreHighlighted: boolean = false;
+  public isPortolioSubmitted: boolean = false;
 
   // These objects can be customized for your own purposes 
   // to update the portfolio within the constructor 
@@ -58,7 +61,7 @@ export class AppComponent implements OnInit {
 
   // Retrieve the localstorage application, 
   // which is possibly non-existent
-  maybeLocalstore() {
+  maybeLocalstore = () => {
     try {
       const application = window.sessionStorage.getItem("young_alfred");
       return JSON.parse(application ? application : "{}");
@@ -70,46 +73,63 @@ export class AppComponent implements OnInit {
 
   // When the destination field components call updateField() with a new value,
   // the UI re-renders with the updated portfolio
-  updateField(fieldname = "") {
-    const context = this;
-    return function (value = "") {
-      const field = context.portfolio.find(fieldname) as InputFieldType;
-      if (field && field.value !== value) {
-        context.portfolio.set(field, value);
-        window.sessionStorage.setItem("young_alfred", JSON.stringify(context.portfolio.application));
-      }
+  updateField = (fieldname = "") => (value = "") => {
+    const field = this.portfolio.find(fieldname) as InputFieldType;
+    if (field && field.value !== value) {
+      this.portfolio.set(field, value);
+      window.sessionStorage.setItem("young_alfred", JSON.stringify(this.portfolio.application));
     }
   };
 
-  propsReducer() {
-    const context = this;
-    return function (acc: [], child: FieldType & { children?: [] }): any {
-      // Do not render prefilled or hidden fields
-      if (child.kind === "hidden") {
-        return acc;
-      }
+  propsReducer = (acc: GroupOrField[], child: FieldType): GroupOrField[] => {
+    // Do not render prefilled or hidden fields
+    if (child.kind === "hidden") {
+      return acc;
+    }
 
-      const { kind = "", children = [], ...groupRest } = child;
-      // the multigroup/fieldgroup's children need an onChange event handler
-      if (["multigroup", "fieldgroup"].includes(kind)) {
-        return [...acc, { kind, ...groupRest, children: children.reduce(context.propsReducer(), []) }];
+    const { kind = "", children = [], ...groupRest } = child as FieldGroup;
+    // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
+    if (["multigroup", "fieldgroup"].includes(kind)) {
+      return [...acc,
+      {
+        ...groupRest,
+        kind,
+        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
+        children: children.reduce(this.propsReducer, [])
+      }];
+    }
+
+    const { id = "", ...rest } = child as InputFieldType;
+    return [
+      ...acc,
+      {
+        ...rest,
+        id,
+        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
+        testId: makeTestId(id),
+        onChange: this.updateField(id)
       }
-      const { id = "", ...rest } = child;
-      return [...acc, { id, placeholder: "", ...rest, onChange: context.updateField(id) }];
-    };
+    ];
   };
 
   // Filter out any questions that shouldn't be rendered
   // and add event handlers to the individual fields
-  makeFieldGroups(portfolio: Portfolio) {
-    return portfolio.view.reduce((acc: FieldGroup[], fg: any) => {
-      // Filter out (controllably) hidden fieldgroups
+  makeFieldGroups = (portfolio: Portfolio) => {
+    return portfolio.view.reduce((acc: AppFieldGroup[], fg: FieldGroup): AppFieldGroup[] => {
+      // Filter out any fieldgroups you wish to hide/prefill
       if (this.hiddenFieldGroups.has(fg.id)) {
         return acc;
       }
 
-      return [...acc, { ...fg, children: fg.children.reduce(this.propsReducer(), []) }];
-    }, []);
+      return [
+        ...acc,
+        {
+          ...fg,
+          classes: combineClasses(fg, this.invalidFieldsAreHighlighted),
+          children: fg.children.reduce(this.propsReducer, [])
+        }
+      ];
+    }, [] as AppFieldGroup[]);
   };
 
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
@@ -127,7 +147,7 @@ export class AppComponent implements OnInit {
   // Once the portfolio has been completely filled out,
   // submit the application using your integration token below
   // OR your api key from the express server
-  submit() {
+  submit = () => {
     const token = new URLSearchParams(window.location.search).get("integration") || "";
     const data = this.portfolio.payload;
     const headers = {
@@ -136,6 +156,7 @@ export class AppComponent implements OnInit {
 
     this.httpService.submit(data, headers)
       .subscribe(resp => {
+        this.isPortolioSubmitted = true;
         console.log("Submit response: ", resp);
       }, err => {
         console.error(err);
@@ -144,6 +165,6 @@ export class AppComponent implements OnInit {
 
   // Necessary to maintain focus on text fields 
   // when typing
-  trackBy = (_: number, item: any) => item.id;
+  trackBy = (_: number, item: GroupOrField) => item.id;
 
 }

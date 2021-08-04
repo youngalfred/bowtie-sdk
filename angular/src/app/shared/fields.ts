@@ -1,19 +1,33 @@
-import { FieldType } from "@youngalfred/bowtie-sdk";
-import { Field } from "src/types";
+import { FieldGroup, FieldType } from "@youngalfred/bowtie-sdk";
+import { AppField } from "src/types";
 
-export const makeClasses = (field: Field | FieldType, highlightErrors = false) => {
-    const errorClass = highlightErrors && !field.valid?.valid ? ["invalid"] : [];
-    return [...(field.classes || []), ...errorClass].join(' ');
+// return true if at least one of the children is invalid
+const invalidChildReducer = (acc: boolean, child: FieldType) => {
+    if (acc) return true;
+
+    const { children = [] } = child as FieldGroup;
+    if (children.length) children.reduce(invalidChildReducer, acc);
+
+    return !child.valid.valid;
 };
 
-export const emptyField = {
+export const combineClasses = ({ id, valid, classes = [], ...rest }: FieldType, highlightErrors = false) => {
+    const { children = [] } = rest as FieldGroup;
+
+    const errorClass = highlightErrors && (
+        !valid?.valid || children.reduce(invalidChildReducer, false)
+    ) ? ["invalid"] : [];
+
+    return [...classes, ...errorClass].join(' ');
+};
+
+export const emptyField: AppField = {
     id: "",
-    classes: [],
+    classes: "",
     kind: "",
     value: "",
     label: "",
-    placeholder: "",    // A placeholder if the input has not been handled.
-    options: [],  // Options for enumerated / listed values.
-    onChange: (_: string) => { },  // The event handler.
-    onFocus: (_: boolean) => { } // The event handler
+    valid: { valid: false, msg: "This field should not be empty" },
+    options: [],
+    onChange: (_: string) => { },
 };
