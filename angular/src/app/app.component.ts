@@ -116,7 +116,7 @@ export class AppComponent implements OnInit {
   // and add event handlers to the individual fields
   makeFieldGroups = (portfolio: Portfolio) => {
     return portfolio.view.reduce((acc: AppFieldGroup[], fg: FieldGroup): AppFieldGroup[] => {
-      // Filter out any fieldgroups you wish to hide/prefill
+      // Filter out any fieldgroups you wish to hide
       if (this.hiddenFieldGroups.has(fg.id)) {
         return acc;
       }

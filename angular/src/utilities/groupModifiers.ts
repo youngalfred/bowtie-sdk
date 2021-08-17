@@ -12,14 +12,13 @@ export const uniqueFGs: Record<string, (fg: AppFieldGroup) => AppFieldGroup> = {
             const { options = [] } = field as Pick<SelectField, "options">;
             // Make radio buttons out of the select question's options
             return [...acc, ...options.map((option: OptionType, idx: number) => {
-                const radioId = `${field.id}.${idx + 1}`;
                 return {
                     ...field,
-                    id: radioId,
+                    id: `${field.id}.${option.name}`,
                     label: option.label,
                     kind: "radio",
                     options: [option],
-                    testId: makeTestId(radioId),
+                    testId: makeTestId(`${field.id}.${idx + 1}`),
                 };
             })];
         }, [] as AppField[])
