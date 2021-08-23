@@ -11,6 +11,7 @@ export class LabelComponent implements OnInit {
 
   @Input("label") label?: string = "";
   @Input("for") for?: string = "";
+  @Input("image") image?: string = "";
 
   ngOnInit(): void {
   }

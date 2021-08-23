@@ -1,0 +1,17 @@
+export const exterior: Record<string, string> = {
+    aluminum: "assets/exterior/aluminum.jpg",
+    asbestos: "assets/exterior/asbestos.jpg",
+    brickVeneer: "assets/exterior/brick.jpg",
+    cementFiber: "assets/exterior/cement-fiber.jpg",
+    clapboard: "assets/exterior/clipboard.jpg",
+    concreteBlock: "assets/exterior/concrete-block.jpg",
+    stucco: "assets/exterior/eifs.jpg",
+    log: "assets/exterior/log.jpg",
+    steelHardboard: "assets/exterior/steel.jpg",
+    solidBrickOrStone: "assets/exterior/stone-brick.jpg",
+    vinyl: "assets/exterior/vinyl.jpg",
+    woodShingle: "assets/exterior/wood-shingle.jpg",
+    woodBoards: "assets/exterior/woodboards.jpg",
+    glass: "assets/exterior/glass.jpg",
+    other: "assets/exterior/other.jpg",
+};
