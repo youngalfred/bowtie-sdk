@@ -1,0 +1,10 @@
+.image-box {
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+    align-items: center;
+    text-align: center;
+}
+img {
+    max-width: 100%;
+}

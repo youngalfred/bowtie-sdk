@@ -19,7 +19,7 @@ import { coverages } from "./coverages";
 export const DECORATORS: Record<string, Record<string, string>> = {
     "extra-coverages": coverages,
     valuables: additional_coverage,
-    constructionType: construction,
+    "construction-type": construction,
     occupants: family,
     "any-updates": updates,
     exteriorSiding: exterior,
