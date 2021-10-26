@@ -22,7 +22,7 @@ export class AppComponent implements OnInit {
   // to update the portfolio within the constructor 
   // (but are only used currently to prevent field groups and questions from being displayed)
   private hiddenFieldGroups: Set<string> = new Set([
-    "policy-type"
+    // "policy-type"
   ]);
   // Of course, you will receive the prefilledData data dynamically, 
   // instead of having it hard coded, but the principles for

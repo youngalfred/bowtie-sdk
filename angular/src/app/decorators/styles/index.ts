@@ -5,6 +5,7 @@ const classNames: Record<string, string[]> = {
     "construction-type": flexWrap,
     "valuables": flexWrap,
     "extras": flexWrap,
+    "any-updates": flexWrap,
     "pets": flexWrap,
     "extra-coverages": flexWrap,
 };

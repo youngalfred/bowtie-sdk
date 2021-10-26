@@ -24,7 +24,7 @@
         "@wdio/sync": "^7.7.3",
         "axios": "^0.21.1",
         "babel-loader": "^8.2.2",
-        "chromedriver": "^91.0.0",
+        "chromedriver": "^94.0.0",
         "express": "^4.17.1",
         "html-webpack-plugin": "^5.3.1",
         "rimraf": "^3.0.2",
@@ -33,6 +33,6 @@
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "@youngalfred/bowtie-sdk": "1.0.3"
+        "@youngalfred/bowtie-sdk": "1.0.4"
     }
 }
