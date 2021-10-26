@@ -259,7 +259,7 @@ function maybeLocalstore() {
     // field, and then mapping an event on a single option back to
     // node associated with the whole field.
 
-    function renderHouses(node) {
+    function renderRadioFieldGroup(node) {
         let innerHTML = "<h3>" + node.label + "</h3>";
         const field = node.children[0];
         const mid = m(field.id);
@@ -481,7 +481,7 @@ function maybeLocalstore() {
         // reaped by the Javascript VM.
 
         portfolio.view.forEach(function (node) {
-            const renderer = node.id === "house-type" ? renderHouses : renderFieldgroup;
+            const renderer = ["house-type", "construction-type"].includes(node.id) ? renderRadioFieldGroup : renderFieldgroup;
             const r = renderer(node);
             const invalid = node.valid.valid === false && highlightValidity ? " invalid" : "";
             innerHTML += `<div class="fieldset${invalid}" id="ya-fg-${m(node.id)}">${r.text}</div>`;

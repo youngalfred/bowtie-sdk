@@ -40,7 +40,7 @@ module.exports = {
         ["home-livingArea", "3200"],
         ["home-stories", "3"],
         ["home-bathrooms", "2.5"],
-        ["home-constructionType", "Frame With Less Than 10% Brick"],
+        ["home-constructionType-1", "Yes"],
         ["home-roof-roofMaterial", "Metal"],
         ["home-roof-roofMaterialType", "Tin"],
         ["home-roof-roofShape", "Flat"],
