@@ -1,50 +1,49 @@
 ![Language: Javascript](https://img.shields.io/badge/language-Javascript-green.svg)
-![JS Framework: Angular 12](https://img.shields.io/npm/v/@angular/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=dd0330)
 ![Topic: Web Development](https://img.shields.io/badge/topic-Web_Development-green.svg)
 ![Status: Beta](https://img.shields.io/badge/status-Beta-yellow.svg)
 
-# The Young Alfred Bowtie SDK: A Basic Angular Implementation Demo
+# The Young Alfred Bowtie SDK: A Vanilla JS Implementation Demo
 
-This repository contains two items:
-1. an Angular app, which implements a complete, functional, and interactive UI for the Young Alfred Bowtie SDK.
-2. a simple implementation of the forwarding server.
+This folder contains two items:
+1. a single Javascript file (`src/index.js`) implementing a complete, functional, and interactive UI for the Young
+Alfred Bowtie SDK.
+2. a simple implementation of the forwarding server (`server/server.js`).
 
 ## The implementation
 
-In the `./src` folder, you will find a complete Angular implementation of the
+In the `./src` folder, you will find a complete implementation of the
 application process. Because the form is highly dynamic, it is not a
 traditional HTML form, but instead a reactive system that maintains keys
-and values internally. With every significant button click, dropdown selection, and input keystroke,
-the application is automatically checked, validated, and updated.
+and values internally. With every significant interaction with the
+form-- every `click`, `blur`, or `tab`-- the application and the form
+are automatically checked, validated, and updated.
 
-The implementation consists of several components that generate the standard
-HTML input objects:
+The implementation consists of three functions that generate standard HTML
+input objects:
 
-- root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
-- parent component to all field groups (and individual fields) (`field-group.component`)
-- text box (`text-field.component`)
-- check box (`checkbox-field.component`)
-- select dropdown (`select-field.component`)
-- radio button (`radio-field.component`)
+- text box (`renderText`)
+- check box (`renderCheck`)
+- select dropdown (`renderSelect`)
 
 And two managerial functions:
 
-- the renderer for nested collections of application questions (`makeFieldGroups`)
-- the reducer that adds event handlers to each field object (`propsReducer`)
+- a handler for nested collections of application questions (`renderFieldgroup`)
+- a handler for the root of the application (`renderPortfolio`).
 
-Plus, `updateField`, which serves as a re-usable event handler.
+Plus the usual utility functions and event handlers. The code is
+heavily commented and should be straightforward to understand.
 
 ## The forwarding server
 
 As a Young Alfred partner, you should have acquired a Young Alfred
-API Key. The API Key is *private*, and should not be exposed to the
-web. The forwarding server included in this repository serves as a basic
+PartnerID. The PartnerID is *private*, and should not be exposed to the
+web. The forwarding server included in this repository includes a basic
 demonstration of how to receive the content from the Bowtie SDK and
 forward that content to the Young Alfred Bowtie API with your
-API Key.
+PartnerID, as well as providing several additional services.
 
 This instance of the forwarding server also includes a static file
-service for the built Angular implementation.
+service for the built implementation.
 
 ## Running the demonstration
 
@@ -75,7 +74,7 @@ include:
 
 ### Running the test
 
-First, run the Angular demonstration by following the directions above.
+First, run the Vanilla JS demonstration by following the directions above.
 Then, follow the instructions described in the [README.md](../README.md#running-the-test) of the project root's directory.
 
 ## LICENSE

@@ -2,11 +2,12 @@
 ![Topic: Web Development](https://img.shields.io/badge/topic-Web_Development-green.svg)
 ![Status: Beta](https://img.shields.io/badge/status-Beta-yellow.svg)
 
-# The Young Alfred Bowtie SDK: A Basic Implementation Demo
+# The Young Alfred Bowtie SDK: Basic Implementation Demos
 
-This repository contains two items: a single Javascript file
-implementing a complete, functional, and interactive UI for the Young
-Alfred Bowtie SDK, and a simple implementation of the forwarding server.
+This repository contains several Young Alfred Bowtie SDK demos
+that each implement the SDK using a different JavaScript framework
+(or no framework at all). For more information related to each
+framework's implementation, see the README.md within each JS framework's folder.
 
 The Bowtie SDK provides all the knowledge, validation, and organization
 necessary to guide a customer through the sometimes bewildering process
@@ -19,70 +20,31 @@ circumstances.
 
 The purpose of the Bowtie library is to grant you, as a Young Alfred
 partner, the ability to build the Bowtie process into your existing web
-application processes.  Together, we can enhance the services you
+application processes. Together, we can enhance the services you
 provide and create a complete, secure, and even fun experience out of
 the task of insuring the products you provide to your customers.
 
 *This repository* contains the most basic implementation of that
-process, written in pure Javascript without reference to frameworks or
-libraries.  It is intended as a starting point and a reference for your
+process. It is intended as a starting point and a reference for your
 developers.
 
-## The implementation
+## Running a demonstration
 
-In the `./src` folder, you will find a complete implementation of the
-application process.  Because the form is highly dynamic, it is not a
-traditional HTML form, but instead a reactive system that maintains keys
-and values internally.  With every significant interaction with the
-form-- every `click`, `blur`, or `tab`-- the application and the form
-are automatically checked, validated, and updated.
-
-The implementation consists of three function generating standard HTML
-input objects:
-
-- text box (`renderText`)
-- check box (`renderCheck`)
-- select dropdown (`renderSelect`)
-
-And two managerial functions:
-
-- a handler for nested collections of application questions (`renderFieldgroup`)
-- a handler for the root of the application (`renderPortfolio`).
-
-Plus the usual utility functions and event handlers.  The code is
-heavily commented and should be straightforward to understand.
-
-## The forwarding server
-
-As a Young Alfred partner, you should have acquired a Young Alfred
-PartnerID.  The PartnerID is *private*, and should not be exposed to the
-web.  The forwarding server included in this repository includes a basic
-demonstration of how to receive the content from the Bowtie SDK and
-forward that content to the Young Alfred Bowtie API with your
-PartnerID, as well as providing several additional services.
-
-This instance of the forwarding server also includes a static file
-service for the built implementation.
-
-## Running the demonstration
-
-This demonstration can be run on a single developer's machine and
+Each demonstration can be run on a single developer's machine and
 requires no special hardware or access.
 
-After unpacking this archive and running `npm install` to acquire all
-dependencies, open a new terminal session and run the following:
+After unpacking this archive, complete the following steps to run a demonstration:
+1. Choose a demonstration to run (ex: `cd angular/`)
+2. Run `npm install` to acquire all dependencies
+3. Open a new terminal session
+4. Set the BOWTIE_API_KEY environment variable: `export BOWTIE_API_KEY="<Your Bowtie API Key>"`
+5. Run `npm run server`
+6. Visit [http://localhost:3001/](http://localhost:3001/)
 
-``` shellsession
-$ export BOWTIE_API_KEY="<Your Bowtie API Key>"
-$ npm run server
-```
+*Note*: The BOWTIE_API_KEY environment variable is required and has no default.
 
-The BOWTIE_API_KEY environment variable is required and has no default.
-The running application will be available on your local machine at port
-3001: [http://localhost:3001/](http://localhost:3001/).
-
-The server is less than a hundred lines of well-commented Javascript,
-written to the [Express app server](https://expressjs.com/) framework.
+The server within each JS demonstration is less than a hundred lines of
+well-commented Javascript, written using the [Express app server](https://expressjs.com/) framework.
 Other environment variables which can alter the behavior of the server
 include:
 
@@ -94,11 +56,17 @@ include:
 ### Running the test
 
 The test portion of the demonstration does require you have a recent
-version of chrome installed.  The version listed in `package.json` is
-Chrome 91; you may have to adjust this and re-run `npm install` to get
+version of chrome installed. The version listed in `package.json` is
+Chrome 94; you may have to adjust this and re-run `npm install` to get
 the correct driver for your installed version of Chrome.
 
-Once you have that in correspondence, simply start the test:
+Once you have that in correspondence, enter the `tests/` directory:
+
+``` shellsession
+$ cd tests/
+```
+
+Then, simply start the test:
 
 ``` shellsession
 $ npm run test
