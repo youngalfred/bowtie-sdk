@@ -1,4 +1,6 @@
 export const construction: Record<string, string> = {
+    frame: "assets/construction/frame.png",
+    steelFrame: "assets/construction/steel-frame.png",
     frameLess10PercentBrick: "assets/construction/brick-10.jpg",
     n10to33BrickVeneer: "assets/construction/brick-33.jpg",
     n34to66BrickVeneer: "assets/construction/brick-66.jpg",
@@ -11,4 +13,6 @@ export const construction: Record<string, string> = {
     stuccoBlock: "assets/construction/stucco-over-block.jpg",
     logHome: "assets/construction/log.jpg",
     prefab: "assets/construction/pre-fab.jpg",
+    prefabManufactured: "assets/construction/pre-fab-manufactured.jpg",
+    prefabModular: "assets/construction/pre-fab-modular.png",
 };

@@ -5,15 +5,12 @@ import { Component, OnInit, Input } from '@angular/core';
   templateUrl: './label.component.html',
   styleUrls: ['./label.component.css']
 })
-export class LabelComponent implements OnInit {
+export class LabelComponent {
 
   constructor() { }
 
   @Input("label") label?: string = "";
-  @Input("for") for?: string = "";
-  @Input("image") image?: string = "";
-
-  ngOnInit(): void {
-  }
+  @Input("for") fieldname?: string = "";
+  @Input("decoration") image: string = "";
 
 }

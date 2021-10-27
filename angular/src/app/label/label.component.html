@@ -1,15 +1,7 @@
-<style>
-    .image-box {
-        display: flex;
-        flex-direction: column;
-        max-width: max-content;
-        align-items: center;
-    }
-</style>
-
-<label [for]="for">
+<label [for]="fieldname">
     <div [ngClass]="{'image-box': !!image}">
         <img *ngIf="image" [src]="image" />
+        <info-hover [fieldname]="fieldname"></info-hover>
         <ng-content></ng-content>
     </div>
 </label>

@@ -2,9 +2,7 @@
 
 # dependencies
 /node_modules
-/angular/node_modules
-/vanilla-js/node_modules
-/vanilla-js/build
+/build
 /.pnp
 .pnp.js
 

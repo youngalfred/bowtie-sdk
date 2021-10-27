@@ -1,0 +1,22 @@
+.question {
+    padding: 15px 10px;
+    margin-bottom: .5em;
+}
+
+.inner-fg {
+    box-shadow: 0 0 5px #e1e1e1;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: burlywood;
+}
+
+.invalid-msg-container {
+    margin-top: 5px;
+}
+
+.invalid-msg {
+    background-color: #f7cd29;
+    border-radius: 4px;
+    padding: 5px;
+}

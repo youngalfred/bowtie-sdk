@@ -1,17 +1,9 @@
-<style>
-  .fg {
-    box-shadow: 0 0 5px #1e1e1e;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-  }
-</style>
-
 <div>
-  <div class="fg" *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [class]="fg.classes"
+  <div class="fg" *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [class]="fg.classes.includes('invalid') ? 'invalid' : ''"
     [id]="fg.id">
     <h3>{{fg.label}}</h3>
-    <field-group [fg]="fg"></field-group>
+    <info-hover [fieldname]="fg.id"></info-hover>
+    <field-group [fg]="fg" [class]="fg.classes"></field-group>
   </div>
   <div class="flex">
     <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true;">Highlight Invalid Fields</button>

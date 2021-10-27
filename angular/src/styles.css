@@ -1,7 +1,29 @@
+.fg {
+    box-shadow: 0 0 5px #1e1e1e;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+  }
+  
 .invalid {
     outline: 2px solid red;
 }
 
 .flex {
     display: flex;
+}
+
+.flex-wrap {
+    display: flex;
+    flex-wrap: wrap;
+        
+}
+
+.flex-wrap > * {
+    max-width: 25%;
+}
+
+.question-no-padding {
+    padding: 0;
+    margin: 5px;
 }
