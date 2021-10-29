@@ -41,4 +41,8 @@ export class HttpService {
     getPortfolioStatus(portfolioId: string, integrationToken: string) {
         return this.http.get(`${this.urlBase}/portfolio/status?integration=${integrationToken}&id=${portfolioId}`)
     }
+
+    getPortfolio(portfolioId: string, integrationToken: string) {
+        return this.http.get(`${this.urlBase}/portfolio/${portfolioId}?integration=${integrationToken}`)
+    }
 }

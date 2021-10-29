@@ -123,6 +123,30 @@ app.get("/portfolio/status", verifyIntegrationToken, (req, res) => {
     }
 });
 
+app.get("/portfolio/:id", verifyIntegrationToken, (req, res) => {
+    const portfolioId = req.params.id;
+    console.log("portfolioId", portfolioId);
+    if (portfolioId === undefined) {
+        res.status(400).json({ message: "Portfolio id was not provided" });
+    } else {
+        const { partnerId, integrationId } = res.locals.tokenData;
+        axios.get(`https://tlano-internal-api.dev-youngalfred.com/v1/portfolio/${portfolioId}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-integration-id": integrationId,
+                    "x-partner-id": partnerId,
+                },
+            })
+            .then((result) => {
+                res.status(200).json(result.data);
+            })
+            .catch((error) => {
+                console.log("Error: ", error);
+                res.status(500).json({ message: "Internal server error." });
+            });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Bowtie proxy server listening at http://localhost:${PORT}`);
     if (process.env.NODE_ENV) {

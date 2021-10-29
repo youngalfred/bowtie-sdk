@@ -148,8 +148,7 @@ export class AppComponent implements OnInit {
   }
 
   // Once the portfolio has been completely filled out,
-  // submit the application using your integration token below
-  // OR your api key from the express server
+  // submit the application using your api key from the express server
   submit = () => {
     const data = this.portfolio.payload;
     const headers = {
@@ -171,7 +170,14 @@ export class AppComponent implements OnInit {
       .subscribe(resp => {
         console.log(resp);
       }, err => {
-        console.error("Couldn't get portfolio response", err);
+        console.error("Couldn't get portfolio status", err);
+      });
+
+      this.httpService.getPortfolio(this.portfolioId, this.token)
+      .subscribe(resp => {
+        console.log(resp);
+      }, err => {
+        console.error("Couldn't get portfolio object", err);
       });
   }
 
