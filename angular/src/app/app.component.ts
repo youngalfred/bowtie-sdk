@@ -4,7 +4,6 @@ import { Portfolio, FieldType, InputFieldType, FieldGroup } from "@youngalfred/b
 import { AppFieldGroup, GroupOrField } from 'src/types';
 import { makeTestId } from 'src/utilities/groupModifiers';
 import { combineClasses } from './shared/fields';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -17,6 +16,8 @@ export class AppComponent implements OnInit {
   public portfolio: Portfolio;
   public invalidFieldsAreHighlighted: boolean = false;
   public isPortolioSubmitted: boolean = false;
+  public portfolioId: string = "";
+  private token: string = "";
 
   // These objects can be customized for your own purposes 
   // to update the portfolio within the constructor 
@@ -57,13 +58,15 @@ export class AppComponent implements OnInit {
     "home.numberOfMortgages": "n1",
   };
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.token = new URLSearchParams(window.location.search).get("integration") || "";
+  }
 
   // Retrieve the localstorage application, 
   // which is possibly non-existent
   maybeLocalstore = () => {
     try {
-      const application = window.sessionStorage.getItem("young_alfred");
+      const application = window.localStorage.getItem("young_alfred");
       return JSON.parse(application ? application : "{}");
     } catch (e) {
       console.log(e);
@@ -77,7 +80,7 @@ export class AppComponent implements OnInit {
     const field = this.portfolio.find(fieldname) as InputFieldType;
     if (field && field.value !== value) {
       this.portfolio.set(field, value);
-      window.sessionStorage.setItem("young_alfred", JSON.stringify(this.portfolio.application));
+      window.localStorage.setItem("young_alfred", JSON.stringify(this.portfolio.application));
     }
   };
 
@@ -148,18 +151,27 @@ export class AppComponent implements OnInit {
   // submit the application using your integration token below
   // OR your api key from the express server
   submit = () => {
-    const token = new URLSearchParams(window.location.search).get("integration") || "";
     const data = this.portfolio.payload;
     const headers = {
-      "x-integration-token": token,
+      "x-integration-token": this.token,
     };
 
     this.httpService.submit(data, headers)
       .subscribe(resp => {
         this.isPortolioSubmitted = true;
         console.log("Submit response: ", resp);
+        this.portfolioId = resp.portfolioId;
       }, err => {
         console.error(err);
+      });
+  }
+
+  getPortfolioStatus() {
+    this.httpService.getPortfolioStatus(this.portfolioId, this.token)
+      .subscribe(resp => {
+        console.log(resp);
+      }, err => {
+        console.error("Couldn't get portfolio response", err);
       });
   }
 

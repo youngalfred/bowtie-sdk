@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const axios = require("axios");
 const cors = require("cors");
+const { verifyIntegrationToken } = require("./integrations");
 
 const angularOrigin = "http://localhost:4200";
 const corsOptions = {
@@ -17,14 +18,14 @@ const corsOptions = {
 // Change this to just api.younglalfred.com when you're ready.
 const BOWTIE_API_URL = process.env.BOWTIE_API_URL
     ? process.env.BOWTIE_API_URL
-    : "https://bowtie-api-sandbox.youngalfred.com";
+    : "https://tlano-api.dev-youngalfred.com";
 
 const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
-const api_key = process.env.BOWTIE_API_KEY;
-if (!api_key) {
-    console.log("You must pass your api key as an environment variable (BOWTIE_API_KEY) for the app to work as expected (unless you are using an integration token, in which case, you may remove this if clause).");
-    process.exit(-1);
-}
+// const api_key = process.env.BOWTIE_API_KEY;
+// if (!api_key) {
+//     console.log("You must pass your api key as an environment variable (BOWTIE_API_KEY) for the app to work as expected (unless you are using an integration token, in which case, you may remove this if clause).");
+//     process.exit(-1);
+// }
 
 const app = express();
 
@@ -59,15 +60,16 @@ app.use(express.static(STATIC_CONTENT));
    Bowtie API, using your private IDs.
 */
 
-app.post("/portfolio/submit", (req, res) => {
+app.post("/portfolio/submit", verifyIntegrationToken, (req, res) => {
     const requestData = req.body.data;
     console.log("Request:\n\n", JSON.stringify(req.body.data, null, 2));
+    const { partnerId, integrationId } = res.locals.tokenData;
 
-    axios
-        .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
+    axios.post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
             headers: {
                 "Content-Type": "application/json",
-                "x-api-key": api_key,
+                "x-partner-id": partnerId,
+                "x-integration-id": integrationId,
             },
         })
         .then((result) => {
@@ -97,16 +99,17 @@ app.post("/portfolio/submit", (req, res) => {
         });
 });
 
-app.get("/portfolio/status", (req, res) => {
+app.get("/portfolio/status", verifyIntegrationToken, (req, res) => {
     const portfolioId = req.query.id;
     if (portfolioId === undefined) {
         res.status(400).json({ message: "Portfolio id was not provided" });
     } else {
-        axios
-            .get(`${BOWTIE_API_URL}/v1/portfolio_status?portfolioId=${portfolioId}`, {
+        const { partnerId, integrationId } = res.locals.tokenData;
+        axios.get(`${BOWTIE_API_URL}/v1/portfolio_status?portfolioId=${portfolioId}`, {
                 headers: {
                     "Content-Type": "application/json",
-                    "x-api-key": api_key,
+                    "x-integration-id": integrationId,
+                    "x-partner-id": partnerId,
                 },
             })
             .then((result) => {

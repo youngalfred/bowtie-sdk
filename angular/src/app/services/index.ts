@@ -33,8 +33,12 @@ export class HttpService {
         const body = { data };
         const headers = this.makeHeaders(customHeaders);
 
-        return this.http.post(`${this.urlBase}/portfolio/submit`, body, {
+        return this.http.post(`${this.urlBase}/portfolio/submit?integration=${customHeaders["x-integration-token"]}`, body, {
             headers
         });
+    }
+
+    getPortfolioStatus(portfolioId: string, integrationToken: string) {
+        return this.http.get(`${this.urlBase}/portfolio/status?integration=${integrationToken}&id=${portfolioId}`)
     }
 }
