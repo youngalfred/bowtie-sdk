@@ -93,7 +93,7 @@ module.exports = {
         ["home-discounts-stormShutters", "Yes"],
         ["home-discounts-hailResistantRoof", "Yes"],
         ["home-protectionSystems-burglarAlarmSystemType", "Direct - Alerts Police Department"],
-        ["home-protectionSystems-fireAlarmSystemType", "Direct - Alerts Police Department"],
+        ["home-protectionSystems-fireAlarmSystemType", "Direct - Alerts Fire Department"],
         ["home-protectionSystems-smokeDetectorType", "Hardwired"],
         ["home-protectionSystems-sprinklerSystemCoverage", "Partial, 75%"],
         ["home-deck-deckArea", "1200"],
