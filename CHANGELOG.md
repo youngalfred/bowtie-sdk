@@ -1,3 +1,16 @@
+## 1.0.6 (December 6, 2021)
+
+* Update date validators to ensure they're in ISO-8660 format.
+* Update Wind Mitigation to correspond to API version 2021-10-25
+* Include Country field when sending address.
+* Added several insurers now included in Young Alfred.
+* Provide upload capability for insurance declarations.
+* Corrected state automobile coverage minimums.
+* Check minimum age of automobile insuree.
+* Drivers license is now optional
+* Ask for state of vehicle registration.
+* Added several accredited contractors to home builders table.
+
 ## 1.0.4 (October 26, 2021)
 
 * Now defaulting the Update Type to "partial" (for updates to water heater, heating, electrical, etc...)
