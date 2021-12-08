@@ -90,7 +90,7 @@ export class AppComponent implements OnInit {
       return acc;
     }
 
-    const { kind = "", children = [], ...groupRest } = child as FieldGroup;
+    const { kind, children = [], ...groupRest } = child as FieldGroup;
     // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
     if (["multigroup", "fieldgroup"].includes(kind)) {
       return [...acc,
@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
       }];
     }
 
-    const { id = "", ...rest } = child as InputFieldType;
+    const { id, ...rest } = child as InputFieldType;
     return [
       ...acc,
       {

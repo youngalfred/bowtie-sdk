@@ -17,13 +17,13 @@ export type OptionType = {
 };
 
 export type AppField = {
-    kind: string; // Essentially, the type of field (select, text, check, fieldgroup, multigroup)
+    kind: "text" | "select" | "check" | "file" | "hidden" | "multigroup" | "fieldgroup" | "radio";
     value: string; // The field's value
     classes: string; // A string of classes to assist the UI. Ex: phone number fields' classes => "input-phone ..."
     options?: OptionType[];  // Options for enumerated / listed values.
     onChange: (_: string) => void;  // The event handler.
-    testId?: string;
-} & Pick<FieldType, "valid" | "kind" | "id" | "label">;
+    testId: string;
+} & Pick<FieldType, "valid" | "id" | "label">;
 
 export type AppFieldGroup = {
     children: (AppFieldGroup | AppField)[];
