@@ -25,10 +25,11 @@ export const combineClasses = ({ id, valid, classes = [], ...rest }: FieldType, 
 export const emptyField: AppField = {
     id: "",
     classes: "",
-    kind: "",
+    kind: "text",
     value: "",
     label: "",
     valid: { valid: false, msg: "This field should not be empty" },
+    testId: "",
     options: [],
     onChange: (_: string) => { },
 };
