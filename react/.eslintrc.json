@@ -1,0 +1,94 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint", "react", "react-hooks", "eslint-plugin-import", "eslint-plugin-jsx-a11y", "prettier"],
+    "root": true,
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": ["plugin:@typescript-eslint/recommended", "plugin:react/recommended", "prettier"],
+    "parserOptions": {
+        "project": ["tsconfig.json"],
+        "ecmaVersion": 2020,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": {
+        "no-await-in-loop": "off",
+        "no-use-before-define": "off",
+        "no-nested-ternary": "off",
+        "@typescript-eslint/no-use-before-define": ["error"],
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "react/jsx-filename-extension": [
+            "warn",
+            {
+                "extensions": [".jsx", ".tsx", "ts", ".js"]
+            }
+        ],
+        "react/jsx-boolean-value": "warn",
+        "import/extensions": "off",
+        "react/prop-types": "off",
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn",
+        "react/no-unused-prop-types": "off",
+        "react/self-closing-comp": "off",
+        "import/prefer-default-export": "off",
+        "@typescript-eslint/ban-types": "warn",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "arrow-body-style": "warn",
+        "camelcase": "warn",
+        "dot-notation": "warn",
+        "eqeqeq": "warn",
+        "import/first": "warn",
+        "import/newline-after-import": "warn",
+        "import/no-extraneous-dependencies": "warn",
+        "import/order": "warn",
+        "jsx-a11y/alt-text": "warn",
+        "jsx-a11y/click-events-have-key-events": "warn",
+        "jsx-a11y/control-has-associated-label": "warn",
+        "jsx-a11y/interactive-supports-focus": "warn",
+        "jsx-a11y/no-noninteractive-element-interactions": "warn",
+        "jsx-a11y/no-redundant-roles": "warn",
+        "jsx-a11y/no-static-element-interactions": "warn",
+        "no-else-return": "warn",
+        "no-param-reassign": "warn",
+        "no-return-assign": "warn",
+        "no-sequences": "warn",
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": ["warn"],
+        "no-underscore-dangle": "warn",
+        "no-unneeded-ternary": "warn",
+        "object-shorthand": "warn",
+        "prefer-arrow-callback": "warn",
+        "prefer-const": "warn",
+        "prefer-destructuring": "warn",
+        "prefer-template": "warn",
+        "react-hooks/rules-of-hooks": "warn",
+        "react/button-has-type": "warn",
+        "react/destructuring-assignment": "warn",
+        "react/display-name": "warn",
+        "react/jsx-curly-brace-presence": "warn",
+        "react/jsx-key": "warn",
+        "react/jsx-no-target-blank": "warn",
+        "react/jsx-props-no-spreading": "warn",
+        "react/no-unescaped-entities": "warn",
+        "react/no-unknown-property": "warn",
+        "react/require-default-props": "warn"
+    },
+    "settings": {
+        "react": {
+            "version": "detect"
+        },
+        "import/resolver": {
+            "node": {
+                "extensions": [".js", ".jsx", ".ts", ".tsx"]
+            },
+            "typescript": {
+                "project": "./tsconfig.json"
+            }
+        }
+    }
+}
