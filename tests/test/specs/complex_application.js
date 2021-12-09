@@ -12,6 +12,12 @@ describe("Simple application form submission", () => {
 
         for (let line_item of application) {
             const reference_name = line_item[0];
+
+            if (reference_name === ":debug") {
+                browser.debug();
+                continue;
+            }
+
             const value = line_item[1];
             const el = body.$(`[data-automation-id="${reference_name}"]`);
             const tagname = (el.getTagName() || "").toLowerCase();

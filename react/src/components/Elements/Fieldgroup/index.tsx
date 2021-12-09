@@ -15,6 +15,7 @@ const Multigroup: React.FC<Props> = ({ node, update }) => (
 
 const renderers: { string: React.FC<Props> } = {
     hidden: (_node, _update) => null,
+    file: (_node, _update) => null,
     select: (node, update) => <Select node={node} update={update} key={`ya-field-${node.id}`} />,
     text: (node, update) => <Text node={node} update={update} key={`ya-field-${node.id}`} />,
     radio: (node, update) => <Radio node={node} update={update} key={`ya-field-${node.id}`} />,
@@ -30,7 +31,13 @@ export function Fieldgroup({ node, update }: Props): React.ReactNode {
     return (
         <label>
             {node.label && <h3>{HtmlReactParser(node.label)}</h3>}
-            {node.children.map((child: FieldType) => renderers[intercept(child)](child, update))}
+            {node.children.map((child: FieldType) => {
+                try {
+                    return renderers[intercept(child)](child, update);
+                } catch (e) {
+                    console.log(e, child);
+                }
+            })}
         </label>
     );
 }

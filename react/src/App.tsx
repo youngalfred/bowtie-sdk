@@ -32,7 +32,7 @@ const App: React.FC = () => {
             <form>
                 <Layout nodes={state.application.view} update={update} />
                 {state.application.valid ? (
-                    <SubmitButton application={application} />
+                    <SubmitButton application={state.application} />
                 ) : (
                     <HighlightToggle value={highlighting} toggle={toggleHighlighting} />
                 )}

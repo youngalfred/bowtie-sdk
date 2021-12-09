@@ -9,6 +9,7 @@ export const SubmitButton: React.FC<Props> = ({ application }) => {
     const portfolioId = React.useRef("");
     const setSubmit = () => setSubmitted((old) => true);
     const setComplete = () => setCompleted((old) => true);
+    const payload = application.payload;
 
     React.useEffect(() => {
         if (completed) {
@@ -18,13 +19,14 @@ export const SubmitButton: React.FC<Props> = ({ application }) => {
         const submit = async () => {
             const response = await fetch("/portfolio/submit", {
                 method: "POST",
-                body: JSON.stringify({ data: portfolio.payload }),
+                body: JSON.stringify({ data: payload }),
                 headers: {
                     "Content-Type": "application/json",
                 },
             });
 
             const result = await response.json();
+            console.log(result);
             portfolioId.current = result.portfolioId;
             const validationDetails = {
                 valid: result.kind === "success",
@@ -41,13 +43,17 @@ export const SubmitButton: React.FC<Props> = ({ application }) => {
             setComplete();
         };
         submit();
-    }, [submitted, completed]);
+    }, [submitted, completed, payload]);
 
-    if (submitted) {
-        return <h3>Your application has been successfully submitted.</h3>;
+    if (completed) {
+        return <h3 id="success-message">Your application has successfully been sent</h3>;
     }
 
-    return <button onChange={setSubmit}>Submit Application</button>;
+    return (
+        <button type="button" onChange={setSubmit} id="ya-submit-button">
+            Submit Application
+        </button>
+    );
 };
 
 export default SubmitButton;
