@@ -15,6 +15,7 @@ export class FieldGroupComponent implements OnChanges, OnInit {
   constructor() { }
 
   @Input("fg") parentFg: AppFieldGroup = emptyGroup;
+  @Input("highlightErrors") highlightErrors: boolean = false;
 
   fg: AppFieldGroup = this.parentFg;
   decoration: Record<string, string> = {};

@@ -3,7 +3,7 @@
     [id]="fg.id">
     <h3>{{fg.label}}</h3>
     <info-hover [fieldname]="fg.id"></info-hover>
-    <field-group [fg]="fg" [class]="fg.classes"></field-group>
+    <field-group [fg]="fg" [class]="fg.classes" [highlightErrors]="invalidFieldsAreHighlighted"></field-group>
   </div>
   <div class="flex">
     <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true;">Highlight Invalid Fields</button>
