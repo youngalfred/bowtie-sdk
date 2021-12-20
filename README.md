@@ -28,6 +28,9 @@ the task of insuring the products you provide to your customers.
 process. It is intended as a starting point and a reference for your
 developers.
 
+The examples in this repository are currently written to conform to
+the *Young Alfred API 1.2021-10-25*.
+
 ## Running a demonstration
 
 Each demonstration can be run on a single developer's machine and
