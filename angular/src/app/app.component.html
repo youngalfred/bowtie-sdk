@@ -1,4 +1,4 @@
-<div>
+<div id="container">
   <div class="fg" *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [class]="fg.classes.includes('invalid') ? 'invalid' : ''"
     [id]="fg.id">
     <h3>{{fg.label}}</h3>
