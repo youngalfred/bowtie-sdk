@@ -70,6 +70,7 @@ app.post("/portfolio/submit", verifyIntegrationToken, (req, res) => {
                 "Content-Type": "application/json",
                 "x-partner-id": partnerId,
                 "x-integration-id": integrationId,
+                "bowtie-api-version": req.headers["bowtie-api-version"] || "2021-11-05",
             },
         })
         .then((result) => {

@@ -2,9 +2,8 @@
 
 * Added itemized jewelry additional coverage questions to match API version 2021-11-05.
 * Added mixed dog breeds and multi-breed selection to match API version 2021-11-05 (multi-select fields expect values that look like: '{"option.label1": "option.value1", "option.label2": "option.value2", ...}').
+* Added "insure pet?" and "pet age?" follow-up questions to match API version 2021-11-05.
 * Added animal liability additional coverage option to match API version 2021-11-05.
-* Added "insure pet?" and "pet age?" follow-up questions to match API version 2021-11-05.
-* Added "insure pet?" and "pet age?" follow-up questions to match API version 2021-11-05.
 * Added several home insurers now included in Young Alfred to match API version 2021-11-05.
 * Added "none" option (for accredited home builders) to match API version 2021-11-05.
 * Added new default belongings value: `n2kGt`.
@@ -14,7 +13,7 @@
 ## 1.0.6 (December 6, 2021)
 
 * Update date validators to ensure they're in ISO-8660 format.
-* Update Wind Mitigation to correspond to API version 2021-10-25
+* Update Wind Mitigation to correspond to API version 2021-10-25.
 * Include Country field when sending address.
 * Added several insurers now included in Young Alfred.
 * Provide upload capability for insurance declarations (file fields expect values that look like: '{"file1.name": "fileId1", "file2.name": "fileId2", ...}'); fileIds are provided by the tlano api's `/v1/file` endpoint.

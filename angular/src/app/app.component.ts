@@ -153,6 +153,7 @@ export class AppComponent implements OnInit {
     const data = this.portfolio.payload;
     const headers = {
       "x-integration-token": this.token,
+      "bowtie-api-version": "2021-11-05",
     };
 
     this.httpService.submit(data, headers)

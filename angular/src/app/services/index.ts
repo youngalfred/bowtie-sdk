@@ -23,10 +23,7 @@ export class HttpService {
             ...customHeaders
         };
 
-        return Object.entries(combinedHeaders).reduce((http, [key, value]: [string, string | string[]]) => {
-            http.set(key, value);
-            return http;
-        }, new HttpHeaders());
+        return new HttpHeaders(combinedHeaders);
     }
 
     submit(data: Object, customHeaders: Record<string, string | string[]>): Observable<any> {
