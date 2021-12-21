@@ -63,11 +63,14 @@ app.post("/portfolio/submit", (req, res) => {
     const requestData = req.body.data;
     console.log("Request:\n\n", JSON.stringify(req.body.data, null, 2));
 
+    const { partnerId, integrationId } = res.locals.tokenData;
+
     axios
         .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
             headers: {
                 "Content-Type": "application/json",
                 "x-api-key": api_key,
+                "bowtie-api-version": req.headers["bowtie-api-version"] || "2021-11-05",
             },
         })
         .then((result) => {

@@ -17,6 +17,7 @@ export class AppComponent implements OnInit {
   public portfolio: Portfolio;
   public invalidFieldsAreHighlighted: boolean = false;
   public isPortolioSubmitted: boolean = false;
+  public portfolioId: string = "";
 
   // These objects can be customized for your own purposes 
   // to update the portfolio within the constructor 
@@ -152,6 +153,7 @@ export class AppComponent implements OnInit {
     const data = this.portfolio.payload;
     const headers = {
       "x-integration-token": token,
+      "bowtie-api-version": "2021-11-05",
     };
 
     this.httpService.submit(data, headers)

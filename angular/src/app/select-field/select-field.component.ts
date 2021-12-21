@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { onChange } from 'src/utilities';
+import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { onChange, onChangeJson } from 'src/utilities';
 import { AppField, OptionType } from '../../types';
 import { emptyField } from '../shared/fields';
 
@@ -8,9 +8,12 @@ import { emptyField } from '../shared/fields';
   templateUrl: './select-field.component.html',
   styleUrls: ['./select-field.component.css']
 })
-export class SelectFieldComponent implements OnInit {
+export class SelectFieldComponent implements OnInit, OnChanges {
 
   public options: OptionType[] = [];
+  public isMultipleSelect: boolean = false;
+  public parsedMultiValue: Record<string,string> = {};
+  public selectedValues: string[] = [];
   constructor() { }
 
   @Input("field") field: AppField = emptyField;
@@ -19,10 +22,37 @@ export class SelectFieldComponent implements OnInit {
     const options = this.field?.options || [];
     // Insert an empty option when an option is NOT pre-selected
     this.options = this.field.value ? options : [{ name: "", label: "" }, ...options];
+
+    this.isMultipleSelect = this.field.classes.includes("multi-select-dropdown");
+    this.adaptForMultiSelect();
+  }
+
+  ngOnChanges(_: SimpleChanges) {
+    this.adaptForMultiSelect();
+  }
+
+  private adaptForMultiSelect() {
+    if (this.isMultipleSelect) {
+      this.parsedMultiValue = JSON.parse(this.field.value) || {};
+      this.selectedValues = Object.keys(this.parsedMultiValue);
+    }
+  }
+
+  isSelected(o: OptionType): boolean {
+    return this.isMultipleSelect ? false : o.name === this.field.value;
+  }
+
+  remove(selectedOptionLabel: string): void {
+    const { [selectedOptionLabel]: removed, ...newValue } = this.parsedMultiValue;
+    this.field.onChange(JSON.stringify(newValue));
   }
 
   onChangeInternal(e: Event) {
-    onChange(e, this.field.onChange);
+    if (this.isMultipleSelect) {
+      onChangeJson(e, this.parsedMultiValue, this.field.onChange)
+    } else {
+      onChange(e, this.field.onChange);
+    }
   }
 
 }
