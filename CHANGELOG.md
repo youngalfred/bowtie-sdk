@@ -5,10 +5,11 @@
 * Added "insure pet?" and "pet age?" follow-up questions to match API version 2021-11-05.
 * Added animal liability additional coverage option to match API version 2021-11-05.
 * Added several home insurers now included in Young Alfred to match API version 2021-11-05.
-* Added "none" option (for accredited home builders) to match API version 2021-11-05.
+* Added "No" option (for accredited home builders) to match API version 2021-11-05.
 * Added new default belongings value: `n2kGt`.
-* Added more specific error messages to date fields.
+* Added more specific validation messages to date fields.
 * Fixed bugs related to deriving home residency and driver birthdate information from peer home portfolio (in home + auto portfolios).
+* Now throwing an error on `portfolio.submit()` when portfolio state is invalid. 
 
 ## 1.0.6 (December 6, 2021)
 
