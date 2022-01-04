@@ -10,6 +10,7 @@ import { CheckboxFieldComponent } from './checkbox-field/checkbox-field.componen
 import { HttpClientModule } from '@angular/common/http';
 import { RadioFieldComponent } from './radio-field/radio-field.component';
 import { InfoHoverComponent } from './info-hover/info-hover.component';
+import { FileFieldComponent } from './file-field/file-field.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,7 +20,8 @@ import { InfoHoverComponent } from './info-hover/info-hover.component';
     FieldGroupComponent,
     CheckboxFieldComponent,
     RadioFieldComponent,
-    InfoHoverComponent
+    InfoHoverComponent,
+    FileFieldComponent
   ],
   imports: [
     BrowserModule,

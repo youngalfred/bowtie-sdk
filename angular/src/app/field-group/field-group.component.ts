@@ -29,7 +29,7 @@ export class FieldGroupComponent implements OnChanges, OnInit {
   }
 
   getDecoration = (id: string): string => this.decoration[id.split(".").pop() || ""] as string || "";
-  isInputField = (kind: string): boolean => ["check", "text", "select", "radio"].includes(kind);
+  isInputField = (kind: string): boolean => ["check", "text", "select", "radio", "file"].includes(kind);
 
   // Necessary to maintain focus on text fields 
   // when typing

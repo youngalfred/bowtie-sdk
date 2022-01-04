@@ -1,0 +1,34 @@
+<div>
+    <div class="button-wrapper">
+        <button (click)="makeNewFileInput()">
+            Select Files
+        </button>
+    
+        <div *ngIf="selectedFiles.length">
+            <Button (click)="uploadFiles()" [disabled]="isUploadDisabled">
+                Upload
+            </Button>
+        </div>
+    </div>
+
+    <div class="files-container">
+        <div>
+            <h5>Selected files:</h5>
+            <div *ngFor="let file of selectedFiles">
+                {{file.name}}
+            </div>
+            
+            <h5 *ngIf="failedFiles.length">The following files failed to upload (please try again):</h5>
+            <div *ngFor="let file of failedFiles">
+                {{file.name}}
+            </div>
+        </div>
+        <div>
+            <h5>Successfully uploaded files:</h5>
+            <div *ngFor="let name of uploadedFiles">
+                {{name}}
+            </div>
+        </div>
+    </div>
+</div>
+
