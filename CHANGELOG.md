@@ -1,4 +1,4 @@
-## 1.0.7 (December 20, 2021)
+## 1.1.0 (January 11, 2022)
 
 * Added itemized additional coverage for jewelry items to match API version 2021-11-05.
 * Added mixed dog breeds and multi-breed selection to match API version 2021-11-05 (multi-select fields expect values that look like: '{"option.label1": "option.value1", "option.label2": "option.value2", ...}').
