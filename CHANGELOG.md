@@ -1,10 +1,10 @@
 ## 1.0.7 (December 20, 2021)
 
-* Added itemized jewelry additional coverage questions to match API version 2021-11-05.
+* Added itemized additional coverage for jewelry items to match API version 2021-11-05.
 * Added mixed dog breeds and multi-breed selection to match API version 2021-11-05 (multi-select fields expect values that look like: '{"option.label1": "option.value1", "option.label2": "option.value2", ...}').
-* Added "insure pet?" and "pet age?" follow-up questions to match API version 2021-11-05.
+* Added "insure pet?" and "pet age?" follow-up questions for all pets to match API version 2021-11-05.
 * Added animal liability additional coverage option to match API version 2021-11-05.
-* Added several home insurers now included in Young Alfred to match API version 2021-11-05.
+* Added four home insurers now included in Young Alfred to match API version 2021-11-05.
 * Added "No" option (for accredited home builders) to match API version 2021-11-05.
 * Added new default belongings value: `n2kGt`.
 * Added more specific validation messages to date fields.
