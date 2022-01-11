@@ -42,7 +42,8 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 /* The static resources to be served to your customer.  If it has been
    built correctly, the demo implementation's content will be

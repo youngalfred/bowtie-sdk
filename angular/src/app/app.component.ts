@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpService } from './services';
+import { HttpService } from './services/http';
 import { Portfolio, FieldType, InputFieldType, FieldGroup } from "@youngalfred/bowtie-sdk";
 import { AppFieldGroup, GroupOrField } from 'src/types';
 import { makeTestId } from 'src/utilities/groupModifiers';
 import { combineClasses } from './shared/fields';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,6 +17,7 @@ export class AppComponent implements OnInit {
   public invalidFieldsAreHighlighted: boolean = false;
   public isPortolioSubmitted: boolean = false;
   public portfolioId: string = "";
+  public httpHeaders: Record<string, string> = {};
 
   private hiddenFieldGroups: Set<string> = new Set([
     // "policy-type" // hide "policy-type" if you want to provide only home insurance 
@@ -26,34 +26,39 @@ export class AppComponent implements OnInit {
   // Provide your own dynamic data to prefill the
   // portfolio in the constructor OR ngOnInit()
   private prefilledFields: Record<string, string> = {
-    "start.policyType": "home",
-    "start.zipCode": "33020",
-    "start.city": "Seattle",
-    "start.state": "MA",
-    "start.firstName": "Alfred",
-    "start.lastName": "Butler",
-    "start.streetAddress": "123 Main Street",
-    "start.emailAddress": "alfred@youngalfred.com",
-    "home.hasOccupants._adults": "1",
-    "home.occupants.adults": "n1",
-    "home.email": "alfred@youngalfred.com",
-    "home.primaryPolicyHolder.birthDate": "1980-05-17",
-    "home.primaryPolicyHolder.gender": "male",
-    "home.primaryPolicyHolder.maritalStatus": "separated",
-    "home.primaryPolicyHolder.careerStatus": "employed",
-    "home.primaryPolicyHolder.occupation": "photographerOrPhotographyStudio",
-    "home.secondaryPolicyHolder": "yes",
-    "home.propertyType": "House",
-    "home.propertyStyle": "duplex",
-    "home.propertyUse.typeOfUse": "primary",
-    "home.propertyUse.isShortTermRental": "no",
-    "home.plan.requestedPolicyStart": "on",
-    "home.plan.requestedPolicyStartDate": "2021-08-10",
-    "home.dateOfPurchase": "1999-01-01",
-    "home.numberOfMortgages": "n1",
+    // "start.policyType": "home",
+    // "start.zipCode": "33020",
+    // "start.city": "Seattle",
+    // "start.state": "MA",
+    // "start.firstName": "Alfred",
+    // "start.lastName": "Butler",
+    // "start.streetAddress": "123 Main Street",
+    // "start.emailAddress": "alfred@youngalfred.com",
+    // "home.hasOccupants._adults": "1",
+    // "home.occupants.adults": "n1",
+    // "home.email": "alfred@youngalfred.com",
+    // "home.primaryPolicyHolder.birthDate": "1980-05-17",
+    // "home.primaryPolicyHolder.gender": "male",
+    // "home.primaryPolicyHolder.maritalStatus": "separated",
+    // "home.primaryPolicyHolder.careerStatus": "employed",
+    // "home.primaryPolicyHolder.occupation": "photographerOrPhotographyStudio",
+    // "home.secondaryPolicyHolder": "yes",
+    // "home.propertyType": "House",
+    // "home.propertyStyle": "duplex",
+    // "home.propertyUse.typeOfUse": "primary",
+    // "home.propertyUse.isShortTermRental": "no",
+    // "home.plan.requestedPolicyStart": "on",
+    // "home.plan.requestedPolicyStartDate": "2021-08-10",
+    // "home.dateOfPurchase": "1999-01-01",
+    // "home.numberOfMortgages": "n1",
   };
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.httpHeaders = {
+      "x-integration-token": new URLSearchParams(window.location.search).get("integration") || "",
+      "bowtie-api-version": "2021-11-05",
+    };
+  }
 
   // Retrieve the localstorage application, 
   // which may not exist
@@ -103,7 +108,11 @@ export class AppComponent implements OnInit {
         id,
         classes: combineClasses(child, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
-        onChange: this.updateField(id)
+        onChange: this.updateField(id),
+        ...rest.kind === "file"
+          ? {
+            uploadFiles: (files: File[]) => this.httpService.uploadFiles(files, this.httpHeaders)
+          } : {}
       }
     ];
   };
@@ -144,14 +153,9 @@ export class AppComponent implements OnInit {
   // submit the application using your integration token below
   // OR your api key from the express server
   submit = () => {
-    const token = new URLSearchParams(window.location.search).get("integration") || "";
     const data = this.portfolio.payload;
-    const headers = {
-      "x-integration-token": token,
-      "bowtie-api-version": "2021-11-05",
-    };
 
-    this.httpService.submit(data, headers)
+    this.httpService.submit(data, this.httpHeaders)
       .subscribe(resp => {
         this.isPortolioSubmitted = true;
         console.log("Submit response: ", resp);

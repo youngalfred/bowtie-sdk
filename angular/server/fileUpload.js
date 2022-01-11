@@ -42,7 +42,7 @@ const getFileData = (req) => {
     return (files)[0];
 };
 
-const uploadFile = (BOWTIE_API_URL, api_key) => async (files, headers /*, partnerId: string, integrationId: string */) => {
+const uploadFile = (BOWTIE_API_URL, api_key) => async (files, headers) => {
     const url = `${BOWTIE_API_URL}/v1/file`;
 
     try {
