@@ -88,11 +88,11 @@ function maybeLocalstore() {
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
-    function makeHandler(node) {
+    function makeHandler(node, eventValueExtractor = (event) => event.target.value) {
         function update(event, direction) {
             direction = direction ? direction : 0;
             event.preventDefault();
-            portfolio.set(node, event.target.value);
+            portfolio.set(node, eventValueExtractor(event));
             window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
 
             // Because the portfolio tree of questions may change on
@@ -144,11 +144,11 @@ function maybeLocalstore() {
     // is the HTML ID Attribute of the object that _will be_ attached
     // to the DOM during the draw phase of the render task.
 
-    function mapObjectEventToHandler(event, id, node) {
+    function mapObjectEventToHandler(event, id, node, eventValueExtractor) {
         return {
             event: event,
             id: id,
-            handler: makeHandler(node),
+            handler: makeHandler(node, eventValueExtractor),
         };
     }
 
@@ -196,6 +196,54 @@ function maybeLocalstore() {
         };
     }
 
+    // Render an <input type="file" multiple ... /> field to accept multiple file upload inputs.
+    // What's important to note here is that the value of a file field MUST be
+    // parsed and stringified (similar to the multi-select dropdowns) when rendering and setting a new value.
+    // You will call the bowtie-api's /v1/file endpoint with the binary file data and set the file field's value
+    // by adopting the following pattern: '{"file1 name":"objectId returned from the api", "file2 name":"objectId returned from the api"}`.
+    // This pattern will also make it easy to display which files have uploaded successfully to your customers.
+    function renderFile(node) {
+        const mid = m(node.id);
+        tabIndex++;
+        const fileField = FileField(node);
+        const input = `<button multiple id="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">Select files</button>`;
+
+        return [{
+            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
+            events: ["click"].map(function (event) {
+                return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
+                    const { value = "", options } = event.target;
+                    const label = Array.from(options).find((o) => o.selected)?.label;
+
+                    if (!label) {
+                        throw new Error("Developer error. Unable to find label of selected option.");
+                    }
+
+                    return JSON.stringify({...parsedMultiValue, [label]: value });
+                } : undefined);
+            }),
+        },
+        ...Object.entries(parsedMultiValue).map(([selectedLabel, selectedValue]) => {
+            const id = `${mid}.${selectedValue}.remove`;
+            return {
+                text: `<div id="${id}" data-automation-id="${id}" class="tag">
+                            <span>${selectedLabel}</span>
+                            <span class="remove-btn">x</span>
+                        </div>`,
+                events: ["click"].map(event => ({
+                    event,
+                    id,
+                    handler: function () {
+                        const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
+                        portfolio.set(node, JSON.stringify(newValue));
+                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                        setTimeout(renderPortfolio, 0);
+                    },
+                }))
+            };
+        })];
+    }
+
     // Render a <select> input object for enumerated fields.
 
     function renderSelect(node) {
@@ -221,6 +269,9 @@ function maybeLocalstore() {
             options.splice(0, 0, { name: "", label: "" });
         }
 
+        const isMultiSelect = node.classes.includes("multi-select-dropdown");
+        const parsedMultiValue = isMultiSelect ? JSON.parse(node.value) : {};
+
         // Draw (as strings) all the '<option>' objects, and join them
         // together into one long string, then assemble the input
         // object together.
@@ -233,12 +284,40 @@ function maybeLocalstore() {
             .join("\n");
         const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">${renderedOptions}</select>`;
 
-        return {
+        return [{
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node);
+                return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
+                    const { value = "", options } = event.target;
+                    const label = Array.from(options).find((o) => o.selected)?.label;
+
+                    if (!label) {
+                        throw new Error("Developer error. Unable to find label of selected option.");
+                    }
+
+                    return JSON.stringify({...parsedMultiValue, [label]: value });
+                } : undefined);
             }),
-        };
+        },
+        ...Object.entries(parsedMultiValue).map(([selectedLabel, selectedValue]) => {
+            const id = `${mid}.${selectedValue}.remove`;
+            return {
+                text: `<div id="${id}" data-automation-id="${id}" class="tag">
+                            <span>${selectedLabel}</span>
+                            <span class="remove-btn">x</span>
+                        </div>`,
+                events: ["click"].map(event => ({
+                    event,
+                    id,
+                    handler: function () {
+                        const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
+                        portfolio.set(node, JSON.stringify(newValue));
+                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                        setTimeout(renderPortfolio, 0);
+                    },
+                }))
+            };
+        })];
     }
 
     // This is an example of a custom fieldgroup: Types of Houses.
@@ -335,8 +414,12 @@ function maybeLocalstore() {
             switch (childnode.kind) {
                 case "hidden":
                     break;
+                case "file":
+                    renderFile(childnode)
+                        .forEach(element => addResult(element));
                 case "select":
-                    addResult(renderSelect(childnode));
+                    renderSelect(childnode)
+                        .forEach(element => addResult(element));
                     break;
                 case "text":
                     addResult(renderText(childnode));

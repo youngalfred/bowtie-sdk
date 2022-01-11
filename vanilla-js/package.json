@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "rimraf build/* && webpack --config webpack.config.js && cp -R images build/",
-        "server": "node server/server.js",
+        "server": "npm run build && node server/server.js",
         "test": "cd tests && npx wdio wdio.conf.js"
     },
     "repository": {

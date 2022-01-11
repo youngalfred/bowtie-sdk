@@ -4,6 +4,8 @@ const axios = require("axios");
 const cors = require("cors");
 const { verifyIntegrationToken } = require("./integrations");
 
+const FormData = require("form-data");
+const { uploadConfig, uploadFile: makeFileUploadFn, getFileData } = require("./fileUpload");
 const angularOrigin = "http://localhost:4200";
 const corsOptions = {
     origin: [angularOrigin],
@@ -11,8 +13,8 @@ const corsOptions = {
 };
 
 /* This configuration information should use the _testing_ integration
-   ID until you're ready to go live.  These IDs help to maintain the
-   integrity and safety of all transactions.
+ID until you're ready to go live.  These IDs help to maintain the
+integrity and safety of all transactions.
 */
 
 // Change this to just api.younglalfred.com when you're ready.
@@ -28,6 +30,7 @@ const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 300
 // }
 
 const app = express();
+const uploadFile = makeFileUploadFn(BOWTIE_API_URL, api_key);
 
 // For development purposes only
 if (process.env.NODE_ENV === 'local') {
@@ -59,6 +62,34 @@ app.use(express.static(STATIC_CONTENT));
    submits the form, your instance will forward the content to the 
    Bowtie API, using your private IDs.
 */
+app.post("/file", uploadConfig.any(), async (req, res) => {
+    let fileName, buffer;
+    try {
+        const { buffer: fileBuffer, originalname } = getFileData(req);
+        fileName = originalname;
+        buffer = fileBuffer;
+    } catch (err) {
+        return res.status(400).send({
+            message: "You must include a file to upload.",
+        });
+    }
+
+    const formData = new FormData();
+    formData.append("content", buffer);
+    formData.append("fileName", fileName);
+
+    try {
+        const result = await uploadFile(
+            formData,
+            formData.getHeaders(),
+        );
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        console.log("--File upload error above.")
+        return res.status(500).json({ message: "Unknown server error." });
+    }
+});
 
 app.post("/portfolio/submit", verifyIntegrationToken, (req, res) => {
     const requestData = req.body.data;

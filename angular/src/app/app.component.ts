@@ -19,17 +19,12 @@ export class AppComponent implements OnInit {
   public portfolioId: string = "";
   private token: string = "";
 
-  // These objects can be customized for your own purposes 
-  // to update the portfolio within the constructor 
-  // (but are only used currently to prevent field groups and questions from being displayed)
   private hiddenFieldGroups: Set<string> = new Set([
-    // "policy-type"
+    // "policy-type" // hide "policy-type" if you want to provide only home insurance 
   ]);
-  // Of course, you will receive the prefilledData data dynamically, 
-  // instead of having it hard coded, but the principles for
-  // prefilling the portofilio are the same:
-  // Use the prefilledFields data to update the portfolio in 
-  // the constructor OR ngOnInit()
+
+  // Provide your own dynamic data to prefill the
+  // portfolio in the constructor OR ngOnInit()
   private prefilledFields: Record<string, string> = {
     "start.policyType": "home",
     "start.zipCode": "33020",
@@ -63,7 +58,7 @@ export class AppComponent implements OnInit {
   }
 
   // Retrieve the localstorage application, 
-  // which is possibly non-existent
+  // which may not exist
   maybeLocalstore = () => {
     try {
       const application = window.localStorage.getItem("young_alfred");
