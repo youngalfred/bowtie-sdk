@@ -6,7 +6,7 @@ The 11-05 api release primarily includes changes to the pets section but also fe
 
 ### Added:
 * itemized additional coverage for jewelry items to match API version 2021-11-05.
-* mixed dog breeds and multi-breed selection to match API version 2021-11-05 (multi-select fields expect values that look like: '{"option.label1": "option.value1", "option.label2": "option.value2", ...}').
+* mixed dog breeds and multi-breed selection to match API version 2021-11-05 (multi-select fields expect values that look like: `'{"option.label1": "option.value1", "option.label2": "option.value2", ...}'`).
 * "insure pet?" and "pet age?" follow-up questions for all pets to match API version 2021-11-05.
 * animal liability additional coverage option to match API version 2021-11-05.
 * four home insurers now included in Young Alfred to match API version 2021-11-05.
@@ -20,7 +20,7 @@ The 11-05 api release primarily includes changes to the pets section but also fe
 
 ## 1.0.6 (December 6, 2021)
 ### Added:
-* file upload capability for insurance declarations (file fields expect values that look like: '{"file1.name": "fileId1", "file2.name": "fileId2", ...}'); fileIds are provided by the tlano api's `/v1/file` endpoint.
+* file upload capability for insurance declarations (file fields expect values that look like: `'{"file1.name": "fileId1", "file2.name": "fileId2", ...}'`); fileIds are provided by the tlano api's `/v1/file` endpoint.
 * question that asks in which state the vehicle is registered.
 * several home insurers now included in Young Alfred.
 * several accredited contractors to home builders table.
