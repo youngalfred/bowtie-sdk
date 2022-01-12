@@ -50,10 +50,12 @@ app.use(express.urlencoded({limit: '50mb'}));
    delivered as the "home page" of this server.  
 */
 
-const STATIC_CONTENT = process.env.BOWTIE_STATIC_CONTENT
-    ? process.env.BOWTIE_STATIC_CONTENT
-    : path.join(__dirname, "../dist/bowtie-sdk-angular-demo");
+const STATIC_CONTENT = process.env.BOWTIE_STATIC_CONTENT;
 
+if (!STATIC_CONTENT) {
+    console.log("You must set the BOWTIE_STATIC_CONTENT environment variable to serve a Bowtie UI Demo. You can easily serve a demo project by going to the root folder of one of the projects (angular/, vanilla-js/, etc...) and running: `npm run server`");
+    process.exit(-1);
+}
 app.use(express.static(STATIC_CONTENT));
 
 /* 
@@ -93,8 +95,6 @@ app.post("/file", uploadConfig.any(), async (req, res) => {
 app.post("/portfolio/submit", (req, res) => {
     const requestData = req.body.data;
     console.log("Request:\n\n", JSON.stringify(req.body.data, null, 2));
-
-    const { partnerId, integrationId } = res.locals.tokenData;
 
     axios
         .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {

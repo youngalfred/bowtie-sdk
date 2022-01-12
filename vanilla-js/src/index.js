@@ -31,6 +31,7 @@
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
 const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
+const FileField = require("./file-field");
 
 // Attempt to recover an item from the sessionStorage (the current
 // live browser tab or window _only_; this information will disappear
@@ -88,30 +89,35 @@ function maybeLocalstore() {
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
-    function makeHandler(node, eventValueExtractor = (event) => event.target.value) {
+    function makeHandler(node, eventValueExtractor = (event) => Promise.resolve(event.target.value)) {
         function update(event, direction) {
             direction = direction ? direction : 0;
             event.preventDefault();
-            portfolio.set(node, eventValueExtractor(event));
-            window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+            eventValueExtractor(event).then(value => {
+                portfolio.set(node, value);
+                window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
 
-            // Because the portfolio tree of questions may change on
-            // every update, requiring a re-render, the focus of the
-            // application must be managed manually.  Here, we store
-            // the information of the event to determine what object
-            // should be focused on next.  Because we could be adding
-            // new inputs, we only keep the ID of the current object
-            // and the direction of focus change, if any.
-            //
-            // If there is a relatedTarget, the user deliberately
-            // interacted with that target, and the focus must be
-            // moved there.
-
-            lastTabEvent =
-                event.relatedTarget === null || event.relatedTarget === undefined
-                    ? { target: event.target.id, direction: direction }
-                    : { target: event.relatedTarget.id, direction: 0 };
-            setTimeout(renderPortfolio, 0);
+                // Because the portfolio tree of questions may change on
+                // every update, requiring a re-render, the focus of the
+                // application must be managed manually.  Here, we store
+                // the information of the event to determine what object
+                // should be focused on next.  Because we could be adding
+                // new inputs, we only keep the ID of the current object
+                // and the direction of focus change, if any.
+                //
+                // If there is a relatedTarget, the user deliberately
+                // interacted with that target, and the focus must be
+                // moved there.
+    
+                lastTabEvent =
+                    event.relatedTarget === null || event.relatedTarget === undefined
+                        ? { target: event.target.id, direction: direction }
+                        : { target: event.relatedTarget.id, direction: 0 };
+                setTimeout(renderPortfolio, 0);
+            }).catch(_err => {
+                // Expections are thrown to intentionally avoid
+                // re-draws (aka to avoid calling renderPortfolio())
+            })
         }
 
         return function (event) {
@@ -204,44 +210,41 @@ function maybeLocalstore() {
     // This pattern will also make it easy to display which files have uploaded successfully to your customers.
     function renderFile(node) {
         const mid = m(node.id);
-        tabIndex++;
-        const fileField = FileField(node);
-        const input = `<button multiple id="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">Select files</button>`;
+        let fileField = new FileField();
+        const uploadId = `${mid}-upload-files`;
+        const selectFilesId = `${mid}-select-files`;
+        const parsedValue = JSON.parse(node.value);
+        const uploadedFiles = `<br>Successfully uploaded files<br>${Object.keys(parsedValue).map(fileName => `<span>${fileName}</span>`).join("<br>")}`;
 
-        return [{
-            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
-            events: ["click"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
-                    const { value = "", options } = event.target;
-                    const label = Array.from(options).find((o) => o.selected)?.label;
-
-                    if (!label) {
-                        throw new Error("Developer error. Unable to find label of selected option.");
-                    }
-
-                    return JSON.stringify({...parsedMultiValue, [label]: value });
-                } : undefined);
-            }),
-        },
-        ...Object.entries(parsedMultiValue).map(([selectedLabel, selectedValue]) => {
-            const id = `${mid}.${selectedValue}.remove`;
-            return {
-                text: `<div id="${id}" data-automation-id="${id}" class="tag">
-                            <span>${selectedLabel}</span>
-                            <span class="remove-btn">x</span>
-                        </div>`,
-                events: ["click"].map(event => ({
-                    event,
-                    id,
-                    handler: function () {
-                        const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
-                        portfolio.set(node, JSON.stringify(newValue));
-                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
-                        setTimeout(renderPortfolio, 0);
-                    },
-                }))
-            };
-        })];
+        return [
+            {
+                text: '<div class="question">' + maybeLabel(node) + uploadedFiles + "</div>",
+                events: []
+            },
+            {
+                text: `<button id="${selectFilesId}" tabindex="${++tabIndex}" data-automation-id="${selectFilesId}">Select files</button>`,
+                events: ["click"].map(function (event) {
+                    return mapObjectEventToHandler(event, selectFilesId, node, function() {
+                        fileField.makeNewFileInput();
+                        // Reject to prevent a re-draw, which would
+                        // cause fileField to lose track of all selected files
+                        return Promise.reject("");
+                    });
+                }),
+            },
+            {
+                text: `<button id="${uploadId}" tabindex="${++tabIndex}" data-automation-id="${uploadId}">Upload files</button>`,
+                events: ["click"].map(function (event) {
+                    return mapObjectEventToHandler(event, uploadId, node, function () {
+                        return new Promise((resolve, _reject) => {
+                            fileField.uploadFiles().then(successfullyUploadedFiles => {
+                                resolve(JSON.stringify({...parsedValue, ...successfullyUploadedFiles}));
+                            });
+                        });
+                    });
+                }),
+            },
+        ];
     }
 
     // Render a <select> input object for enumerated fields.
@@ -288,14 +291,16 @@ function maybeLocalstore() {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
                 return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
-                    const { value = "", options } = event.target;
-                    const label = Array.from(options).find((o) => o.selected)?.label;
+                    return new Promise((resolve, _reject) => {
+                        const { value = "", options } = event.target;
+                        const label = Array.from(options).find((o) => o.selected)?.label;
 
-                    if (!label) {
-                        throw new Error("Developer error. Unable to find label of selected option.");
-                    }
-
-                    return JSON.stringify({...parsedMultiValue, [label]: value });
+                        if (!label) {
+                            throw new Error("Developer error. Unable to find label of selected option.");
+                        }
+    
+                        resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
+                    })
                 } : undefined);
             }),
         },
@@ -417,6 +422,7 @@ function maybeLocalstore() {
                 case "file":
                     renderFile(childnode)
                         .forEach(element => addResult(element));
+                    break;
                 case "select":
                     renderSelect(childnode)
                         .forEach(element => addResult(element));
