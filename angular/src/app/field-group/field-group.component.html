@@ -7,7 +7,7 @@
     </div>
 
     <field-label *ngIf="field.kind === 'fieldgroup'" [for]="field.id" [decoration]="getDecoration(field.id)">{{field.label}}
-        <field-group [fg]="field" class="flex" [highlightErrors]="highlightErrors">
+        <field-group [fg]="field" [highlightErrors]="highlightErrors">
         </field-group>
     </field-label>
 
