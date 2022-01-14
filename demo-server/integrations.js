@@ -24,8 +24,7 @@ const getIntegrationToken = async (token) => {
 };
 
 const verifyIntegrationToken = async (req, res, next) => {
-    const { integration: token } = req.query;
-    console.log( "header token", token);
+    const token = req.header("x-integration-token");
     const verifiedToken = await getIntegrationToken(token);
 
     if (verifiedToken) {

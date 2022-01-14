@@ -1,7 +1,8 @@
-import { Component, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { AppField } from 'src/types';
+import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
+import { AppField, FileField } from 'src/types';
 import { emptyField } from '../shared/fields';
 
+export const defaultFileUploader = (_files: File[]) => Promise.resolve([]);
 export const MAX_FILE_SIZE_BYTES = 10_485_759; // 10 MB - 1 Byte
 export const validFileTypesRecord = {
     pdf: "application/pdf",
@@ -17,32 +18,6 @@ export const validFileTypesRecord = {
 };
 
 export const validFileTypes = Object.values(validFileTypesRecord);
-export const submitFiles = async (files: File[], integrationToken: string) => {
-    const results: { fileName: string; objectId: string }[] = [];
-
-    for (let i = 0; i < files.length; i += 1) {
-        const formData = new FormData();
-        formData.append("file", files[i] as Blob);
-        const response = await fetch("/file", {
-            method: "POST",
-            body: formData,
-            headers: {
-                "x-integration-token": integrationToken,
-            },
-        });
-
-        try {
-            const { objectId } = await response.json();
-            if (response.ok && objectId) {
-                results.push({ fileName: files[i]?.name || "", objectId });
-            }
-        } catch (error) {
-            // Do nothing. Already tracking which files were uploaded successfully.
-        }
-    }
-
-    return results;
-};
 
 export enum InvalidFileReason {
     Unsupported,
@@ -79,8 +54,8 @@ type UploadResult = Pick<InvalidFile, "name"> & {
 export class FileFieldComponent implements OnChanges {
 
   constructor() { }
-  @Input("field") field: AppField = emptyField;
-  
+  @Input("field") field: FileField = { ...emptyField, uploadFiles: defaultFileUploader };
+
   invalidFiles: InvalidFile[] = [];
   failedFiles: UploadResult[] = [];
   uploadedFiles: string[] = [];
@@ -109,7 +84,7 @@ export class FileFieldComponent implements OnChanges {
 
   uploadFiles = async () => {
       this.isUploadDisabled = true;
-      const results = await submitFiles(this.selectedFiles, "integrationToken");
+      const results = await this.field.uploadFiles(this.selectedFiles);
 
       this.selectedFiles = [];
       // Indicate to user which files failed the upload

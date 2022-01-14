@@ -25,6 +25,10 @@ export type AppField = {
     testId: string;
 } & Pick<FieldType, "valid" | "id" | "label">;
 
+export type FileField = {
+    uploadFiles: (files: File[]) => Promise<{fileName: string; objectId: string}[]>;
+} & AppField;
+
 export type AppFieldGroup = {
     children: (AppFieldGroup | AppField)[];
 } & Pick<AppField, "kind" | "valid" | "id" | "label" | "classes">;

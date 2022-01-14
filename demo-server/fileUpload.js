@@ -42,14 +42,15 @@ const getFileData = (req) => {
     return (files)[0];
 };
 
-const uploadFile = (BOWTIE_API_URL, api_key) => async (files, headers /*, partnerId: string, integrationId: string */) => {
+const uploadFile = (BOWTIE_API_URL) => async (files, headers, partnerId, integrationId) => {
     const url = `${BOWTIE_API_URL}/v1/file`;
 
     try {
         const { data } = await axios.post(url, files, {
             headers: {
                 ...headers,
-                "x-api-key": api_key,
+                "x-partner-id": partnerId,
+                "x-integration-id": integrationId,
             },
         });
 

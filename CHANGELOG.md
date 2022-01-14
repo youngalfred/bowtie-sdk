@@ -1,8 +1,10 @@
 ## 1.1.0 (January 11, 2022)
-The 11-05 api release primarily includes changes to the pets section but also features four new home insurers, jewelry itemized additional coverage, and an option to say the home was not built by an accredited builder. Consider the following sdk changes as your GUI product may also require updates to accommodate the api's 11-05 release:
+The 11-05 API release primarily includes changes to the pets section but also features four new home insurers, jewelry itemized additional coverage, and an option to say the home was not built by an accredited builder. Consider the following SDK changes as your GUI product may also require updates to accommodate the API's 11-05 release:
 * the pets section now asks if customers would like to insure their pet(s) and requires the pet's age when customers choose to insure that pet.
 * Insurance applicants must clarify a dog's breed(s) through follow-up questions after claiming an "other breed" dog.
 * Itemized jewelry coverage becomes available only after the applicant claims jewelry belongings worth more than $2k and then requests additional coverage on jewelry.
+
+Also note that prior to version 1.1.0, the SDK incorrectly allowed invalid applications to be submitted via the `.submit()` method. This is no longer the case. You should always verify that an application is valid before calling `.submit()`.  Calling `.submit()` on an invalid application will now throw an exception.
 
 ### Added:
 * itemized additional coverage for jewelry items to match API version 2021-11-05.
@@ -14,13 +16,13 @@ The 11-05 api release primarily includes changes to the pets section but also fe
 * more specific validation messages to date fields.
 ### Changed:
 * belongings value fields (fur, computer equipment, jewelry, etc...) by not requiring value and defaulting to `n2kGt`.
-* `portfolio.submit()` to throw an error when portfolio state is invalid. 
+* `portfolio.submit()` to throw an exception when portfolio state is invalid. 
 ### Fixed:
 * bugs related to deriving home residency and driver birthdate information from peer home portfolio (in home + auto portfolios).
 
 ## 1.0.6 (December 6, 2021)
 ### Added:
-* file upload capability for insurance declarations (file fields expect values that look like: `'{"file1.name": "fileId1", "file2.name": "fileId2", ...}'`); fileIds are provided by the tlano api's `/v1/file` endpoint.
+* file upload capability for insurance declarations (file fields expect values that look like: `'{"file1.name": "fileId1", "file2.name": "fileId2", ...}'`); fileIds are provided by the tlano API's `/v1/file` endpoint.
 * question that asks in which state the vehicle is registered.
 * several home insurers now included in Young Alfred.
 * several accredited contractors to home builders table.

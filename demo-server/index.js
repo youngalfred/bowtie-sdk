@@ -23,14 +23,9 @@ const BOWTIE_API_URL = process.env.BOWTIE_API_URL
     : "https://tlano-api.dev-youngalfred.com";
 
 const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
-// const api_key = process.env.BOWTIE_API_KEY;
-// if (!api_key) {
-//     console.log("You must pass your api key as an environment variable (BOWTIE_API_KEY) for the app to work as expected (unless you are using an integration token, in which case, you may remove this if clause).");
-//     process.exit(-1);
-// }
 
 const app = express();
-const uploadFile = makeFileUploadFn(BOWTIE_API_URL, api_key);
+const uploadFile = makeFileUploadFn(BOWTIE_API_URL);
 
 // For development purposes only
 if (process.env.NODE_ENV === 'local') {
@@ -44,17 +39,20 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(express.json());
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({limit: '50mb'}));
 
 /* The static resources to be served to your customer.  If it has been
    built correctly, the demo implementation's content will be
    delivered as the "home page" of this server.  
 */
 
-const STATIC_CONTENT = process.env.BOWTIE_STATIC_CONTENT
-    ? process.env.BOWTIE_STATIC_CONTENT
-    : path.join(__dirname, "../dist/bowtie-sdk-angular-demo");
+const STATIC_CONTENT = process.env.BOWTIE_STATIC_CONTENT;
 
+if (!STATIC_CONTENT) {
+    console.log("You must set the BOWTIE_STATIC_CONTENT environment variable to serve a Bowtie UI Demo. You can easily serve a demo project by going to the root folder of one of the projects (angular/, vanilla-js/, etc...) and running: `npm run server`");
+    process.exit(-1);
+}
 app.use(express.static(STATIC_CONTENT));
 
 /* 
@@ -62,7 +60,7 @@ app.use(express.static(STATIC_CONTENT));
    submits the form, your instance will forward the content to the 
    Bowtie API, using your private IDs.
 */
-app.post("/file", uploadConfig.any(), async (req, res) => {
+app.post("/file", verifyIntegrationToken, uploadConfig.any(), async (req, res) => {
     let fileName, buffer;
     try {
         const { buffer: fileBuffer, originalname } = getFileData(req);
@@ -78,10 +76,14 @@ app.post("/file", uploadConfig.any(), async (req, res) => {
     formData.append("content", buffer);
     formData.append("fileName", fileName);
 
+    const { partnerId, integrationId } = res.locals.tokenData;
+
     try {
         const result = await uploadFile(
             formData,
             formData.getHeaders(),
+            partnerId,
+            integrationId,
         );
         return res.status(200).json(result);
     } catch (error) {

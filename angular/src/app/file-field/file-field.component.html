@@ -1,11 +1,11 @@
 <div>
     <div class="button-wrapper">
-        <button (click)="makeNewFileInput()">
+        <button (click)="makeNewFileInput()" [attr.data-automation-id]="field.testId + '-select-files'">
             Select Files
         </button>
     
         <div *ngIf="selectedFiles.length">
-            <Button (click)="uploadFiles()" [disabled]="isUploadDisabled">
+            <Button (click)="uploadFiles()" [disabled]="isUploadDisabled" [attr.data-automation-id]="field.testId + '-upload-files'">
                 Upload
             </Button>
         </div>
