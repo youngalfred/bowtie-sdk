@@ -1,7 +1,7 @@
 const application = require("../application").application;
 
 const config = {
-    host: "http://localhost:3001/",
+    host: "http://localhost:3002/",
 };
 
 describe("Simple application form submission", () => {

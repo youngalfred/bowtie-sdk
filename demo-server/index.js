@@ -8,8 +8,7 @@ const FormData = require("form-data");
 const { uploadConfig, uploadFile: makeFileUploadFn, getFileData } = require("./fileUpload");
 const angularOrigin = "http://localhost:4200";
 const corsOptions = {
-    origin: [angularOrigin],
-    credentials: true
+    origin: [angularOrigin]
 };
 
 /* This configuration information should use the _testing_ integration
@@ -22,15 +21,12 @@ const BOWTIE_API_URL = process.env.BOWTIE_API_URL
     ? process.env.BOWTIE_API_URL
     : "https://tlano-api.dev-youngalfred.com";
 
-const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3001;
+const PORT = process.env.BOWTIE_LOCAL_PORT ? process.env.BOWTIE_LOCAL_PORT : 3002;
 
 const app = express();
 const uploadFile = makeFileUploadFn(BOWTIE_API_URL);
 
-// For development purposes only
-if (process.env.NODE_ENV === 'local') {
-    app.use(cors(corsOptions));
-}
+app.use(cors(corsOptions));
 
 app.use(function (req, res, next) {
     var filename = path.basename(req.url);

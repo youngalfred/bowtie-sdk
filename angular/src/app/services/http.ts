@@ -12,8 +12,8 @@ export class HttpService {
     };
 
     // Uncomment during local development or else you'll get 404
-    // private urlBase = "http://localhost:3001";
-    private urlBase = "";
+    private urlBase = "http://localhost:3002";
+    // private urlBase = "";
 
     constructor(private http: HttpClient) { }
 
