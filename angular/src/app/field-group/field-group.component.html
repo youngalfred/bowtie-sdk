@@ -2,12 +2,12 @@
     *ngFor="let field of fg.children; index as i; trackBy: trackBy">
 
     <div *ngIf="field.kind === 'multigroup'">
-        <field-group *ngFor="let innerFg of field.children" [fg]="innerFg">
+        <field-group *ngFor="let innerFg of field.children" [fg]="innerFg" [highlightErrors]="highlightErrors">
         </field-group>
     </div>
 
     <field-label *ngIf="field.kind === 'fieldgroup'" [for]="field.id" [decoration]="getDecoration(field.id)">{{field.label}}
-        <field-group [fg]="field" class="flex">
+        <field-group [fg]="field" [highlightErrors]="highlightErrors">
         </field-group>
     </field-label>
 
@@ -16,6 +16,7 @@
         <text-field *ngIf="field.kind === 'text'" [field]="field"></text-field>
         <select-field *ngIf="field.kind === 'select'" [field]="field"></select-field>
         <radio-field *ngIf="field.kind === 'radio'" [field]="field"></radio-field>
+        <file-field *ngIf="field.kind === 'file'" [field]="field"></file-field>
     </field-label>
 
     <div *ngIf="highlightErrors && !field.valid.valid && field.valid.msg">

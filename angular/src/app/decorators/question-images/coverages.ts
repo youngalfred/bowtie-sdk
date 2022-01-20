@@ -6,4 +6,5 @@ export const coverages: Record<string, string> = {
     jewelry: "assets/coverages/jewelry.png",
     identityTheft: "assets/coverages/identify.png",
     personalInjury: "assets/coverages/injury.png",
+    animalLiability: "assets/coverages/animal.png",
 };

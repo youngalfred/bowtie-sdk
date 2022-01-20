@@ -20,7 +20,7 @@ const toRadioGroup = (fg: AppFieldGroup): AppFieldGroup => ({ // Transform the s
                 options: [option],
                 testId: makeTestId(`${field.id}.${idx + 1}`),
             };
-        })];
+        }) as AppField[]];
     }, [] as AppField[])
 });
 

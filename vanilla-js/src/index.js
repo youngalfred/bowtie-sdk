@@ -31,6 +31,7 @@
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
 const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
+const FileField = require("./file-field");
 
 // Attempt to recover an item from the sessionStorage (the current
 // live browser tab or window _only_; this information will disappear
@@ -88,30 +89,35 @@ function maybeLocalstore() {
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
-    function makeHandler(node) {
+    function makeHandler(node, eventValueExtractor = (event) => Promise.resolve(event.target.value)) {
         function update(event, direction) {
             direction = direction ? direction : 0;
             event.preventDefault();
-            portfolio.set(node, event.target.value);
-            window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+            eventValueExtractor(event).then(value => {
+                portfolio.set(node, value);
+                window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
 
-            // Because the portfolio tree of questions may change on
-            // every update, requiring a re-render, the focus of the
-            // application must be managed manually.  Here, we store
-            // the information of the event to determine what object
-            // should be focused on next.  Because we could be adding
-            // new inputs, we only keep the ID of the current object
-            // and the direction of focus change, if any.
-            //
-            // If there is a relatedTarget, the user deliberately
-            // interacted with that target, and the focus must be
-            // moved there.
-
-            lastTabEvent =
-                event.relatedTarget === null || event.relatedTarget === undefined
-                    ? { target: event.target.id, direction: direction }
-                    : { target: event.relatedTarget.id, direction: 0 };
-            setTimeout(renderPortfolio, 0);
+                // Because the portfolio tree of questions may change on
+                // every update, requiring a re-render, the focus of the
+                // application must be managed manually.  Here, we store
+                // the information of the event to determine what object
+                // should be focused on next.  Because we could be adding
+                // new inputs, we only keep the ID of the current object
+                // and the direction of focus change, if any.
+                //
+                // If there is a relatedTarget, the user deliberately
+                // interacted with that target, and the focus must be
+                // moved there.
+    
+                lastTabEvent =
+                    event.relatedTarget === null || event.relatedTarget === undefined
+                        ? { target: event.target.id, direction: direction }
+                        : { target: event.relatedTarget.id, direction: 0 };
+                setTimeout(renderPortfolio, 0);
+            }).catch(_err => {
+                // Expections are thrown to intentionally avoid
+                // re-draws (aka to avoid calling renderPortfolio())
+            })
         }
 
         return function (event) {
@@ -144,11 +150,11 @@ function maybeLocalstore() {
     // is the HTML ID Attribute of the object that _will be_ attached
     // to the DOM during the draw phase of the render task.
 
-    function mapObjectEventToHandler(event, id, node) {
+    function mapObjectEventToHandler(event, id, node, eventValueExtractor) {
         return {
             event: event,
             id: id,
-            handler: makeHandler(node),
+            handler: makeHandler(node, eventValueExtractor),
         };
     }
 
@@ -196,6 +202,51 @@ function maybeLocalstore() {
         };
     }
 
+    // Render an <input type="file" multiple ... /> field to accept multiple file upload inputs.
+    // What's important to note here is that the value of a file field MUST be
+    // parsed and stringified (similar to the multi-select dropdowns) when rendering and setting a new value.
+    // You will call the bowtie-api's /v1/file endpoint with the binary file data and set the file field's value
+    // by adopting the following pattern: '{"file1 name":"objectId returned from the api", "file2 name":"objectId returned from the api"}`.
+    // This pattern will also make it easy to display which files have uploaded successfully to your customers.
+    function renderFile(node) {
+        const mid = m(node.id);
+        let fileField = new FileField();
+        const uploadId = `${mid}-upload-files`;
+        const selectFilesId = `${mid}-select-files`;
+        const parsedValue = JSON.parse(node.value);
+        const uploadedFiles = `<br>Successfully uploaded files<br>${Object.keys(parsedValue).map(fileName => `<span>${fileName}</span>`).join("<br>")}`;
+
+        return [
+            {
+                text: '<div class="question">' + maybeLabel(node) + uploadedFiles + "</div>",
+                events: []
+            },
+            {
+                text: `<button id="${selectFilesId}" tabindex="${++tabIndex}" data-automation-id="${selectFilesId}">Select files</button>`,
+                events: ["click"].map(function (event) {
+                    return mapObjectEventToHandler(event, selectFilesId, node, function() {
+                        fileField.makeNewFileInput();
+                        // Reject to prevent a re-draw, which would
+                        // cause fileField to lose track of all selected files
+                        return Promise.reject("");
+                    });
+                }),
+            },
+            {
+                text: `<button id="${uploadId}" tabindex="${++tabIndex}" data-automation-id="${uploadId}">Upload files</button>`,
+                events: ["click"].map(function (event) {
+                    return mapObjectEventToHandler(event, uploadId, node, function () {
+                        return new Promise((resolve, _reject) => {
+                            fileField.uploadFiles().then(successfullyUploadedFiles => {
+                                resolve(JSON.stringify({...parsedValue, ...successfullyUploadedFiles}));
+                            });
+                        });
+                    });
+                }),
+            },
+        ];
+    }
+
     // Render a <select> input object for enumerated fields.
 
     function renderSelect(node) {
@@ -221,6 +272,9 @@ function maybeLocalstore() {
             options.splice(0, 0, { name: "", label: "" });
         }
 
+        const isMultiSelect = node.classes.includes("multi-select-dropdown");
+        const parsedMultiValue = isMultiSelect ? JSON.parse(node.value) : {};
+
         // Draw (as strings) all the '<option>' objects, and join them
         // together into one long string, then assemble the input
         // object together.
@@ -233,12 +287,42 @@ function maybeLocalstore() {
             .join("\n");
         const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">${renderedOptions}</select>`;
 
-        return {
+        return [{
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node);
+                return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
+                    return new Promise((resolve, _reject) => {
+                        const { value = "", options } = event.target;
+                        const label = Array.from(options).find((o) => o.selected)?.label;
+
+                        if (!label) {
+                            throw new Error("Developer error. Unable to find label of selected option.");
+                        }
+    
+                        resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
+                    })
+                } : undefined);
             }),
-        };
+        },
+        ...Object.entries(parsedMultiValue).map(([selectedLabel, selectedValue]) => {
+            const id = `${mid}.${selectedValue}.remove`;
+            return {
+                text: `<div id="${id}" data-automation-id="${id}" class="tag">
+                            <span>${selectedLabel}</span>
+                            <span class="remove-btn">x</span>
+                        </div>`,
+                events: ["click"].map(event => ({
+                    event,
+                    id,
+                    handler: function () {
+                        const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
+                        portfolio.set(node, JSON.stringify(newValue));
+                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                        setTimeout(renderPortfolio, 0);
+                    },
+                }))
+            };
+        })];
     }
 
     // This is an example of a custom fieldgroup: Types of Houses.
@@ -335,8 +419,13 @@ function maybeLocalstore() {
             switch (childnode.kind) {
                 case "hidden":
                     break;
+                case "file":
+                    renderFile(childnode)
+                        .forEach(element => addResult(element));
+                    break;
                 case "select":
-                    addResult(renderSelect(childnode));
+                    renderSelect(childnode)
+                        .forEach(element => addResult(element));
                     break;
                 case "text":
                     addResult(renderText(childnode));

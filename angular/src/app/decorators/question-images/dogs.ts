@@ -8,7 +8,7 @@ export const dogs: Record<string, string> = {
     "pets-n-exoticPet": "assets/dogs/exotic.png",
     "pets-n-germanShepherd": "assets/dogs/gsheperd.png",
     "pets-n-husky": "assets/dogs/husky.png",
-    "pets-n-otherBreed": "assets/dogs/other-dog-breed.png",
+    "pets-n-otherDogBreed": "assets/dogs/other-dog-breed.png",
     "pets-n-pitBull": "assets/dogs/pitbull.png",
     "pets-n-presaCanario": "assets/dogs/canarious.png",
     "pets-n-rottweiler": "assets/dogs/rottweiler.png",

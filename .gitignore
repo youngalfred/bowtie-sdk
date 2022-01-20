@@ -5,6 +5,7 @@
 /angular/node_modules
 /vanilla-js/node_modules
 /vanilla-js/build
+/demo-server/node_modules
 /.pnp
 .pnp.js
 

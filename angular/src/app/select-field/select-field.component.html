@@ -1,4 +1,12 @@
-<select [id]="field.id" [name]="field.id" [class]="field.classes" [attr.data-automation-id]="field.testId"
-    (change)="onChangeInternal($event)">
-    <option *ngFor="let o of options" [selected]="o.name === field.value" [value]="o.name">{{o.label}}</option>
-</select>
+<div>
+    <select [id]="field.id" [name]="field.id" [class]="field.classes" [attr.data-automation-id]="field.testId"
+        (change)="onChangeInternal($event)">
+        <option *ngFor="let o of options" [selected]="isSelected(o)" [value]="o.name">{{o.label}}</option>
+    </select>
+    <ng-tempmlate *ngIf="isMultipleSelect">
+        <div *ngFor="let selected of selectedValues" (click)="remove(selected)" [attr.data-automation-id]="field.testId + '-remove'" class="tag">
+            <span>{{selected}}</span>
+            <span>x</span>
+        </div>
+    </ng-tempmlate>
+</div>
