@@ -11,8 +11,9 @@
         </field-group>
     </field-label>
 
-    <field-label *ngIf="isInputField(field.kind)" [for]="field.id" [decoration]="getDecoration(field.id)">{{field.label}}
+    <field-label *ngIf="isInputField(field.kind)" [for]="field.id" [decoration]="getDecoration(field.id)">
         <checkbox-field *ngIf="field.kind === 'check'" [field]="field"></checkbox-field>
+        {{field.label}}
         <text-field *ngIf="field.kind === 'text'" [field]="field"></text-field>
         <select-field *ngIf="field.kind === 'select'" [field]="field"></select-field>
         <radio-field *ngIf="field.kind === 'radio'" [field]="field"></radio-field>

@@ -18,16 +18,21 @@ export class SelectFieldComponent implements OnInit, OnChanges {
 
   @Input("field") field: AppField = emptyField;
 
-  ngOnInit(): void {
+  private configureOptions() {
     const options = this.field?.options || [];
     // Insert an empty option when an option is NOT pre-selected
     this.options = this.field.value ? options : [{ name: "", label: "" }, ...options];
+  }
+
+  ngOnInit(): void {
+    this.configureOptions();
 
     this.isMultipleSelect = this.field.classes.includes("multi-select-dropdown");
     this.adaptForMultiSelect();
   }
 
   ngOnChanges(_: SimpleChanges) {
+    this.configureOptions();
     this.adaptForMultiSelect();
   }
 
