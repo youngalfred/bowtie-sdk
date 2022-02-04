@@ -81,7 +81,7 @@ module.exports = {
         ["home-windmit-buildingCode", "B. The South Florida Building Code (SFBC-94) for HVHZ only (Miami-Dade and Broward county)"],
         ["home-windmit-bYearBuilt", "1949"],
         ["home-windmit-roofCoveringType-membrane", "Yes"],
-        ["home-windmit-roofCoveringType-membrane-date", "07072005"], // MM DD YYYY
+        ["home-windmit-roofCoveringType-membrane-date", "2005-07-07"],
         ["home-windmit-roofCoveringType-membrane-Approval", "4878325"],
         ["home-windmit-roofCoveringType-membrane-InstallationYear", "1980"],
         // ["home-windmit-roofCoveringType-membrane-NoInfo", "Yes"],
@@ -89,14 +89,16 @@ module.exports = {
         ["home-windmit-roofDeckAttachment", "B. Plywood/OSB roof sheathing with a minimum thickness of 7/16” inch attached to the roof truss/rafter (spaced a maximum of 24”inches o.c.) by 8d common nails spaced a maximum of 12” inches in the field.-OR- Any systemof screws, nails, adhesives, other deck fastening system or truss/rafter spacing that is shown to have an equivalent or greater resistance than 8d nails spaced a maximum of 12 inches in the field or has a mean uplift resistance of at least 103 psf."],
         ["home-windmit-roofToWallAttachment", "B. Clips"],
         ["home-windmit-bClips", "Metal connectors with a minimum of 1 strap that wraps over the top of the truss/rafter and does not meet the nail position requirements of C or D, but is secured with a minimum of 3 nails."],
-        ["home-windmit-roofGeometry", "B. Flat Roof<br> Roof on a building with 5 or more units where at least 90% of the main roof area has a roof slope of less than 2:12. Roof area with slope less than 2:12"],
+        ["home-windmit-roofGeometry", "B. Flat Roof Roof on a building with 5 or more units where at least 90% of the main roof area has a roof slope of less than 2:12. Roof area with slope less than 2:12"],
         ["home-windmit-bFlatRoofSlopeLessThan212", "90"],
         ["home-windmit-bFlatRoofTotalRoofArea", "320"],
-        
         ["home-windmit-secondaryWaterResistance", "A. SWR (also called Sealed Roof Deck) Self-adhering polymer modified-bitumen roofing underlayment applied directly to the sheathing or foam adhesive SWR barrier (not foamed-on insulation) applied as a supplemental means to protect the dwelling from water intrusion in the event of roof covering loss."],
         ["home-windmit-openingProtection", "N. Exterior Opening Protection (unverified shutter systems with no documentation) All Glazed openings are protected with protective coverings not meeting the requirements of Answer “A”, “B”, or C” or systems that appear to meet Answer “A” or “B” with no documentation of compliance (Level N in the table above)."],
         ["home-windmit-openingProtectionN", "N.1 All Non-Glazed openings classified as Level A, B, C, or N in the table above, or no Non-Glazed openings exist"],
-
+        ["home-windmit-inspectionCompany", "Local Inspection Company"],
+        ["home-windmit-inspectorName", "Inspector Gadget"],
+        ["home-windmit-inspectorLicense", "48982484"],
+        ["home-windmit-inspectionDate", "2008-07-07"],
         ["home-propertyUse-farmingActivity", "No"],
         ["home-risks-trampoline", "Yes"],
         ["home-risks-swimmingPool-hasSwimmingPool", "Yes"],
