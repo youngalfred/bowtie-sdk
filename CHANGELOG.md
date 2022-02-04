@@ -1,6 +1,6 @@
-## 1.1.1 (February 3, 2022)
+## 1.2.0 (February 3, 2022)
 
-Most changes contained in bowtie-sdk version 1.1.1 are related to the communication layer between the sdk and api, and will therefore not affect your product.
+Most changes contained in bowtie-sdk version 1.2.0 are related to the communication layer between the sdk and api, and will therefore not affect your product.
 However, you should be aware that the wind mitigation field group has been updated significantly. The sdk now validates and offers useful
 labels to each wind mitigation field. Also note that fields are now divided into seven sections represented by the same seven sections listed on the paper form (1. Building code, 2. Roof covering, etc...) instead of a flat list of fields.
 ### Added:
@@ -8,7 +8,7 @@ labels to each wind mitigation field. Also note that fields are now divided into
 * improved rules that dictate when sub-fields should appear in the wind mitigation section.
 
 ## 1.1.0 (January 11, 2022)
-The 11-05 API release primarily includes changes to the pets section but also features four new home insurers, jewelry itemized additional coverage, and an option to say the home was not built by an accredited builder. Consider the following SDK changes as your GUI product may also require updates to accommodate the API's 11-05 release:
+The 2021-11-05 API release primarily includes changes to the pets section but also features four new home insurers, jewelry itemized additional coverage, and an option to say the home was not built by an accredited builder. Consider the following SDK changes as your GUI product may also require updates to accommodate the API's 2021-11-05 release:
 * the pets section now asks if customers would like to insure their pet(s) and requires the pet's age when customers choose to insure that pet.
 * Insurance applicants must clarify a dog's breed(s) through follow-up questions after claiming an "other breed" dog.
 * Itemized jewelry coverage becomes available only after the applicant claims jewelry belongings worth more than $2k and then requests additional coverage on jewelry.
