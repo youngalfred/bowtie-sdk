@@ -1,3 +1,7 @@
+## 1.3.0 (February 10, 2022)
+
+This release will not affect your product. The changes in this release, similar to version 1.2.0, affect only the communication layer between the sdk. During portfolio submission, the sdk renames the ids of drivers and applications to "id", instead of "driverId" and "applicationId." You can continue to use the sdk as you did in version 1.2.0.
+
 ## 1.2.0 (February 3, 2022)
 
 Most changes contained in bowtie-sdk version 1.2.0 are related to the communication layer between the sdk and api, and will therefore not affect your product.
