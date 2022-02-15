@@ -1,15 +1,4 @@
-import Portfolio, { FieldType } from "@youngalfred/bowtie-sdk";
-
-export interface Application {
-    portfolio: Portfolio;
-    currentSection: number;
-    currentFieldgroup: string;
-    isSubmitted: boolean;
-    isInReview: boolean;
-    partner: string;
-    sessionId: string;
-    nextSectionSelected: boolean;
-}
+import { FieldType } from "@youngalfred/bowtie-sdk";
 
 export type OptionType = {
     name: string;

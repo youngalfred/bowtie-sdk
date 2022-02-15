@@ -56,11 +56,11 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.httpHeaders = {
       "x-integration-token": new URLSearchParams(window.location.search).get("integration") || "",
-      "bowtie-api-version": "2021-11-05",
+      "bowtie-api-version": "2021-11-16",
     };
   }
 
-  // Retrieve the localstorage application, 
+  // Retrieve the localstorage application,
   // which may not exist
   maybeLocalstore = () => {
     try {
