@@ -1,6 +1,6 @@
 ## 1.4.0 (February 22, 2022)
 
-Version 1.4.0 includes minor bug fixes and changes that make the sdk conform to api version 2021-12-22.
+Version 1.4.0 includes minor bug fixes and changes that conform the sdk to api version 2021-12-22.
 
 ### Added:
 * new "other" comprehensive claim option (auto).
