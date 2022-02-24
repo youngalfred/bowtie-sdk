@@ -1,3 +1,12 @@
+## 1.5.0 (February 24, 2022)
+
+To conform with api version 2022-01-07, several sdk enum values have been changed in this release. Additionally, auto insurance applicants will now select one or many vehicle uses (food delivery, ride share, conventional, and/or other), instead of just one.
+
+### Changed:
+* "Gulf Stream" home insurer option (found in the most recent policy section) to "Gulfstream".
+* "What company(s) do you work for?" from a select field to a checkbox group.
+* requested tort from a boolean to an enum-based value (tort applies only to auto portfolios in PA & NJ). 
+
 ## 1.4.0 (February 22, 2022)
 
 Version 1.4.0 includes minor bug fixes and changes that conform the sdk to api version 2021-12-22.
