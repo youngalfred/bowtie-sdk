@@ -4,7 +4,7 @@ To conform with api version 2022-01-07, several sdk enum values have been change
 
 ### Changed:
 * "Gulf Stream" home insurer option (found in the most recent policy section) to "Gulfstream".
-* "What company(s) do you work for?" from a select field to a checkbox group.
+* "What company(s) do you work for?" from a single select field to a group of select fields.
 * requested tort from a boolean to an enum-based value (tort applies only to auto portfolios in PA & NJ). 
 
 ## 1.4.0 (February 22, 2022)
