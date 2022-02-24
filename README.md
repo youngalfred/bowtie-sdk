@@ -44,23 +44,20 @@ After unpacking this archive, complete the following steps to run a demonstratio
 5. Run `npm run server`
 6. Visit [http://localhost:3001/](http://localhost:3001/)
 
-*Note*: The BOWTIE_API_KEY environment variable is required and has no default.
+*Note*: The `BOWTIE_API_KEY` environment variable is required and has no default value.
 
-The server within each JS demonstration is less than a hundred lines of
-well-commented Javascript, written using the [Express app server](https://expressjs.com/) framework.
-Other environment variables which can alter the behavior of the server
+Each JavaScript demo relies on the node server found at [`/demo-server/index.js`](https://github.com/youngalfred/bowtie-sdk/blob/master/demo-server/index.js). You should run the server from the `/demo-server` directory ONLY if you wish to specify the `BOWTIE_STATIC_CONTENT` environment variable manually (with the path to your client build folder). Otherwise, stick to running `npm run server` from one of the JS client demos, which sets the `BOWTIE_STATIC_CONTENT` variable for you. The demo server includes under 200 lines of well-commented JS written using the [Express app server](https://expressjs.com/) framework.
+Other environment variables that can alter the behavior of the server
 include:
 
-- `BOWTIE_API_URL`: This defaults to the Bowtie Developer Sandbox.
+- `BOWTIE_API_URL`: This defaults to the Bowtie Developer Sandbox
 - `BOWTIE_LOCAL_PORT`: The port on which the application runs
-- `BOWTIE_STATIC_CONTENT`: The folder in which the client application
-  will be found.
   
 ### Running the test
 
-The test portion of the demonstration does require you have a recent
-version of chrome installed. The version listed in `package.json` is
-Chrome 94; you may have to adjust this and re-run `npm install` to get
+The test portion of the demonstration does require you to have a recent
+version of chrome installed. The version listed in `/tests/package.json` is
+Chrome 98; you may have to adjust this and re-run `npm install` to get
 the correct driver for your installed version of Chrome.
 
 Once you have that in correspondence, enter the `tests/` directory:
