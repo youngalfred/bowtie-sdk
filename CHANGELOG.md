@@ -1,3 +1,26 @@
+## 1.5.0 (February 24, 2022)
+
+To conform with api version 2022-01-07, several sdk enum values have been changed in this release. Additionally, auto insurance applicants will now select one or many vehicle uses (food delivery, ride share, conventional, and/or other), instead of just one.
+
+### Changed:
+* "Gulf Stream" home insurer option (found in the most recent policy section) to "Gulfstream".
+* "What company(s) do you work for?" from a single select field to a group of select fields.
+* requested tort from a boolean to an enum-based value (tort applies only to auto portfolios in PA & NJ). 
+
+## 1.4.0 (February 22, 2022)
+
+Version 1.4.0 includes minor bug fixes and changes that conform the sdk to api version 2021-12-22.
+
+### Added:
+* new "other" comprehensive claim option (auto).
+
+### Changed:
+* Michigan auto field ("Exclude drivers from PIP Medical Expense Coverage?") to optional.
+
+### Fixed:
+* email fields (within with each policy) by projecting the start section's email onto each home and auto policy.
+* wind mitigation follow-up fields to disappear when changing start state from Florida to another state.
+
 ## 1.3.0 (February 10, 2022)
 
 Similar to version 1.2.0, version 1.3.0 introduces only internal changes to the communication layer between the sdk and api. During portfolio submission, the sdk renames the ids of drivers and applications to "id", instead of "driverId" and "applicationId." You can continue to use the sdk as you did in version 1.2.0.

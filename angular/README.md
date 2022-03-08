@@ -48,9 +48,6 @@ service for the built Angular implementation.
 
 ## Running the demonstration
 
-This demonstration can be run on a single developer's machine and
-requires no special hardware or access.
-
 After unpacking this archive and running `npm install` to acquire all
 dependencies, open a new terminal session and run the following:
 
@@ -62,16 +59,6 @@ $ npm run server
 The BOWTIE_API_KEY environment variable is required and has no default.
 The running application will be available on your local machine at port
 3001: [http://localhost:3001/](http://localhost:3001/).
-
-The server is less than a hundred lines of well-commented Javascript,
-written to the [Express app server](https://expressjs.com/) framework.
-Other environment variables which can alter the behavior of the server
-include:
-
-- `BOWTIE_API_URL`: This defaults to the Bowtie Developer Sandbox.
-- `BOWTIE_LOCAL_PORT`: The port on which the application runs
-- `BOWTIE_STATIC_CONTENT`: The folder in which the client application
- will be found.
 
 ### Running the test
 

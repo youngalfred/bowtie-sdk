@@ -25,6 +25,6 @@
         "webpack-cli": "^4.5.0"
     },
     "dependencies": {
-        "@youngalfred/bowtie-sdk": "1.3.0"
+        "@youngalfred/bowtie-sdk": "1.5.0"
     }
 }
