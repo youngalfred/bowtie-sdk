@@ -1,8 +1,7 @@
 <script setup lang="ts">
   import { RouterLink, RouterView } from 'vue-router'
-  import HelloWorld from '@/components/HelloWorld.vue'
-import { storeToRefs } from 'pinia';
-import { usePortfolio } from './store/portfolio';
+  import { storeToRefs } from 'pinia';
+  import { usePortfolio } from './store/portfolio';
 
   const { app } = storeToRefs(usePortfolio())
 
@@ -12,7 +11,6 @@ import { usePortfolio } from './store/portfolio';
     const driversCount = parseInt(app.value.find('auto.drivers.count')?.value || '0', 10)
     const vehiclesCount = parseInt(app.value.find('auto.autos.count')?.value || '0', 10)
 
-    console.log(app.value.view)
     const home = {
         '/applicant-details': 'The Insuree',
         ...homeType ? {
@@ -41,7 +39,6 @@ import { usePortfolio } from './store/portfolio';
       default:
     }
 
-console.log()
     return Object.entries(routes)
   }
 </script>
