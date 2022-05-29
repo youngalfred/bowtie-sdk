@@ -5,7 +5,7 @@
     import { makeFieldGroups } from './fieldgroups/field-builder'
     import type { HomeSection } from '@/data/pages/home'
     import { storeToRefs } from 'pinia';
-import type { AutoSection } from '@/data/pages/auto';
+    import type { AutoSection } from '@/data/pages/auto';
 
     const { section } = defineProps({
         section: {

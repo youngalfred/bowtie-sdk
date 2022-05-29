@@ -52,19 +52,5 @@ export const makeFieldGroups = (fields: SDKFieldGroup[], updateField: (field: st
         ];
       };
 
-      return fields.reduce((acc: Fieldgroup[], fg: SDKFieldGroup): Fieldgroup[] => {
-        return [
-          ...acc,
-          {
-            ...fg,
-            subtitle: '',
-            info: '',
-            decoration: {},
-            key: '',
-            warning: fg.valid.msg,
-            valid: fg.valid.valid,
-            children: fg.children.reduce(propsReducer, [])
-          }
-        ];
-      }, [] as Fieldgroup[]);
+      return fields.reduce(propsReducer, [] as Fieldgroup[]);
     };

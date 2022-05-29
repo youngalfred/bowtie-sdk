@@ -12,29 +12,33 @@
     const vehiclesCount = parseInt(app.value.find('auto.autos.count')?.value || '0', 10)
 
     const home = {
-        '/applicant-details': 'The Insuree',
+      '/applicant-details': 'The Insuree',
         ...homeType ? {
           '/property-details': 'The Property',
           '/policy-details': 'The Policy',
         } : {}
     }
 
+    const auto = {
+      '/auto-hub': 'Auto Hub',
+      ...Array.from(Array(driversCount)).reduce((acc, _, idx) => ({ ...acc, [`/driver/${idx + 1}`]: `Driver ${idx+1}` }), {}),
+      ...Array.from(Array(vehiclesCount)).reduce((acc, _, idx) => ({ ...acc, [`/vehicle/${idx + 1}`]: `Vehicle ${idx+1}` }), {}),
+      '/auto-summary': 'Summary'
+    }
+
     let routes = {}
     switch (policyType) {
       case 'home':
         routes = home
+        break;
       case 'homeAndAuto':
         routes = {
-          ...home
+          ...home,
+          ...auto,
         }
         break;
       case 'auto':
-        routes = {
-          '/auto-hub': 'Auto Hub',
-          ...Array.from(Array(driversCount)).reduce((acc, _, idx) => ({ ...acc, [`/driver/${idx + 1}`]: `Driver ${idx+1}` }), {}),
-          ...Array.from(Array(vehiclesCount)).reduce((acc, _, idx) => ({ ...acc, [`/vehicle/${idx + 1}`]: `Vehicle ${idx+1}` }), {}),
-          '/auto-summary': 'Summary'
-        }
+        routes = auto
         break;
       default:
     }
@@ -45,15 +49,12 @@
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Young Alfred logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      
-
       <nav>
         <RouterLink to="/">Get Started</RouterLink>
         <RouterLink v-for="[path, label] of getRoutes()" :to="path">{{label}}</RouterLink>
-        
       </nav>
     </div>
   </header>
@@ -134,14 +135,17 @@ nav a:first-of-type {
 
   header {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
   }
 
   header .wrapper {
     display: flex;
     place-items: flex-start;
     flex-wrap: wrap;
+  }
+
+  header .wrapper nav {
+    display: flex;
+    flex-direction: column;
   }
 
   .logo {

@@ -5,6 +5,7 @@ export type {
   FieldGroup as SDKFieldGroup,
   InputFieldType as SDKInputField,
 } from '@youngalfred/bowtie-sdk';
+export type { GroupType as SDKGroupType } from '@youngalfred/bowtie-sdk/build/types'
 
 export interface Fieldgroup {
   id: string

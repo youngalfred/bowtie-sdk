@@ -11,7 +11,7 @@
 </script>
 
 <template>
-    <h3 :id="field.id">{{field.label}}</h3>
+    <h3 :id="field.id" v-html="field.label" />
     <!-- <LabelWithInfo label={field.label} info={field.info} styles={styles} /> -->
     <!-- <Subtitle subtitle={field.subtitle} /> -->
 </template>

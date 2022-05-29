@@ -24,7 +24,34 @@ const enforceHomeSelection = (to: any, from: any) => {
         }
 
       }
+}
 
+const guardAutoRPages = (to: any, from: any) => {
+  const portfolio = usePortfolio()
+  const { app } = storeToRefs(portfolio)
+  const destination = to.fullPath.substring(1)
+
+    if ((
+      destination === 'auto-summary'
+      && app.value.find('start.policyType')?.value !== 'auto'
+    )) {
+      return '/'
+    }
+}
+
+const guardAutoCount = (page: 'auto'|'driver') => (to: any) => {
+  const portfolio = usePortfolio()
+  const { app } = storeToRefs(portfolio)
+  const { id = '0' } = to?.params || {}
+
+  const sdkCount = app.value.find(`auto.${page}s.count`)?.value || '0'
+
+  const count = parseInt(sdkCount.replace(/[^0-9]/g, ''), 10)
+  const requestedPage = parseInt(id.replace(/[^0-9]/g, ''), 10)
+
+  if (requestedPage > count || count === 0) {
+    return '/'
+  }
 }
 
 const router = createRouter({
@@ -58,21 +85,25 @@ const router = createRouter({
       path: '/auto-hub',
       name: 'Auto Hub',
       component: () => import('../views/AutoHub.vue'),
+      beforeEnter: guardAutoRPages,
     },
     {
       path: '/driver/:id',
       name: 'driver',
       component: () => import('../views/Driver.vue'),
+      beforeEnter: guardAutoCount('driver'),
     },
     {
       path: '/vehicle/:id',
       name: 'Vehicle',
       component: () => import('../views/Vehicle.vue'),
+      beforeEnter: guardAutoCount('auto'),
     },
     {
       path: '/auto-summary',
       name: 'Auto Summary',
       component: () => import('../views/AutoReview.vue'),
+      beforeEnter: guardAutoRPages,
     }
   ]
 })
