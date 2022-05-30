@@ -2,7 +2,7 @@ import type { StartStopPair } from "."
 
 const emptySet = new Set<string>()
 
-export type AutoSection = 'auto-hub' | 'driver' | 'vehicle' | 'auto-summary'
+export type AutoSection = 'auto-hub' | 'driver' | 'vehicle' | 'auto-summary' | `vehicle-${number}` | `driver-${number}`
 export const hub: StartStopPair = ['auto-hub', new Set(['auto-hub'])]
 export const driver = (pos: number): StartStopPair => [
     `driver-factory > auto-driver-${pos} > auto-driver-${pos}-name`,

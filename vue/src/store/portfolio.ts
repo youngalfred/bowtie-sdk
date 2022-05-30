@@ -4,16 +4,16 @@ import { defineStore } from 'pinia'
 import { getQuestionsForPage } from '@/data/pages'
 import type { HomeSection } from '@/data/pages/home'
 import type { AutoSection } from '@/data/pages/auto'
-import type { SDKField, SDKGroupType, SDKInputField } from '@/types'
+import type { SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/types'
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
       app: new Portfolio(),
   }),
   getters: {
-    view: (state) => (section: HomeSection|AutoSection) => {
+    view: (state) => (section: HomeSection|AutoSection): SDKFieldGroup[] => {
       return section
-        ? getQuestionsForPage(state.app.view, section)
+        ? getQuestionsForPage(state.app.view, section) as SDKFieldGroup[]
         : state.app.view
     },
     countOf: (state) => (entity: 'autos'|'drivers') => {
