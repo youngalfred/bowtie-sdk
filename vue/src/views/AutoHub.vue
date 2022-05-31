@@ -2,6 +2,7 @@
   import { usePortfolio } from '@/store/portfolio';
   import { storeToRefs } from 'pinia';
   import HubController from '../components/fieldgroups/HubController.vue'
+import NavBar from '../components/NavBar.vue'
 
   const portfolio = usePortfolio()
   const { countOf } = storeToRefs(portfolio)
@@ -32,6 +33,19 @@
     :add-entity="() => portfolio.addAutoEntity('auto')"
     :remove-entity="(id) => portfolio.removeAutoEntity('auto', id)"
     :make-path-label-pair="() => makeVehicleLink(countOf('autos'))"/>
+
+    <NavBar :buttons="[
+      {
+        label: 'Start Over',
+        path: '/',
+        disabled: false,
+      },
+      {
+        label: 'Review & Submit',
+        path: '/auto-summary',
+        disabled: false,
+      }
+    ]"/>
 </template>
 
 <style>

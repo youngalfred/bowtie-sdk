@@ -1,0 +1,18 @@
+export const construction: Record<string, string> = {
+    frame: "src/assets/construction/frame.png",
+    steelFrame: "src/assets/construction/steel-frame.png",
+    frameLess10PercentBrick: "src/assets/construction/brick-10.jpg",
+    n10to33BrickVeneer: "src/assets/construction/brick-33.jpg",
+    n34to66BrickVeneer: "src/assets/construction/brick-66.jpg",
+    n67to11BrickVeneer: "src/assets/construction/brick-100.jpg",
+    brickStoneMasonry: "src/assets/construction/brick-stone.jpg",
+    frameAluminumSiding: "src/assets/construction/aluminum.jpg",
+    frameVinylSiding: "src/assets/construction/vinyl.jpg",
+    concreteBlock: "src/assets/construction/concrete.jpg",
+    stuccoWoodframe: "src/assets/construction/stucco-over-woodframe.jpg",
+    stuccoBlock: "src/assets/construction/stucco-over-block.jpg",
+    logHome: "src/assets/construction/log.jpg",
+    prefab: "src/assets/construction/pre-fab.jpg",
+    prefabManufactured: "src/assets/construction/pre-fab-manufactured.jpg",
+    prefabModular: "src/assets/construction/pre-fab-modular.png",
+};

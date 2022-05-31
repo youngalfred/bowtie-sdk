@@ -17,34 +17,42 @@
 </script>
 
 <template>
-  <div id='wrapper'>
-    <div
-      class='entity'
-      v-for="([path, label], index) of makePathLabelPair()"
-      >
-      <RouterLink
-        :to="path"
-      >
-        {{label}}
-      </RouterLink>
-      <div @click="removeEntity?.(index)">
-        Remove
+  <div id='hub'>
+    <div id='wrapper'>
+      <div
+        class='entity'
+        v-for="([path, label], index) of makePathLabelPair()"
+        >
+        <RouterLink
+          :to="path"
+        >
+          {{label}}
+        </RouterLink>
+        <div @click="removeEntity?.(index)">
+          Remove
+        </div>
       </div>
+      <button @click="addEntity">
+        Add +
+      </button>
     </div>
-    <button @click="addEntity">
-      Add +
-    </button>
   </div>
 </template>
 
 <style scoped>
+  #hub {
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
   #wrapper {
+    align-items: center;
     display: flex;
     flex-direction: column;
     padding: 10px;
-    min-width: 100px;
-    width: 50%;
-    max-width: 300px;
+    width: 300px;
   }
 
   .entity {

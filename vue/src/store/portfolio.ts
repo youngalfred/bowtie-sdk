@@ -9,9 +9,11 @@ import type { SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/typ
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
       app: new Portfolio(),
+      inReview: false,
   }),
   getters: {
     view: (state) => (section: HomeSection|AutoSection): SDKFieldGroup[] => {
+
       return section
         ? getQuestionsForPage(state.app.view, section) as SDKFieldGroup[]
         : state.app.view
@@ -22,7 +24,7 @@ export const usePortfolio = defineStore('portfolio', {
     // Request is not used currently. Probably no need
     request: (state) => (fieldIds: string[]): Record<string, SDKField> => {
       const requestedFieldSet = new Set(fieldIds)
-      
+
       const findField = (acc: Record<string, SDKField>, nextNode: SDKField): Record<string, SDKField> => {
         if (requestedFieldSet.has(nextNode.id)) {
           acc[nextNode.id] = nextNode
@@ -37,6 +39,10 @@ export const usePortfolio = defineStore('portfolio', {
       }
 
       return state.app.view.reduce(findField, {})
+    },
+    assertFieldEquals: (state) => (id: string, value: string|null, { negate }: { negate: boolean } = { negate: false }): boolean => {
+      const isEqual = state.app.find(id)?.value === value
+      return negate ? !isEqual : isEqual
     }
   },
   actions: {
@@ -65,6 +71,9 @@ export const usePortfolio = defineStore('portfolio', {
       const prefix = `auto.${entity}s.`
       app.delMulti(`${prefix}${id}`, `${prefix}count`)
       this.app = app
+    },
+    setInReview(inReview: boolean) {
+      this.inReview = inReview
     }
   },
 })

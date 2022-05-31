@@ -12,13 +12,12 @@ const enforceHomeSelection = (to: any, from: any) => {
       if (Object.keys(homePagesRecord).includes(destination)) {
         const policyType = app.value.find('start.policyType')?.value
         
-        console.log({policyType})
-        if (policyType !== 'home') {
+        if (!/^home/.test(policyType || '')) {
           return '/'
         }
         
         const homeType = app.value.find('home.propertyType')?.value
-        console.log({homeType})
+
         if (!homeType && destination !== 'applicant-details') {
           return 'applicant-details'
         }
@@ -37,6 +36,13 @@ const guardAutoRPages = (to: any, from: any) => {
     )) {
       return '/'
     }
+}
+
+const enforceValidPortfolio = (to: any, from: any) => {
+  const portfolio = usePortfolio()
+  const { app } = storeToRefs(portfolio)
+
+  if (!app.value.valid) return '/'
 }
 
 const guardAutoCount = (page: 'auto'|'driver') => (to: any) => {
@@ -61,7 +67,6 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: GetStarted,
-      beforeEnter: enforceHomeSelection
     },
     {
       path: '/applicant-details',
@@ -104,6 +109,12 @@ const router = createRouter({
       name: 'Auto Summary',
       component: () => import('../views/AutoReview.vue'),
       beforeEnter: guardAutoRPages,
+    },
+    {
+      path: '/submit',
+      name: 'Submit',
+      component: () => import('../views/Success.vue'),
+      beforeEnter: enforceValidPortfolio,
     }
   ]
 })

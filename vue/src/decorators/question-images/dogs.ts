@@ -1,0 +1,18 @@
+export const dogs: Record<string, string> = {
+    "pets-n-none": "src/assets/dogs/no.png",
+    "pets-n-akita": "src/assets/dogs/akita.png",
+    "pets-n-alaskanMalamute": "src/assets/dogs/malamute.png",
+    "pets-n-cat": "src/assets/dogs/cat.png",
+    "pets-n-chowChow": "src/assets/dogs/chow-chow.png",
+    "pets-n-doberman": "src/assets/dogs/doberman.png",
+    "pets-n-exoticPet": "src/assets/dogs/exotic.png",
+    "pets-n-germanShepherd": "src/assets/dogs/gsheperd.png",
+    "pets-n-husky": "src/assets/dogs/husky.png",
+    "pets-n-otherDogBreed": "src/assets/dogs/other-dog-breed.png",
+    "pets-n-pitBull": "src/assets/dogs/pitbull.png",
+    "pets-n-presaCanario": "src/assets/dogs/canarious.png",
+    "pets-n-rottweiler": "src/assets/dogs/rottweiler.png",
+    "pets-n-staffordshireBullTerrier": "src/assets/dogs/staffordshire.png",
+    "pets-n-wolfHybrid": "src/assets/dogs/wolfHybrid.png",
+    "pets-n-other": "src/assets/dogs/other-pets.png",
+};
