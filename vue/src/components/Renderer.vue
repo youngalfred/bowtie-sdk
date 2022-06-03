@@ -19,7 +19,15 @@
 </script>
 
 <template>
-    <Label :field="field" />
-    <Warning :field="field" />
-    <Component :field="field"/>
+    <div class='wrapper'>
+        <Label :field="field" />
+        <Warning :field="field" />
+        <Component :field="field"/>
+    </div>
 </template>
+
+<style>
+    .wrapper {
+        padding-left: 1.5em;
+    }
+</style>

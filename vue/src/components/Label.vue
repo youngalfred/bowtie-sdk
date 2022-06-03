@@ -22,6 +22,7 @@
         align-self: center;
     }
     img {
+        margin-top: 1em !important;
         max-height: 5em;
         max-width: 8em;
         width: auto;

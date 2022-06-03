@@ -27,6 +27,7 @@ export const ID_HANDLERS: Record<string, any> = {
   'valuables': GridGroup,
   'any-updates': GridGroup,
   'plan-type': GridGroup,
+  'secondary-months-occupied': GridGroup,
 }
 
 export const TYPE_HANDLERS: Record<Node['kind'], any> = {
