@@ -8,7 +8,7 @@ import type { SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/typ
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
-      app: new Portfolio(),
+      app: new Portfolio(JSON.parse(window.localStorage.getItem('young_alfred_vue') || '{}')),
       inReview: false,
   }),
   getters: {
@@ -56,7 +56,7 @@ export const usePortfolio = defineStore('portfolio', {
         if (field && field.value !== value) {
           app.set(field, value);
           self.app = app
-          // window.sessionStorage.setItem("young_alfred", JSON.stringify(this.app.application));
+          window.localStorage.setItem("young_alfred_vue", JSON.stringify(this.app.application));
         }
       };
     },
