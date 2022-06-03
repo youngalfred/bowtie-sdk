@@ -3,5 +3,4 @@ export const interior: Record<string, string> = {
     builder: "src/assets/interior/builders-grade.png",
     semiCustom: "src/assets/interior/semi-custom-grade.png",
     custom: "src/assets/interior/custom-grade.png",
-
 };

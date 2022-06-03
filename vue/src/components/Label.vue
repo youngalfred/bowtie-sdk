@@ -14,8 +14,6 @@
 <template>
     <img v-if="decoration" :src="decoration"/>
     <h3 :id="field.id" v-html="field.label" />
-    <!-- <LabelWithInfo label={field.label} info={field.info} styles={styles} /> -->
-    <!-- <Subtitle subtitle={field.subtitle} /> -->
 </template>
 
 <style scoped>
@@ -24,6 +22,10 @@
         align-self: center;
     }
     img {
-        width: 90%;
+        max-height: 5em;
+        max-width: 8em;
+        width: auto;
+        display: block;
+        margin: 0 auto;
     }
 </style>

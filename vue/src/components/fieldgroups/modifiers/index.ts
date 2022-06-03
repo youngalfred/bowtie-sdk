@@ -10,7 +10,6 @@ const toRadioGroup = (fg: Fieldgroup): Node => ({ // Transform the select questi
         const { options = [] } = field as Select
         // Make radio buttons out of the select question's options
         return [...acc, ...options.map((option: SDKOptionType) => {
-            console.log({fg: field.id, id: option.name, dec: DECORATORS[field.id]})
             return {
                 ...field,
                 id: `${field.id}.${option.name}`,
@@ -75,6 +74,10 @@ const modifyFieldGroup = (node: Fieldgroup) => {
         "gender": toRadioGroup,
         "property-type": toRadioGroup,
         "add-secondary-policy-holder": toRadioGroup,
+        "roof-material": toRadioGroup,
+        "roof-shape": toRadioGroup,
+        "plan-type": toRadioGroup,
+        "primary-heat-source": toRadioGroup,
         "get-started": regroupChildren({
             'start.firstName': 'start-name',
             'start.lastName': 'start-name',
@@ -90,7 +93,6 @@ const modifyFieldGroup = (node: Fieldgroup) => {
     }
 
     const converter = modifierMap[node.id]
-    node.id === 'get-started' && console.log(converter?.(node))
     return converter?.(node) || node
 }
 

@@ -1,9 +1,7 @@
 <script setup lang="ts">
   import PolicySection from '@/components/PolicySection.vue';
-import { usePortfolio } from '@/store/portfolio';
-import { storeToRefs } from 'pinia';
-import NavBar from '../components/NavBar.vue';
-  const { app } = storeToRefs(usePortfolio())
+  import NavBar from '../components/NavBar.vue';
+
 </script>
 
 <template>
@@ -11,13 +9,13 @@ import NavBar from '../components/NavBar.vue';
   <NavBar :buttons="[
     {
       label: 'Back',
-      path: '/policy-details',
+      path: '/property-details',
       disabled: false
     },
     {
-      label: 'Submit',
-      path: '/submit',
-      disabled: !app.valid
+      label: 'Next',
+      path: '/home-summary',
+      disabled: false
     }
   ]"/>
 </template>

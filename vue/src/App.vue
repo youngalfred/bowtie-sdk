@@ -16,6 +16,7 @@
         ...homeType ? {
           '/property-details': 'The Property',
           '/policy-details': 'The Policy',
+          '/home-summary': 'Home Summary'
         } : {}
     }
 

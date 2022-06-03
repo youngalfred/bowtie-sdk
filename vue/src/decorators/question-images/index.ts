@@ -15,13 +15,14 @@ import { roofshape } from "./roofshape";
 import { updates } from "./updates";
 import { additional_coverage } from "./additional_coverage";
 import { coverages } from "./coverages";
+import { planTypes } from "./plan_type";
 
 export type DecorationRecord = Record<string, Record<string, string>>
 export const defaultDecorator: DecorationRecord = {}
 export const DECORATORS: DecorationRecord = {
     "extra-coverages": coverages,
     valuables: additional_coverage,
-    "construction-type": construction,
+    constructionType: construction,
     occupants: family,
     "any-updates": updates,
     exteriorSiding: exterior,
@@ -29,7 +30,7 @@ export const DECORATORS: DecorationRecord = {
     foundation: foundation,
     type: garage,
     fuelType: heating,
-    "house-type": house,
+    propertyStyle: house,
     policyType: policies,
     primarySource: heating,
     propertyType: icons,
@@ -38,4 +39,5 @@ export const DECORATORS: DecorationRecord = {
     pets: dogs,
     extras: extras,
     icons: icons,
+    requestedPlanType: planTypes,
 };

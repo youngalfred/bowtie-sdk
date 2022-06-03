@@ -13,7 +13,7 @@ import NavBar from '../components/NavBar.vue';
       disabled: false
     },
     {
-      label: 'Review & Submit',
+      label: 'Next',
       path: '/policy-details',
       disabled: false
     }

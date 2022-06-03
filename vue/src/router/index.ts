@@ -87,6 +87,12 @@ const router = createRouter({
       beforeEnter: enforceHomeSelection
     },
     {
+      path: '/home-summary',
+      name: '4',
+      component: () => import('../views/Home4.vue'),
+      beforeEnter: enforceHomeSelection
+    },
+    {
       path: '/auto-hub',
       name: 'Auto Hub',
       component: () => import('../views/AutoHub.vue'),

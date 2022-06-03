@@ -18,7 +18,15 @@ export const ID_HANDLERS: Record<string, any> = {
   'gender': GridGroup,
   'property-type': GridGroup,
   'add-secondary-policy-holder': GridGroup,
-  'extra-coverages': GridGroup
+  'extra-coverages': GridGroup,
+  'extras': GridGroup,
+  'pets': GridGroup,
+  'roof-material': GridGroup,
+  'roof-shape': GridGroup,
+  'primary-heat-source': GridGroup,
+  'valuables': GridGroup,
+  'any-updates': GridGroup,
+  'plan-type': GridGroup,
 }
 
 export const TYPE_HANDLERS: Record<Node['kind'], any> = {

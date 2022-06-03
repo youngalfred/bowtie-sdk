@@ -22,7 +22,7 @@ export const makeFieldGroups = (
         // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
         if (["multigroup", "fieldgroup"].includes(kind)) {
           groupDecorations = DECORATORS[groupRest.id] || groupDecorations
-          console.log({ id: groupRest.id, groupDecorations })
+          // console.log({ id: groupRest.id, decorationsSize: Object.keys(groupDecorations).length })
           return [
             ...acc,
             modifyFieldGroup({
@@ -43,7 +43,12 @@ export const makeFieldGroups = (
             throw new Error('Unexpected type hidden. Should have been filtered out already.')
         }
 
-        console.log({groupDecorations, id: id.split('.').pop() })
+        // console.log({groupDecorations, id: id.split('.').pop(), fullid: id })
+        const idParts = id.split(".")
+        let target = idParts.pop()
+        if (target === 'hasUpdate') {
+          target = idParts.pop()
+        }
         return [
           ...acc,
           {
@@ -52,7 +57,7 @@ export const makeFieldGroups = (
             placeholder: '',
             subtitle: '',
             info: '',
-            decoration: groupDecorations[id.split(".").pop() || ''] || '',
+            decoration: groupDecorations[target || ''] || '',
             key: '',
             warning: inReview ? warning: '',
             valid,
