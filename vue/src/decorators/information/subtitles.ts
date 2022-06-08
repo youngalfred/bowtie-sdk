@@ -1,7 +1,6 @@
-import { Info } from ".";
 
 // more subtitles to follow
-export const subtitles: Info = {
+export const subtitles = {
     "home.dateOfPurchase": "If you have not yet purchased this property, put your expected closing date.",
 };
 

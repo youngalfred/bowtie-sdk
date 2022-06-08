@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit && vite build && cp -r src/assets/* dist",
     "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../vue/dist' node index.js",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit"

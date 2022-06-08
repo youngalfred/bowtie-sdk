@@ -119,7 +119,7 @@ const router = createRouter({
     {
       path: '/submit',
       name: 'Submit',
-      component: () => import('../views/Success.vue'),
+      component: () => import('../views/Submit.vue'),
       beforeEnter: enforceValidPortfolio,
     }
   ]

@@ -1,4 +1,3 @@
-import { Info } from ".";
 
 const economyGrade = `
 **Cabinets:** Economy grade cabinets usually have the cheapest
@@ -115,7 +114,7 @@ property damage and liability losses arising out of fungi, wet or dry
 rot, or bacteria.`;
 
 
-export const keysAndTexts: Info = {
+export const keysAndTexts = {
     "home.interiorFinishingQuality-economy": economyGrade,
     "home.interiorFinishingQuality-builder": buildersGrade,
     "home.interiorFinishingQuality-semiCustom": semicustomGrade,

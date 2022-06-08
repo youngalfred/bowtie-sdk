@@ -1,8 +1,8 @@
 export const updates: Record<string, string> = {
-    electrical: "src/assets/updates/electrical.png",
-    waterHeater: "src/assets/updates/water-heater.png",
-    heating: "src/assets/updates/heating.png",
-    plumbing: "src/assets/updates/plumbing.png",
-    roof: "src/assets/updates/roof.png",
-    _hasUpdate: "src/assets/icons/nothing.png",
+    electrical: "updates/electrical.png",
+    waterHeater: "updates/water-heater.png",
+    heating: "updates/heating.png",
+    plumbing: "updates/plumbing.png",
+    roof: "updates/roof.png",
+    _hasUpdate: "icons/nothing.png",
 };

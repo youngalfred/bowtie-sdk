@@ -1,16 +1,16 @@
 /* The "-M" convention here indicates that we should use a different illustration for mobile homes. */
 
 export const foundation: Record<string, string> = {
-    stilts: "src/assets/foundation/stilts.jpg",
-    closed: "src/assets/foundation/closed.jpg",
-    hillsideFoundation: "src/assets/foundation/hillside.jpg",
-    postPier: "src/assets/foundation/post-pier.jpg",
-    postAndPier: "src/assets/foundation/post-pier.jpg",
-    slab: "src/assets/foundation/slab.jpg",
-    walkout: "src/assets/foundation/walkout.jpg",
-    basement: "src/assets/foundation/continuous-masonry.jpg",
-    crawl: "src/assets/foundation/crawl.jpg",
-    "slab-M": "src/assets/foundation/slab-mobile.jpg",
-    "crawl-M": "src/assets/foundation/crawl.jpg",
-    "walkout-M": "src/assets/foundation/walkout-mobile.jpg",
+    stilts: "foundation/stilts.jpg",
+    closed: "foundation/closed.jpg",
+    hillsideFoundation: "foundation/hillside.jpg",
+    postPier: "foundation/post-pier.jpg",
+    postAndPier: "foundation/post-pier.jpg",
+    slab: "foundation/slab.jpg",
+    walkout: "foundation/walkout.jpg",
+    basement: "foundation/continuous-masonry.jpg",
+    crawl: "foundation/crawl.jpg",
+    "slab-M": "foundation/slab-mobile.jpg",
+    "crawl-M": "foundation/crawl.jpg",
+    "walkout-M": "foundation/walkout-mobile.jpg",
 };

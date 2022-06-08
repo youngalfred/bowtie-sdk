@@ -1,6 +1,6 @@
 export const family: Record<string, string> = {
-    "_children": "src/assets/family/children.png",
-    "_tenants": "src/assets/family/roomers.png",
-    "_otherFamilies": "src/assets/family/families.png",
-    "_adults": "src/assets/family/adults.png",
+    "_children": "family/children.png",
+    "_tenants": "family/roomers.png",
+    "_otherFamilies": "family/families.png",
+    "_adults": "family/adults.png",
 };

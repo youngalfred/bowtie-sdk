@@ -1,16 +1,11 @@
 <script setup lang="ts">
     import type { PropType } from 'vue';
     import { RouterLink } from 'vue-router'
-
-    type Action = {
-        path: string
-        label: string
-        disabled: boolean
-    }
+    import type { ButtonAction } from '@/types/props'
 
     const {buttons} = defineProps({
         buttons: {
-            type: Object as PropType<Action[]>,
+            type: Object as PropType<ButtonAction[]>,
             required: true
         }
     })

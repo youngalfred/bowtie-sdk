@@ -13,7 +13,9 @@
 </script>
 
 <template>
+    <!-- :style="{ 'grid-template-columns': `repeat(${field.children.length}, minmax(125px, 175px))` }" -->
 <div class="question" >
+
     <div :id="field.id" v-for="child of field.children" :key="child.id">
         <Renderer :field="child"/>
     </div>
@@ -23,7 +25,9 @@
 <style scoped>
     .question {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+        grid-template-rows: repeat;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        max-width: 100%;
         grid-gap: 1em;
     }
 </style>

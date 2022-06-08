@@ -1,9 +1,9 @@
 export const roofshape = {
-    hip: "src/assets/roofshape/hip.png",
-    gable: "src/assets/roofshape/gable.png",
-    shed: "src/assets/roofshape/shed.png",
-    mansard: "src/assets/roofshape/mansard.png",
-    complex: "src/assets/roofshape/complex.png",
-    gambrel: "src/assets/roofshape/gambrel.png",
-    flat: "src/assets/roofshape/flat.png",
+    hip: "roofshape/hip.png",
+    gable: "roofshape/gable.png",
+    shed: "roofshape/shed.png",
+    mansard: "roofshape/mansard.png",
+    complex: "roofshape/complex.png",
+    gambrel: "roofshape/gambrel.png",
+    flat: "roofshape/flat.png",
 };

@@ -4,6 +4,8 @@
   import { storeToRefs } from 'pinia';
   import NavBar from '../components/NavBar.vue';
   import type { SDKField, SDKInputField } from '@/types';
+  import type { ButtonAction } from '@/types/props'
+
   const { app, request } = storeToRefs(usePortfolio())
 
   const makeNextButton = (valid: boolean, {'start.policyType': policyType }: Record<string, SDKField>) => {
@@ -31,15 +33,15 @@
 
 <template>
   <PolicySection section='home-summary' />
-  <NavBar :buttons="[
-    {
-      label: 'Back',
-      path: '/policy-details',
-      disabled: false
-    },
-    makeNextButton(app.valid, request(['start.policyType']))
-    
-  ].filter(b => b)"/>
+  <NavBar :buttons="([
+      {
+        label: 'Back',
+        path: '/policy-details',
+        disabled: false
+      },
+      makeNextButton(app.valid, request(['start.policyType']))
+      
+    ].filter(b => b) as ButtonAction[])"/>
 </template>
 
 <style>

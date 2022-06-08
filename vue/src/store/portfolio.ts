@@ -26,7 +26,6 @@ export const usePortfolio = defineStore('portfolio', {
       const requestedFieldSet = new Set(fieldIds)
 
       const findField = (acc: Record<string, SDKField>, nextNode: SDKField): Record<string, SDKField> => {
-        console.log(nextNode.id)
         if (requestedFieldSet.has(nextNode.id)) {
           acc[nextNode.id] = nextNode
         }
