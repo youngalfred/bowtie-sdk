@@ -4,11 +4,8 @@ const axios = require("axios");
 const cors = require("cors");
 const FormData = require("form-data");
 const { uploadConfig, uploadFile: makeFileUploadFn, getFileData } = require("./fileUpload");
-const angularOrigin = "http://localhost:4200";
-const corsOptions = {
-    origin: [angularOrigin],
-    credentials: true
-};
+const { getAutoRoutes } = require("./auto");
+const morgan = require("morgan")
 
 /* This configuration information should use the _testing_ integration
 ID until you're ready to go live.  These IDs help to maintain the
@@ -30,10 +27,10 @@ if (!api_key) {
 const app = express();
 const uploadFile = makeFileUploadFn(BOWTIE_API_URL, api_key);
 
-// For development purposes only
-if (process.env.NODE_ENV === 'local') {
-    app.use(cors(corsOptions));
-}
+// development helpers
+app.use(morgan('tiny'));
+app.use(cors());
+
 
 app.use(function (req, res, next) {
     var filename = path.basename(req.url);
@@ -43,7 +40,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(express.json({limit: '50mb'}));
-app.use(express.urlencoded({limit: '50mb'}));
+app.use(express.urlencoded({ extended: true, limit: '50mb'}));
 
 /* The static resources to be served to your customer.  If it has been
    built correctly, the demo implementation's content will be
@@ -93,15 +90,15 @@ app.post("/file", uploadConfig.any(), async (req, res) => {
 });
 
 app.post("/portfolio/submit", (req, res) => {
-    const requestData = req.body.data;
-    console.log("Request:\n\n", JSON.stringify(req.body.data, null, 2));
+    const { application } = req.body;
+    console.log("Request:\n\n", JSON.stringify(application, null, 2));
 
     axios
-        .post(`${BOWTIE_API_URL}/v1/portfolio`, requestData, {
+        .post(`${BOWTIE_API_URL}/v1/portfolio`, application, {
             headers: {
                 "Content-Type": "application/json",
                 "x-api-key": api_key,
-                "bowtie-api-version": req.headers["bowtie-api-version"] || "2021-11-05",
+                "bowtie-api-version": req.headers["bowtie-api-version"], // automatically sent by the sdk
             },
         })
         .then((result) => {
@@ -111,7 +108,6 @@ app.post("/portfolio/submit", (req, res) => {
             res.status(202).json({
                 message: "Portfolio was successfully submitted",
                 portfolioId: result.data.objectId,
-                kind: "success",
             });
         })
         .catch((error) => {
@@ -153,6 +149,8 @@ app.get("/portfolio/status", (req, res) => {
             });
     }
 });
+
+app.use("/auto", getAutoRoutes(BOWTIE_API_URL, api_key))
 
 app.listen(PORT, () => {
     console.log(`Bowtie proxy server listening at http://localhost:${PORT}`);

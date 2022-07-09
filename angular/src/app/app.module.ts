@@ -11,6 +11,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { RadioFieldComponent } from './radio-field/radio-field.component';
 import { InfoHoverComponent } from './info-hover/info-hover.component';
 import { FileFieldComponent } from './file-field/file-field.component';
+import { FieldComponent } from './field/field.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -21,7 +23,8 @@ import { FileFieldComponent } from './file-field/file-field.component';
     CheckboxFieldComponent,
     RadioFieldComponent,
     InfoHoverComponent,
-    FileFieldComponent
+    FileFieldComponent,
+    FieldComponent
   ],
   imports: [
     BrowserModule,

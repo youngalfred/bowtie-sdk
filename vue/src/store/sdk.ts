@@ -12,7 +12,7 @@ import { computed, reactive } from 'vue'
     //                 if (field && field.value !== value) {
     //                     app.portfolio.set(field, value);
     //                     console.log('updated ' + field.id)
-    //                     // window.sessionStorage.setItem("young_alfred", JSON.stringify(me.portfolio.application));
+    //                     // window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(me.portfolio.application));
     //                 }
     //             };
     //         }

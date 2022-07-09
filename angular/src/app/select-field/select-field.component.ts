@@ -20,6 +20,10 @@ export class SelectFieldComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     const options = this.field?.options || [];
+    this.updateOptions(options)
+  }
+
+  updateOptions(options: {name: string, label: string}[]) {
     // Insert an empty option when an option is NOT pre-selected
     this.options = this.field.value ? options : [{ name: "", label: "" }, ...options];
 
@@ -27,7 +31,8 @@ export class SelectFieldComponent implements OnInit, OnChanges {
     this.adaptForMultiSelect();
   }
 
-  ngOnChanges(_: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {
+    this.updateOptions(changes.field.currentValue.options)
     this.adaptForMultiSelect();
   }
 

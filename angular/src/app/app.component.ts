@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services/http';
-import { Portfolio, FieldType, InputFieldType, FieldGroup } from "@youngalfred/bowtie-sdk";
+import { Portfolio, FieldType, InputFieldType, FieldGroup, BowtieSdkConfig } from "@youngalfred/bowtie-sdk";
 import { AppFieldGroup, GroupOrField } from 'src/types';
 import { makeTestId } from 'src/utilities/groupModifiers';
 import { combineClasses } from './shared/fields';
+import { applySideEffectFor } from 'src/utilities';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,7 +14,38 @@ import { combineClasses } from './shared/fields';
 
 export class AppComponent implements OnInit {
   title = 'bowtie-sdk-angular-12-demo';
+  private base = 'http://localhost:3001';
 
+  private bowtieConfig: BowtieSdkConfig = {
+    // we provide defaults values for the below endpoints,
+    // but feel free to customize as desired:
+    apiUrls: {
+      submit: `${this.base}/portfolio/submit`,
+      getAutoByVin: `${this.base}/auto/vin/`, // notice the trailing "/"
+      getAutoMakesByYear: `${this.base}/auto/makes`,
+      getAutoModelsByYearAndMake: `${this.base}/auto/models`,
+      getAutoBodyStylesByYearMakeAndModel: `${this.base}/auto/bodystyles`
+    },
+    /**
+     * The sdk will retry failed requests (for the above api endpoints)
+     * three times at most (after the initial failure) when one of the following conditions is met:
+     * - an http error code that you specified in the retryErrorCodes section below is received
+     * - the request fails to send
+     * - no response is received (timeout)
+     */
+    retryErrorCodes: {
+      submit: [500, 503, 504], // please do not retry when the bowtie api returns a 400 error
+      /**
+       * By omitting retry codes for the following endpoints,
+       * you are signaling not to retry failed requests for said endpoints:
+       * 
+       * - getAutoByVin: [],
+       * - getAutoMakesByYear: [],
+       * - getAutoModelsByYearAndMake: [],
+       * - getAutoBodyStylesByYearMakeAndModel: [],
+       */
+    }
+  }
   public portfolio: Portfolio;
   public invalidFieldsAreHighlighted: boolean = false;
   public isPortolioSubmitted: boolean = false;
@@ -64,7 +97,7 @@ export class AppComponent implements OnInit {
   // which may not exist
   maybeLocalstore = () => {
     try {
-      const application = window.sessionStorage.getItem("young_alfred");
+      const application = window.localStorage.getItem("bowtie_sdk_demo");
       return JSON.parse(application ? application : "{}");
     } catch (e) {
       console.log(e);
@@ -78,7 +111,7 @@ export class AppComponent implements OnInit {
     const field = this.portfolio.find(fieldname) as InputFieldType;
     if (field && field.value !== value) {
       this.portfolio.set(field, value);
-      window.sessionStorage.setItem("young_alfred", JSON.stringify(this.portfolio.application));
+      window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(this.portfolio.application));
     }
   };
 
@@ -109,6 +142,7 @@ export class AppComponent implements OnInit {
         classes: combineClasses(child, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
         onChange: this.updateField(id),
+        sideEffect: applySideEffectFor(this.portfolio, { id, ...rest }),
         ...rest.kind === "file"
           ? {
             uploadFiles: (files: File[]) => this.httpService.uploadFiles(files, this.httpHeaders)
@@ -139,7 +173,10 @@ export class AppComponent implements OnInit {
 
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
   constructor(private httpService: HttpService) {
-    this.portfolio = new Portfolio(this.maybeLocalstore());
+    this.portfolio = new Portfolio({
+      ...this.bowtieConfig,
+      application: this.maybeLocalstore()
+    });
 
     // Optional: prefill aspects of the portfolio here.
     // You will likely require a "mapper" to bridge the gap between
@@ -150,13 +187,12 @@ export class AppComponent implements OnInit {
   }
 
   // Once the portfolio has been completely filled out,
-  // submit the application using your integration token below
-  // OR your api key from the express server
-  submit = () => {
+  // submit the application to your proxy server (and then to the api with your api key)
+  submit = async () => {
     const data = this.portfolio.payload;
 
-    this.httpService.submit(data, this.httpHeaders)
-      .subscribe(resp => {
+    await this.portfolio.submit({ headers: this.httpHeaders })
+      .then(resp => {
         this.isPortolioSubmitted = true;
         console.log("Submit response: ", resp);
       }, err => {

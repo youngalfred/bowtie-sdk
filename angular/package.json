@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../angular/dist/bowtie-sdk-angular-demo' node index.js",
+    "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../angular/dist/bowtie-sdk-angular-demo' npm run dev",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"

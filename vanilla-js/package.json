@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "rimraf build/* && webpack --config webpack.config.js && cp -R images build/",
-        "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../vanilla-js/build' node index.js",
+        "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../vanilla-js/build' npm run dev",
         "test": "cd tests && npx wdio wdio.conf.js"
     },
     "repository": {

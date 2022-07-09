@@ -1,0 +1,5 @@
+<checkbox-field *ngIf="field.kind === 'check'" [field]="field"></checkbox-field>
+<text-field *ngIf="field.kind === 'text'" [field]="field"></text-field>
+<select-field *ngIf="field.kind === 'select'" [field]="field"></select-field>
+<radio-field *ngIf="field.kind === 'radio'" [field]="field"></radio-field>
+<file-field *ngIf="field.kind === 'file'" [field]="field"></file-field>

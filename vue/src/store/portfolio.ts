@@ -5,8 +5,6 @@ import { getQuestionsForPage } from '@/data/pages'
 import type { HomeSection } from '@/data/pages/home'
 import type { AutoSection } from '@/data/pages/auto'
 
-
-
 export const usePortfolio = defineStore('portfolio', {
   // a function that returns a fresh state
   state: () => ({
@@ -31,7 +29,7 @@ export const usePortfolio = defineStore('portfolio', {
           app.set(field, value);
           console.log({value: app.find(fieldname)?.value })
           self.app = app
-          // window.sessionStorage.setItem("young_alfred", JSON.stringify(this.app.application));
+          // window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(this.app.application));
         }
       };
     }

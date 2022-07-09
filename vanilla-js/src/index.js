@@ -30,27 +30,58 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
+const { Portfolio } = require("@youngalfred/bowtie-sdk");
 const FileField = require("./file-field");
 
-// Attempt to recover an item from the sessionStorage (the current
+const bowtieConfig = {
+    // We provide defaults values for the below endpoints,
+    // but feel free to customize as needed:
+    apiUrls: {
+      submit: "/portfolio/submit",
+      getAutoByVin: "/auto/vin/", // notice the trailing "/"
+      getAutoMakesByYear: "/auto/makes",
+      getAutoModelsByYearAndMake: "/auto/models",
+      getAutoBodyStylesByYearMakeAndModel: "/auto/bodystyles"
+    },
+    /**
+     * The sdk will retry failed requests (for the above api endpoints)
+     * three times at most (after the initial failure) when one of the following conditions is met:
+     * - an http error code that you specified in the retryErrorCodes section below is received
+     * - the request fails to send
+     * - no response is received (timeout)
+     */
+    retryErrorCodes: {
+      submit: [500, 503, 504], // please do not retry when the api returns a 400 error
+      /**
+       * By omitting retry codes for the following endpoints,
+       * you are signaling not to retry failed requests:
+       * 
+       * - getAutoByVin: [],
+       * - getAutoMakesByYear: [],
+       * - getAutoModelsByYearAndMake: [],
+       * - getAutoBodyStylesByYearMakeAndModel: [],
+       */
+    }
+}
+
+// Attempt to recover an item from the localStorage (the current
 // live browser tab or window _only_; this information will disappear
 // when you close the tab or window).
 
 function maybeLocalstore() {
     try {
-        const application = window.sessionStorage.getItem("young_alfred");
+        const application = window.localStorage.getItem("bowtie_sdk_demo");
         return JSON.parse(application ? application : "{}");
     } catch (e) {
         console.log(e);
         return {};
     }
-}
+};
 
 (function () {
     // The portfolio object this session is managing.
 
-    portfolio = new Portfolio(maybeLocalstore());
+    portfolio = new Portfolio({ ...bowtieConfig, application: maybeLocalstore() });
 
     // When complete, we should get back a valid portfolio ID.
 
@@ -85,7 +116,7 @@ function maybeLocalstore() {
     // fairly standard behavior: an object with an ID generates an event that
     // will then trigger an update.  The event handler has four side-effects:
     // - it updates the portfolio
-    // - it saves the portfolio to sessionStorage
+    // - it saves the portfolio to localStorage
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
@@ -95,7 +126,7 @@ function maybeLocalstore() {
             event.preventDefault();
             eventValueExtractor(event).then(value => {
                 portfolio.set(node, value);
-                window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(portfolio.application));
 
                 // Because the portfolio tree of questions may change on
                 // every update, requiring a re-render, the focus of the
@@ -317,7 +348,7 @@ function maybeLocalstore() {
                     handler: function () {
                         const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
                         portfolio.set(node, JSON.stringify(newValue));
-                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                        window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(portfolio.application));
                         setTimeout(renderPortfolio, 0);
                     },
                 }))
