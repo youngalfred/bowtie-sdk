@@ -32,7 +32,9 @@
 */
 const { Portfolio } = require("@youngalfred/bowtie-sdk");
 const FileField = require("./file-field");
+const getSideEffectFor = require("./side-effects");
 
+const prevFields = {}
 const bowtieConfig = {
     // We provide defaults values for the below endpoints,
     // but feel free to customize as needed:
@@ -41,7 +43,7 @@ const bowtieConfig = {
       getAutoByVin: "/auto/vin/", // notice the trailing "/"
       getAutoMakesByYear: "/auto/makes",
       getAutoModelsByYearAndMake: "/auto/models",
-      getAutoBodyStylesByYearMakeAndModel: "/auto/bodystyles"
+      getAutoBodyTypesByYearMakeAndModel: "/auto/bodystyles"
     },
     /**
      * The sdk will retry failed requests (for the above api endpoints)
@@ -51,7 +53,7 @@ const bowtieConfig = {
      * - no response is received (timeout)
      */
     retryErrorCodes: {
-      submit: [500, 503, 504], // please do not retry when the api returns a 400 error
+      submit: [500, 503, 504],
       /**
        * By omitting retry codes for the following endpoints,
        * you are signaling not to retry failed requests:
@@ -59,7 +61,7 @@ const bowtieConfig = {
        * - getAutoByVin: [],
        * - getAutoMakesByYear: [],
        * - getAutoModelsByYearAndMake: [],
-       * - getAutoBodyStylesByYearMakeAndModel: [],
+       * - getAutoBodyTypesByYearMakeAndModel: [],
        */
     }
 }
@@ -78,7 +80,7 @@ function maybeLocalstore() {
     }
 };
 
-(function () {
+(async function () {
     // The portfolio object this session is managing.
 
     portfolio = new Portfolio({ ...bowtieConfig, application: maybeLocalstore() });
@@ -86,6 +88,8 @@ function maybeLocalstore() {
     // When complete, we should get back a valid portfolio ID.
 
     portfolioId = null;
+
+    sideEffects = [];
 
     // After a round-trip through your local service, this will be
     // populated with the results of your submission.
@@ -279,7 +283,6 @@ function maybeLocalstore() {
     }
 
     // Render a <select> input object for enumerated fields.
-
     function renderSelect(node) {
         const mid = m(node.id);
         tabIndex++;
@@ -322,16 +325,15 @@ function maybeLocalstore() {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
                 return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
-                    return new Promise((resolve, _reject) => {
-                        const { value = "", options } = event.target;
-                        const label = Array.from(options).find((o) => o.selected)?.label;
 
-                        if (!label) {
-                            throw new Error("Developer error. Unable to find label of selected option.");
-                        }
-    
-                        resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
-                    })
+                    const { value = "", options } = event.target;
+                    const label = Array.from(options).find((o) => o.selected)?.label;
+
+                    if (!label) {
+                        throw new Error("Developer error. Unable to find label of selected option.");
+                    }
+
+                    Promise.resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
                 } : undefined);
             }),
         },
@@ -447,6 +449,13 @@ function maybeLocalstore() {
         }
 
         node.children.forEach(function (childnode) {
+            const sideEffect = getSideEffectFor(portfolio, childnode);
+            // Currently, only select & text fields have side effects
+            if (sideEffect && prevFields[childnode.id]?.value !== childnode.value) {
+                sideEffects.push(sideEffect)
+                prevFields[childnode.id] = childnode;
+            }
+
             switch (childnode.kind) {
                 case "hidden":
                     break;
@@ -500,7 +509,7 @@ function maybeLocalstore() {
                 },
             })
                 .then(function (response) {
-                    response.json().then(function (result) {
+                    response.json().then(async function (result) {
                         portfolioId = result.portfolioId;
                         validationDetails = {
                             valid: result.kind === "success",
@@ -516,7 +525,7 @@ function maybeLocalstore() {
                                 : [],
                         };
                         console.log(validationDetails);
-                        renderPortfolio();
+                        await renderPortfolio();
                     });
                 })
                 .catch(function (response) {
@@ -573,15 +582,13 @@ function maybeLocalstore() {
         );
     }
 
-    function renderFinished() { }
-
     let previousEvents = [];
 
     // The root renderer.  One thing you can be assured of is thatthe
     // all objects of the `portfolio.view` root are Fieldgroups, and
     // calling the `renderFieldgroup()` function above is correct.
 
-    function renderPortfolio() {
+    async function renderPortfolio() {
         let innerHTML = "";
         let events = [];
         tabIndex = 0;
@@ -682,9 +689,24 @@ function maybeLocalstore() {
                     }
                 }
             }
+
+            (async function applySideEffects() {
+                let shouldRerender = false
+
+                for (let i = 0; i < sideEffects.length; i++) {
+                    if (await sideEffects[i]()) {
+                        shouldRerender = true
+                    }
+                }
+    
+                sideEffects = []
+                if (shouldRerender) {
+                    await renderPortfolio();
+                }
+            })()
         }, 0);
     }
 
     // Kickstart the Application process.
-    renderPortfolio();
+    await renderPortfolio();
 })();
