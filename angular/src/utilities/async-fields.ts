@@ -13,11 +13,14 @@ const getAutoWith17DigitVin: AsyncRuleMap[string] = (app, _field, [idxOfAuto = 0
 
         if (isValidVINLength) {
             await app.fillAutoWithVinData<VinData>(idxOfAuto, {
-                // Your result may differ, if your proxy server returns auto data
-                // in another format. The return value of the mapper MUST look the same, though.
+                // If your proxy server returns auto data in another format OR
+                // from a source besides the bowtie api, your result mapper will
+                // likely look different. Regardless, the return value of the mapper MUST
+                // be an object containing a year, make, model, and bodyType.
                 resultsMapper: ({ year, make, model, bodyStyle }) => ({ year, make, model, bodyType: bodyStyle }),
+                // ... any request headers you wish to send
                 headers: {
-                    // ... any request headers you wish to send
+                        // 'x-session-id': ...,
                 }
             })
         }
@@ -38,7 +41,14 @@ const overrideOptionsFor = <T>(
     (app, field, [idxOfAuto = 0]) => async (): Promise<void> => {
         const idPrefix = `auto.autos.${idxOfAuto}.`
         const shallOverrideOptions = (
+            // When the year entered is earlier than 1981,
+            // the car identity fields (make, model, body type)
+            // become text inputs because the national vin service
+            // does not have record of vehicles older than 1981. 
             field.kind === "select"
+            // For example, ensure year has been
+            // selected before trying to retrieve
+            // makes by year
             && !!field.value
             // only override options when not using the sister service: vin prefill,
             // which causes the options to be length 1
@@ -49,8 +59,9 @@ const overrideOptionsFor = <T>(
             try {
                 await app[sdkAutoFns[key]]?.(idxOfAuto, {
                     resultsMapper,
+                    // any request headers you might want to send to your proxy server
                     headers: {
-                        // any request headers you might want to send to your proxy server
+                        // 'x-session-id': ...,
                     }
                 })
             } catch (err: any) {
@@ -70,9 +81,9 @@ const overrideOptionsFor = <T>(
                     throw new Error("Ensure the auto field ids align with your expectations.")
                 }
                 fieldsToConvert.slice(idxOfCurrent).forEach(keyOfFailure => {
-                    // vin service is down,
-                    // but customers still need the ability
-                    // to enter their car's data:
+                    // the vin service is down, but customers still need the ability
+                    // to enter their car's data. For that reason, convert the
+                    // select field to a text input field to allow customers to continue.
                     app._overwriteField(`${idPrefix}${keyOfFailure}`, { kind: 'text' })
                 })
             }
@@ -90,6 +101,11 @@ type AsyncRuleMap = Record<
 
 const fieldsWithSideEffects: AsyncRuleMap = {
     'auto.autos.n.vinNumber': getAutoWith17DigitVin,
+
+    // If your proxy server returns makes, models, and body types in another format OR
+    // from a source besides the bowtie api, your result mappers will
+    // likely look different. Regardless, the return value of the mapper MUST
+    // be a list of options ({ name: string, label: string }).
     'auto.autos.n.year': overrideOptionsFor<MakesData>('make',
         ({ makes }) => makes.map(({ description }) => ({ name: description, label: description }))
     ),

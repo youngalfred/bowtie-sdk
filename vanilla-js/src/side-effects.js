@@ -8,8 +8,12 @@ const getAutoWith17DigitVin = (app, _field, [idxOfAuto = 0]) => async () => {
         if (isValidVINLength) {
             try {
                 await app.fillAutoWithVinData(idxOfAuto, {
-                    // Your result may differ, assuming your proxy server returns auto data
-                    // in another format. The return value of the mapper MUST look the same, though.
+                    /**
+                     * If your proxy server returns auto data in another format OR
+                     * from a source besides the bowtie api, your result mapper will
+                     * likely look different. Regardless, the return value of the mapper MUST
+                     * be an object containing a year, make, model, and bodyType.
+                     */
                     resultsMapper: ({ year, make, model, bodyStyle }) => ({ year, make, model, bodyType: bodyStyle }),
                     headers: {
                         // ... any request headers you wish to send
@@ -39,17 +43,18 @@ const overrideOptionsFor = (
     (app, field, [idxOfAuto = 0]) => async () => {
         const idPrefix = `auto.autos.${idxOfAuto}.`
         const shallOverrideOptions = (
-            // When the year entered is earlier than 1981,
-            // the car identity fields (make, model, body type)
-            // become text inputs because the national vin service
-            // does not have record of vehicles older than 1981. 
+            /**
+             * When the year entered is earlier than 1981,
+             * the car identity fields (make, model, body type)
+             * become text inputs because the national vin service
+             * does not have record of vehicles older than 1981. 
+             */
             field.kind === "select"
-            // For example, ensure year has been
-            // selected before trying to retrieve
-            // makes by year
+            // For example, ensure year has been selected before
+            // trying to retrieve makes by year
             && !!field.value
-            // only override options when not using the sister service: vin prefill,
-            // which causes the options to be length 1
+            // only override options when not using the sister service:
+            // vin prefill, which causes the options to be length 1
             && field.options.length !== 1
         )
 
@@ -66,7 +71,6 @@ const overrideOptionsFor = (
             })
             return true
         } catch (err) {
-            console.log({err})
             const wasCarAlreadyRetrievedByVin = (err?.code || '') === 'ABORT_AUTO_OPTIONS_OVERRIDE'
 
             if (wasCarAlreadyRetrievedByVin) {
@@ -83,9 +87,11 @@ const overrideOptionsFor = (
                 throw new Error("Ensure the auto field ids align with your expectations.")
             }
             fieldsToConvert.slice(idxOfCurrent).forEach(keyOfFailure => {
-                // vin service is down,
-                // but customers still need the ability
-                // to enter their car's data:
+                /**
+                 * the vin service is down, but customers still need the ability
+                 * to enter their car's data. For that reason, convert the
+                 * select field to a text input field to allow customers to continue.
+                 */
                 app._overwriteField(`${idPrefix}${keyOfFailure}`, { kind: 'text' })
             })
             return true
@@ -94,6 +100,12 @@ const overrideOptionsFor = (
 
 const fieldsWithSideEffects = {
     'auto.autos.n.vinNumber': getAutoWith17DigitVin,
+    /**
+     * If your proxy server returns makes, models, and body types in another format OR
+     * from a source besides the bowtie api, your result mappers will
+     * likely look different. Regardless, the return value of the mapper MUST
+     * be a list of options ({ name: string, label: string }).
+     */
     'auto.autos.n.year': overrideOptionsFor('make',
         ({ makes }) => makes.map(({ description }) => ({ name: description, label: description }))
     ),
