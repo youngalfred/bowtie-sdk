@@ -22,7 +22,7 @@ export class HttpService {
         return new HttpHeaders(combinedHeaders);
     }
 
-    uploadFiles = async (files: File[], headers: Record<string, string>): Promise<{ fileName: string; objectId: string; }[]> => {
+    uploadFiles = async (files: File[], headers: Record<string, string> = {}): Promise<{ fileName: string; objectId: string; }[]> => {
         const results: { fileName: string; objectId: string }[] = [];
     
         for (let i = 0; i < files.length; i += 1) {

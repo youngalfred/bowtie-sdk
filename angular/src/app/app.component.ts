@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services/http';
-import { Portfolio, FieldType, InputFieldType, FieldGroup, BowtieSdkConfig } from "@youngalfred/bowtie-sdk";
+import { Portfolio, FieldType, InputFieldType, FieldGroup, BowtieSdkConfig, SubmitError, ISubmitResult } from "@youngalfred/bowtie-sdk";
 import { AppFieldGroup, GroupOrField } from 'src/types';
 import { makeTestId } from 'src/utilities/groupModifiers';
 import { combineClasses } from './shared/fields';
-import { applySideEffectFor } from 'src/utilities';
+import { getSideEffectFor } from 'src/utilities/async-fields';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
       getAutoByVin: `${this.base}/auto/vin/`, // notice the trailing "/"
       getAutoMakesByYear: `${this.base}/auto/makes`,
       getAutoModelsByYearAndMake: `${this.base}/auto/models`,
-      getAutoBodyStylesByYearMakeAndModel: `${this.base}/auto/bodystyles`
+      getAutoBodyTypesByYearMakeAndModel: `${this.base}/auto/bodystyles`
     },
     /**
      * The sdk will retry failed requests (for the above api endpoints)
@@ -42,7 +42,7 @@ export class AppComponent implements OnInit {
        * - getAutoByVin: [],
        * - getAutoMakesByYear: [],
        * - getAutoModelsByYearAndMake: [],
-       * - getAutoBodyStylesByYearMakeAndModel: [],
+       * - getAutoBodyTypesByYearMakeAndModel: [],
        */
     }
   }
@@ -50,7 +50,6 @@ export class AppComponent implements OnInit {
   public invalidFieldsAreHighlighted: boolean = false;
   public isPortolioSubmitted: boolean = false;
   public portfolioId: string = "";
-  public httpHeaders: Record<string, string> = {};
 
   private hiddenFieldGroups: Set<string> = new Set([
     // "policy-type" // hide "policy-type" if you want to provide only home insurance 
@@ -86,12 +85,7 @@ export class AppComponent implements OnInit {
     // "home.numberOfMortgages": "n1",
   };
 
-  ngOnInit() {
-    this.httpHeaders = {
-      "x-integration-token": new URLSearchParams(window.location.search).get("integration") || "",
-      "bowtie-api-version": "2022-01-07",
-    };
-  }
+  ngOnInit() { }
 
   // Retrieve the localstorage application, 
   // which may not exist
@@ -142,10 +136,10 @@ export class AppComponent implements OnInit {
         classes: combineClasses(child, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
         onChange: this.updateField(id),
-        sideEffect: applySideEffectFor(this.portfolio, { id, ...rest }),
+        applySideEffect: getSideEffectFor(this.portfolio, { id, ...rest }),
         ...rest.kind === "file"
           ? {
-            uploadFiles: (files: File[]) => this.httpService.uploadFiles(files, this.httpHeaders)
+            uploadFiles: (files: File[]) => this.httpService.uploadFiles(files)
           } : {}
       }
     ];
@@ -191,13 +185,18 @@ export class AppComponent implements OnInit {
   submit = async () => {
     const data = this.portfolio.payload;
 
-    await this.portfolio.submit({ headers: this.httpHeaders })
-      .then(resp => {
-        this.isPortolioSubmitted = true;
-        console.log("Submit response: ", resp);
-      }, err => {
-        console.error(err);
+    try {
+      const { portfolioId = "", message } = await this.portfolio.submit({
+        headers: {
+          // any headers you might want to send to your proxy server
+        }
       });
+      this.portfolioId = portfolioId;
+      console.log({ message });
+    } catch (err: any) {
+      const error = err as SubmitError;
+      console.error(error);
+    }
   }
 
   // Necessary to maintain focus on text fields 

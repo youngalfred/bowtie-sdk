@@ -16,7 +16,7 @@ export class FieldComponent implements OnInit, OnChanges {
   
   async ngOnInit(): Promise<void> {
     this.field.id === "auto.autos.0.make" && console.log("updated")
-    await this.field.sideEffect?.(true)
+    await this.field.applySideEffect?.()
   }
 
   async ngOnChanges(changes: SimpleChanges) {
@@ -26,11 +26,12 @@ export class FieldComponent implements OnInit, OnChanges {
       ? [prevOptions, newOptions]
       : [newOptions, prevOptions]
 
-    if (prevValue !== currValue
-      || prevOptions.length !== newOptions.length
-      || longer.some((el, idx) => el.name !== shorter[idx]?.name)
+    if (
+      prevValue !== currValue
+        || prevOptions.length !== newOptions.length
+        || longer.some((el, idx) => el.name !== shorter[idx]?.name)
     ) {
-      await this.field.sideEffect?.(changes.field.previousValue === undefined)
+      await this.field.applySideEffect?.()
     }
   }
 }
