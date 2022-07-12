@@ -7,3 +7,9 @@ export const defineFieldProps = <Node>() => defineProps({
         required: true
     }
 })
+
+export type ButtonAction = {
+    path: string
+    label: string
+    disabled: boolean
+}

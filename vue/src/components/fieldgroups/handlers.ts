@@ -3,30 +3,37 @@
 import Text from '../fields/input/Text.vue'
 import Select from '../fields/input/Select.vue'
 import Check from '../fields/input/Check.vue'
+import Radio from '../fields/input/Radio.vue'
 import Fieldgroup from './Index.vue'
+import GridGroup from './GridGroup.vue'
 import type { Node } from '../../types'
 
-export const CUSTOM_HANDLERS = {
-  // 'auto.requestedPlanType': IconCardField),
-  // 'home.plan.requestedPlanType': IconCardField),
-  // 'home.propertyUse.rental.allTenantsRelated': RadioField,
-  // 'home.yearBuilt': LabeledField(PoppedField(IntegersInput)),
-  // 'rental-property-tenants': CardFieldgroup,
-  // 'secondary-months-occupied': CardFieldgroup,
-  // 'start.streetAddress': InformedField(TextInput),
-  // /^(home|auto)\.disclaimer$/: PoppedField(Checkbox),
-  // /^auto\.autos\.\d+\.driverIds$/: LabeledField(MultiCheckbox),
-  // /^home.seasonalUse.months(OccupiedByTenant|OccupiedByOwner|Vacant)$/: VerticalField(Dropdown),
-  
-  //  /^home\.propertyUse\.rental\.(adultTenants|tenantsUnder21|numberOfUnrelatedTenants)$/:
-  //  VerticalField(NumberInput),
-
+export const ID_HANDLERS: Record<string, any> = {
+  'house-type': GridGroup,
+  'construction-type': GridGroup,
+  'occupants': GridGroup,
+  'policy-type': GridGroup,
+  'start-name': GridGroup,
+  'start-address-n': GridGroup,
+  'gender': GridGroup,
+  'property-type': GridGroup,
+  'add-secondary-policy-holder': GridGroup,
+  'extra-coverages': GridGroup,
+  'extras': GridGroup,
+  'pets': GridGroup,
+  'roof-material': GridGroup,
+  'roof-shape': GridGroup,
+  'primary-heat-source': GridGroup,
+  'valuables': GridGroup,
+  'any-updates': GridGroup,
+  'plan-type': GridGroup,
+  'secondary-months-occupied': GridGroup,
 }
 
-// prettier-ignore
 export const TYPE_HANDLERS: Record<Node['kind'], any> = {
   'text': Text,
   'select': Select,
+  'radio': Radio,
   'check': Check,
   'file': null,
   'fieldgroup': Fieldgroup

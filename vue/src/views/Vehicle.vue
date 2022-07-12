@@ -1,6 +1,7 @@
 <script setup lang="ts">
     import PolicySection from '@/components/PolicySection.vue';
     import { useRoute } from 'vue-router';
+import NavBar from '../components/NavBar.vue';
  
     const route = useRoute();
 
@@ -12,6 +13,13 @@
 
 <template>
   <PolicySection :section="`vehicle-${cleanId(route.params?.id)}`" />
+  <NavBar :buttons="[
+    {
+      label: 'Go To Auto Hub',
+      path: '/auto-hub',
+      disabled: false,
+    }
+  ]"/>
 </template>
 
 <style>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 59.1 (86144) - https://sketch.com -->
+    <title>progressing</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Home-&amp;-Auto" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Review-Needs-2.1" transform="translate(-119.000000, -261.000000)">
+            <g id="Group-3" transform="translate(116.000000, 248.000000)">
+                <g id="Payment-method">
+                    <g id="progressing" transform="translate(0.000000, 10.000000)">
+                        <g>
+                            <circle id="Oval" stroke="#D8DCE3" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero" cx="14" cy="14" r="10"></circle>
+                            <path d="M14,24 C19.5228475,24 24,19.5228475 24,14 C24,8.4771525 19.5228475,4 14,4 C8.4771525,4 4,8.4771525 4,14 C4,19.5228475 8.4771525,24 14,24 Z" id="Oval-Copy" stroke="#FF8912" stroke-width="2" stroke-dasharray="11,55" fill-rule="nonzero" transform="translate(14.000000, 14.000000) rotate(-115.000000) translate(-14.000000, -14.000000) "></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

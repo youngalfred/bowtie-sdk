@@ -2,10 +2,10 @@
     import { usePortfolio } from '@/store/portfolio';
     import type {PropType } from 'vue'
     import Renderer from './Renderer.vue'
-    import { makeFieldGroups } from './fieldgroups/field-builder'
+    import { makeFieldGroups } from './fieldgroups/modifiers/field-builder'
     import type { HomeSection } from '@/data/pages/home'
     import { storeToRefs } from 'pinia';
-import type { AutoSection } from '@/data/pages/auto';
+    import type { AutoSection } from '@/data/pages/auto';
 
     const { section } = defineProps({
         section: {
@@ -15,18 +15,26 @@ import type { AutoSection } from '@/data/pages/auto';
     })
 
     const portfoliioStore = usePortfolio()
-    const { view } = storeToRefs(portfoliioStore)
+    const { view, inReview } = storeToRefs(portfoliioStore)
     
 </script>
 
 <template >
-    <div>
+    <div id='wrapper'>
     <Renderer
         v-for="field of makeFieldGroups(
             view(section),
-            portfoliioStore.updateField
+            portfoliioStore.updateField,
+            inReview
         )"
         :key="field.id"
         :field="field" />
     </div>
 </template>
+
+<style scoped>
+    #wrapper {
+        margin-bottom: 150px;
+        padding: 2rem;
+    }
+</style>

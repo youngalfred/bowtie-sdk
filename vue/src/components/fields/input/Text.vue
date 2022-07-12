@@ -13,6 +13,12 @@ import { onChange } from '../../../../../angular/src/utilities';
 </script>
 
 <template>
-    <input :id="field.id" :class="field.classes" :data-automation-id="field.id"
-        v-model="field.value" type='text' @change="onChange($event, field.onChange)">
+    <input
+        :id="field.id"
+        :class="field.classes"
+        :placeholder="field.placeholder"
+        :data-automation-id="field.id"
+        v-model="field.value"
+        type='text'
+        @change="onChange($event, field.onChange)">
 </template>
