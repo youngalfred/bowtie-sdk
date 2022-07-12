@@ -1,3 +1,113 @@
+## 2.0.0 (July 11, 2022)
+
+#### Portfolio Initialization & Sdk Config
+Prior to this change, the portfolio constructor accepted two arguments:
+    1. an application (you might have stored apps in local storage and updated them each time a customer edited a question)
+    2. a data model, which is the root field group of the tree of insurance questions (you've probably never used this argument before, and there's really no need to)
+We've updated the portfolio's constructor to accept an sdk config now, which is an object with the following properties (if you use TypeScript, you can import and take a look at the config type: `BowtieSdkConfig`):
+- application: this is the same as the previous constructor's first argument; it's simply an existing application (or a set of sdk answers) to base the newly created portfolio.
+- dataModel: this is the same as the previous constructor's second argument. You are not likely to use this property.
+- apiUrls: this is new. The sdk can be configured to send submission and auto retrieval requests to your proxy server. The apiUrls property allows you to specify the endpoint paths. For example, if the submit endpoint on your proxy server is `/api/v2/premium/insurance/submit`, you would specify this endpiont path by the following:
+
+```
+apiUrls: {
+    submit: '[the-host-if-necessary]/api/v2/premium/insurance/submit',
+    // You can also specify paths for api calls related to fetching and
+    // filling the car identity sections of an auto application:
+    // getAutoByVin
+    // getAutoMakesByYear
+    // getAutoModelsByYearAndMake
+    // getAutoBodyTypesByYearMakeAndModel
+}
+``` 
+- retryErrorCodes: this property is an object with the same properties as apiUrls (submit, getAutoByVin, etc...). However, the value associated with each api call is an array of http error status codes. If or when these status codes are encountered during api requests, the sdk will attempt to retry the request (up to 2 more times, yielding 3 possible attempts in total).
+The sdk will also retry requests that fail to send and requests where no response is received. If you omit an http status array for a given api call (submit, for example), the request will only be retried when it fails to send or when no response is received. The request will be retried only two times at most, no matter what caused the request error.
+
+The portfolio object can be initialized correctly with either a missing, empty, partial, or complete sdk config.
+
+#### Submission
+If you haven't been using the portfolio's submit method, we really hope you will moving forward! We've tried to make the method more friendly and, uh, usable in hopes that you'll adopt it. If you choose not to use the portfolio.submit() method, you will need to manage the `bowtie-api-version` header yourself when submitting to the Bowtie API, but you should just let us do that for you--just remember to forward the header when submitting from your proxy server to the Bowtie API.
+
+For a little more context, the sdk has always contained a `portfolio.submit()` method that would bundle the portfolio payload and ship it to a proxy server. If you are already aware of this function, you probably chose not to use it... and we don't blame you. The previous `.submit()` method dictated how you wrote your proxy server by requiring the submit endpoint to be located at `/api/v1/submit`, and it only sent the request headers we specified internally. Meaning, if your proxy server requires authentication before accepting requests, you could not use portfolio.submit(). Another frustration of the old implementation is that it swallowed the original http error and simply returned an object with a boolean `isSuccess` property. It really wasn't helpful for understanding what went wrong. Lastly, the old submit() function required an integration and a session token (as the first two arguments), which might have left you confused. There was no explanation for those arguments.
+
+We've already addressed the issue of dictating the path of your submit endpoint by offering the `apiUrls` option in the `BowtieSdkConfig`. As for passing custom headers, the new submit method accepts an optional options object that looks like the following:
+
+```
+portfolio.submit({
+    headers: {
+        'x-session-id': state.sessionId,
+        'Authorization': 'Bearer ${state.token}',
+        // anything else you want to specify
+    }
+})
+```
+In addition to the headers you provide, we set the `'Content-Type'` to `'application/json'` AND, more importantly, the `bowtie-api-version` header, which you should simply forward along when submitting from your proxy server to the Bowtie API.
+
+The submit method now throws an exception when the request fails (after all the retries have failed). The exception object is encompassed in the SubmitError type, and has the following properties:
+```
+{
+    message: string;
+    code: string;
+    data?: Object,
+    statusCode?: number;
+    statusText?: string;
+}
+```
+If you are unfamiliar with TypeScript, the `?` character marks properties as optional or possibly `undefined`.
+
+As of this release, the request body sent from portfolio.submit() is a JSON object with a single `application` property. Meaning, if you are using the Express framework for your proxy server, you can access the object with `req.body.application`, whereas in prior versions, you would have accessed it with `req.body.data.application`.
+
+#### Auto APIs
+The portfolio object now has four new methods that will fetch auto data and either update the auto's identity or update its options for the insurance applicant to select from. We recommend using the Bowtie API as the source of auto years, makes, models, and body types, but you may retrieve data from any source as long as your data conforms to the SDK's expected type and format:
+- fillAutoWithVinData: the auto for which you are fetching data must already have a 17-digit vin number associated with it before the sdk will allow the request
+- updateAutoMakeOptions
+- updateAutoModelOptions
+- updateAutoBodyTypeOptions
+Note: if the Bowtie API is your auto data source, the year must be between 1981 and the current year for the make, model, and body type queries.
+
+When invoking these methods from your UI, you must specify the index of the auto you wish to get data for as well as a result mapper that converts the data from your source to the object or options list used by the sdk:
+```
+await portfolio.updateAutoModelOptions(idxOfAuto, {
+    resultsMapper: (data) => data.models.map(({ model }) => ({ name: model, label: model })),
+    headers: {
+        'x-integration-token': state.integrationToken,
+        'x-session-id': state.sessionId,
+    }
+})
+```
+
+
+### Added
+- the ability to retry failed api requests (max of 3 attempts):
+    - getAutoBodyTypesByYearMakeAndModel
+    - getAutoByVin
+    - getAutoMakesByYear
+    - getAutoModelsByYearAndMake
+    - submit
+- portfolio methods for updating the list of options for automobile makes, models, and body types
+- a portfolio method to retrieve and set an auto's year, make, model, and body type based on its 17-digit vin number
+- a portfolio._overwriteField method (ex: `_overwriteField(fieldname, { kind: 'text', ...otherOverrides })`)
+    - we do not recommend using this method outside of the example we provide, which shows how to change the auto make, model, and body type fields from select fields to text fields to ensure customers can complete the form even if the auto API endpoints experience an outage.
+- a `forced` attribute to fields, which indicates when the field (or a dependency of this field) is being controlled internally
+- `SubmitError` type
+
+### Changed
+- the Portfolio constructor to accept an optional `BowtieSdkConfig`
+- the `ISubmitResult` type (removed `isSuccess` and `errors`)
+- `Portfolio.submit()` now throws submissions errors for UIs to handle
+- disclaimer field labels and links (at the end of applications) have been updated to most recent versions of documents on Credible Lab’s site
+- wind mitigation validation (appears in FL only) to be me much less strict (the API received the same treatment, which allowed the sdk to not require answers for wind mit questions)
+- the values associated with the list of mobile home foundation options (the option names used to have an unnecessary ‘-M’ suffix that has been removed)
+
+### Fixed
+- Minor bugs in the sdk to api communication layer to ensure portfolio can be parsed by the api. There were times when we sent an empty string but the sdk expected null, etc…
+    - For example, if the customer reports he/she is married or has a domestic spouse, the applicant is forced to add a secondary policyholder
+- validation on the discount available to Utah auto applicants when no one in the household consumes alcohol
+- validation on screened enclosure coverage amount (question appears and is required for customers in FL, TX, GA)
+- validation for address blocks throughout to allow international (non-US) addresses where it makes sense
+    - for home portfolios, the only addresses that can be based outside of US is the previous address OR the primary address, for secondary homes
+    - Auto portfolios can have a starting international address, but the lien holder for customer’s vehicles must be based in same country as customer. Also, the vehicle must be registered in a US state (to be insured in the US), regardless of customer's address.
+
 ## 1.5.0 (February 24, 2022)
 
 To conform with api version 2022-01-07, several sdk enum values have been changed in this release. Additionally, auto insurance applicants will now select one or many vehicle uses (food delivery, ride share, conventional, and/or other), instead of just one.
