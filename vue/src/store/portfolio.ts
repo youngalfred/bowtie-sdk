@@ -5,6 +5,29 @@ import { getQuestionsForPage } from '@/data/pages'
 import type { HomeSection } from '@/data/pages/home'
 import type { AutoSection } from '@/data/pages/auto'
 import type { SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/types'
+import type { VinData, BodyStylesData, MakesData, ModelsData, SdkAutoFn, ResultMapper } from '@/types/auto-service'
+
+// type State = {
+//   app: Readonly<Portfolio>,
+//   inReview: boolean
+// }
+
+// export type PortfolioStore = Store<'portfolio', State,
+//   {
+//     view: (state: State & PiniaCustomStateProperties<any>) => (section: HomeSection|AutoSection) => SDKFieldGroup[],
+//     countOf: (state: State & PiniaCustomStateProperties<any>) => (entity: 'autos'|'drivers') => number,
+//     request: (state: State & PiniaCustomStateProperties<any>) => (fieldIds: string[]) => Record<string, SDKField>,
+//     assertFieldEquals: (state: State & PiniaCustomStateProperties<any>) => (id: string, value: string|null, options: { negate: boolean }) => boolean
+//   },
+//   {
+//     updateField: (field: string) => (value: string) => void
+//     addAutoEntity: (entity: 'driver'|'auto') => void,
+//     removeAutoEntity: (entity: 'driver'|'auto', id: number) => void,
+//     setInReview: (inReview: boolean) => void,
+//     fetchAndFillAutoByVin: (autoIdx: number) => Promise<void>
+//     overrideAutoOptionsFor: (key: 'make'|'model'|'bodyType', autoIdx: number) => Promise<void>
+//   }
+// >
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
@@ -74,6 +97,83 @@ export const usePortfolio = defineStore('portfolio', {
     },
     setInReview(inReview: boolean) {
       this.inReview = inReview
+    },
+    async fetchAndFillAutoByVin(autoIdx: number) {
+      await this.app.fillAutoWithVinData<VinData>(autoIdx, {
+        resultsMapper: ({ year, make, model, bodyStyle }) => ({ year, make, model, bodyType: bodyStyle }),
+        headers: {
+            // ... any headers you might need to send
+        }
+      })
+    },
+    async overrideAutoOptionsFor(key: 'make'|'model'|'bodyType', autoIdx: number) {
+
+      const sdkAutoFns: Record<typeof key, SdkAutoFn> = {
+        make: this.app.updateAutoMakeOptions,
+        model: this.app.updateAutoModelOptions,
+        bodyType: this.app.updateAutoBodyTypeOptions,
+      }
+
+      const resultMappers: Record<typeof key, ResultMapper> = {
+        'make': ({ makes }: MakesData) => makes.map(
+          ({ description }) => ({ name: description, label: description })
+        ),
+        'model': ({ models }: ModelsData) => models.map(
+          ({ model }) => ({ name: model, label: model })
+        ),
+        'bodyType': ({ bodyStyles }: BodyStylesData) => bodyStyles.map(
+          ({ description }) => ({ name: description, label: description })
+        ),
+      }
+
+      const autoPrefix = `auto.autos.${autoIdx}.`
+      const field = this.app.find(`${autoPrefix}${key}`)
+      const shallOverrideOptions = (
+        /**
+         * When the year entered is earlier than 1981,
+         * the car identity fields (make, model, body type)
+         * become text inputs because the national vin service
+         * does not have record of vehicles older than 1981. 
+         */
+        field?.kind === "select"
+        // For example, ensure year has been selected before
+        // trying to retrieve makes by year
+        && !!field.value
+        // only override options when not using the sister service:
+        // vin prefill, which causes the options to be length 1
+        && field.options.length !== 1
+    )
+
+    if (!shallOverrideOptions) {
+        return false
     }
+
+    try {
+        await sdkAutoFns[key]?.(autoIdx, {
+          resultsMapper: resultMappers[key]
+        })
+    } catch (err: any) {
+        const wasCarAlreadyRetrievedByVin = (err?.code || '') === 'ABORT_AUTO_OPTIONS_OVERRIDE'
+
+        if (wasCarAlreadyRetrievedByVin) {
+            // The service isn't down (no need to convert to text fields),
+            // we simply prioritized using the vin service's results 
+            return
+        }
+
+        // Keep in order of progression (can't fill out model without make first)
+        const fieldsToConvert: typeof key[] = ['make', 'model', 'bodyType']
+        const idxOfCurrent = fieldsToConvert.indexOf(key)
+        if (idxOfCurrent < 0) {
+            throw new Error("Ensure the auto field ids align with your expectations.")
+        }
+        fieldsToConvert.slice(idxOfCurrent).forEach(keyOfFailure => {
+            // vin service is down,
+            // but customers still need the ability
+            // to enter their car's data:
+            this.app._overwriteField(`${autoPrefix}${keyOfFailure}`, { kind: 'text' })
+        })
+      }
+    },
   },
 })

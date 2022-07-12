@@ -8,9 +8,11 @@ export type {
 } from '@youngalfred/bowtie-sdk';
 export type { GroupType as SDKGroupType } from '@youngalfred/bowtie-sdk/build/types'
 
+export type CustomRenderer = 'grid-group'|'async-field'
 export interface Fieldgroup {
   id: string
   kind: 'fieldgroup'
+  renderer?: CustomRenderer
   label: string
   subtitle: string
   info: string | null
@@ -23,6 +25,7 @@ export interface Fieldgroup {
 
 export interface GenericField {
   id: string
+  renderer?: CustomRenderer
   label: string
   subtitle: string
   placeholder: string
@@ -34,6 +37,7 @@ export interface GenericField {
   valid: boolean
   key: string
   classes: string[]
+  sideEffect?: () => Promise<void>
 }
 
 export interface Field extends GenericField {
@@ -50,6 +54,7 @@ export interface Radio extends GenericField {
   option: OptionType
 }
 
-export type Node = Field | Select | Radio | Fieldgroup
+export type InputNode = Field | Select | Radio
+export type Node = InputNode | Fieldgroup
 export type ValidEvent = string | ((props: any) => void) 
 export type EventHandlerFactory = (_0: string) => (_1: ValidEvent) => void

@@ -152,6 +152,13 @@ app.get("/portfolio/status", (req, res) => {
 
 app.use("/auto", getAutoRoutes(BOWTIE_API_URL, api_key))
 
+
+// Serve the index.html (for client-side routing to take place)
+// when the url is unrecognized
+app.use((_req, res) => {
+    res.sendFile(path.join(__dirname, STATIC_CONTENT, "index.html"));
+});
+
 app.listen(PORT, () => {
     console.log(`Bowtie proxy server listening at http://localhost:${PORT}`);
     if (process.env.NODE_ENV) {

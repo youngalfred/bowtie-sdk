@@ -2,7 +2,7 @@
     import { usePortfolio } from '@/store/portfolio';
     import type {PropType } from 'vue'
     import Renderer from './Renderer.vue'
-    import { makeFieldGroups } from './fieldgroups/modifiers/field-builder'
+    import { makeFieldGroups } from './fieldgroups/modifiers'
     import type { HomeSection } from '@/data/pages/home'
     import { storeToRefs } from 'pinia';
     import type { AutoSection } from '@/data/pages/auto';
@@ -24,7 +24,7 @@
     <Renderer
         v-for="field of makeFieldGroups(
             view(section),
-            portfoliioStore.updateField,
+            portfoliioStore,
             inReview
         )"
         :key="field.id"

@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build && cp -r src/assets/* dist",
-    "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../vue/dist' node index.js",
+    "server": "npm run build && cd ../demo-server && cross-env BOWTIE_STATIC_CONTENT='../vue/dist' npm run dev",
     "preview": "vite preview --port 5050",
     "typecheck": "vue-tsc --noEmit"
   },

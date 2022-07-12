@@ -1,4 +1,8 @@
-![Language: Javascript](https://img.shields.io/badge/language-Javascript-green.svg)
+![Express JS](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![Language: Javascript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![JS Framework: Angular 12](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![JS Framework: Vue 3](https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D)
 ![Topic: Web Development](https://img.shields.io/badge/topic-Web_Development-green.svg)
 ![Status: Beta](https://img.shields.io/badge/status-Beta-yellow.svg)
 
