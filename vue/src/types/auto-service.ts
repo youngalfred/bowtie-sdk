@@ -1,4 +1,4 @@
-import type { OptionType } from "@youngalfred/bowtie-sdk"
+import type { OptionType } from '@youngalfred/bowtie-sdk'
 
 export type VinData = {
     year: number
@@ -10,7 +10,7 @@ export type VinData = {
 
 export type MakesData = {
     makes: {
-        make: VinData["make"]
+        make: VinData['make']
         description: string
     }[]
 }

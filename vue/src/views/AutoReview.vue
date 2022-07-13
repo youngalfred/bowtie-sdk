@@ -1,7 +1,13 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import PolicySection from '@/components/PolicySection.vue';
-import NavBar from '../components/NavBar.vue';
- 
+  import { usePortfolio } from '@/store/portfolio';
+  import { storeToRefs } from 'pinia';
+  import { useRoute } from 'vue-router';
+  import NavBar from '../components/NavBar.vue';
+  
+  const route = useRoute()
+  const portfolio = usePortfolio()
+  const { app } = storeToRefs(portfolio)
 </script>
 
 <template>
@@ -16,8 +22,14 @@ import NavBar from '../components/NavBar.vue';
       label: 'Submit',
       path: '/submit',
       disabled: false
-    }
-  ]"/>
+    },
+    ...app.valid ? [{
+        label: 'Highlight Invalid',
+        path: route.path,
+        onClick: () => portfolio.setInReview(true),
+        disabled: app.valid
+    }] : []
+    ]"/>
 </template>
 
 <style>

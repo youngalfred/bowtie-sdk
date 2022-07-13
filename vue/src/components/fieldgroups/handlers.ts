@@ -7,6 +7,7 @@ import Radio from '../fields/input/Radio.vue'
 import FieldWithSideEffect from '../fields/FieldWithSideEffect.vue'
 import Fieldgroup from './Index.vue'
 import GridGroup from './GridGroup.vue'
+import Card from './CardGroup.vue'
 import type { CustomRenderer, Node } from '../../types'
 
 export const ID_HANDLERS: Record<string, any> = {
@@ -25,4 +26,5 @@ export const TYPE_HANDLERS: Record<Node['kind'], any> = {
 export const CUSTOM_RENDERER_HANDLERS: Record<CustomRenderer, any> = {
   'grid-group': GridGroup,
   'async-field': FieldWithSideEffect,
+  'card': Card,
 }

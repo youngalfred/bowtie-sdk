@@ -1,8 +1,8 @@
-<script setup lang="ts">
+<script setup lang='ts'>
     import { usePortfolio } from '@/store/portfolio';
     import type {PropType } from 'vue'
     import Renderer from './Renderer.vue'
-    import { makeFieldGroups } from './fieldgroups/modifiers'
+    import { makeFieldGroups } from '@/modifiers'
     import type { HomeSection } from '@/data/pages/home'
     import { storeToRefs } from 'pinia';
     import type { AutoSection } from '@/data/pages/auto';
@@ -22,13 +22,13 @@
 <template >
     <div id='wrapper'>
     <Renderer
-        v-for="field of makeFieldGroups(
+        v-for='field of makeFieldGroups(
             view(section),
             portfoliioStore,
             inReview
-        )"
-        :key="field.id"
-        :field="field" />
+        )'
+        :key='field.id'
+        :field='field' />
     </div>
 </template>
 

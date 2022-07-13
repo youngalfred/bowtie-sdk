@@ -9,11 +9,16 @@
             required: true
         }
     })
-
 </script>
 
 <template>
-    <div class='question' :id='field.id' v-for='child of field.children' :key='child.id'>
-        <Renderer :field='child'/>
-    </div>
+    <Renderer :field='field' :render-by-kind-only="true" :with-label="true"/>
 </template>
+
+<style scoped>
+    div {
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 5px;
+    }
+</style>

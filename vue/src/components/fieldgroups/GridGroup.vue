@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
     import type { PropType } from 'vue'
     import type { Fieldgroup } from '../../types'
     import Renderer from '../Renderer.vue'
@@ -13,12 +13,12 @@
 </script>
 
 <template>
-    <!-- :style="{ 'grid-template-columns': `repeat(${field.children.length}, minmax(125px, 175px))` }" -->
-<div class="question" >
-    <div :id="field.id" v-for="child of field.children" :key="child.id">
-        <Renderer :field="child"/>
+    <Warning :field='field' />
+    <div class='question' >
+        <div :id='field.id' v-for='child of field.children' :key='child.id'>
+            <Renderer :field='child'/>
+        </div>
     </div>
-</div>
 </template>
 
 <style scoped>

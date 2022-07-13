@@ -8,7 +8,7 @@ export type {
 } from '@youngalfred/bowtie-sdk';
 export type { GroupType as SDKGroupType } from '@youngalfred/bowtie-sdk/build/types'
 
-export type CustomRenderer = 'grid-group'|'async-field'
+export type CustomRenderer = 'grid-group'|'async-field'|'card'
 export interface Fieldgroup {
   id: string
   kind: 'fieldgroup'
@@ -37,7 +37,7 @@ export interface GenericField {
   valid: boolean
   key: string
   classes: string[]
-  sideEffect?: () => Promise<void>
+  sideEffect?: (isInitialRender: boolean) => Promise<void>
 }
 
 export interface Field extends GenericField {

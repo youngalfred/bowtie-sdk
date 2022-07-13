@@ -101,13 +101,13 @@ const router = createRouter({
     {
       path: '/driver/:id',
       name: 'driver',
-      component: () => import('../views/Driver.vue'),
+      component: () => import('../views/AutoSpoke.vue'),
       beforeEnter: guardAutoCount('driver'),
     },
     {
       path: '/vehicle/:id',
-      name: 'Vehicle',
-      component: () => import('../views/Vehicle.vue'),
+      name: 'vehicle',
+      component: () => import('../views/AutoSpoke.vue'),
       beforeEnter: guardAutoCount('auto'),
     },
     {

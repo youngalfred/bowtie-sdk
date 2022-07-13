@@ -1,14 +1,26 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import PolicySection from '@/components/PolicySection.vue';
   import { usePortfolio } from '@/store/portfolio';
   import { storeToRefs } from 'pinia';
   import NavBar from '../components/NavBar.vue';
   import type { SDKField, SDKInputField } from '@/types';
   import type { ButtonAction } from '@/types/props'
+  import { useRoute } from 'vue-router';
 
-  const { app, request } = storeToRefs(usePortfolio())
+  const route = useRoute()
+  const portfolio = usePortfolio()
+  const { app, request } = storeToRefs(portfolio)
 
   const makeNextButton = (valid: boolean, {'start.policyType': policyType }: Record<string, SDKField>) => {
+
+    if (!valid) {
+      return {
+        label: 'Highlight Invalid',
+        path: route.path,
+        onClick: () => portfolio.setInReview(true),
+        disabled: false
+      }
+    }
 
     const { value } = policyType as SDKInputField
     switch (value) {
@@ -16,15 +28,14 @@
         return {
           label: 'Submit',
           path: '/submit',
-          disabled: !valid
+          disabled: false
         }
-      case 'homeAndAuto': {
+      case 'homeAndAuto':
         return {
           label: 'Start Auto',
           path: '/submit',
-          disabled: !valid
+          disabled: false
         }
-      }
       default:
         return null
     }

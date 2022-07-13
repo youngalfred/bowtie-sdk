@@ -1,6 +1,4 @@
-import type { StartStopPair } from "."
-
-const emptySet = new Set<string>()
+import type { StartStopPair } from '.'
 
 export type AutoSection = 'auto-hub' | 'driver' | 'vehicle' | 'auto-summary' | `vehicle-${number}` | `driver-${number}`
 export const hub: StartStopPair = ['auto-hub', 'auto-hub']

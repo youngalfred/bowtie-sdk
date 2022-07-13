@@ -115,14 +115,14 @@ rot, or bacteria.`;
 
 
 export const keysAndTexts = {
-    "home.interiorFinishingQuality-economy": economyGrade,
-    "home.interiorFinishingQuality-builder": buildersGrade,
-    "home.interiorFinishingQuality-semiCustom": semicustomGrade,
-    "home.interiorFinishingQuality-custom": customGrade,
-    "home.additionalCoverageRequests.flood": floodCoverage,
-    "home.additionalCoverageRequests.waterBackup": waterBackupCoverage,
-    "home.additionalCoverageRequests.personalProperty": personalPropertyCoverage,
-    "home.additionalCoverageRequests.mold": moldCoverage,
+    'home.interiorFinishingQuality-economy': economyGrade,
+    'home.interiorFinishingQuality-builder': buildersGrade,
+    'home.interiorFinishingQuality-semiCustom': semicustomGrade,
+    'home.interiorFinishingQuality-custom': customGrade,
+    'home.additionalCoverageRequests.flood': floodCoverage,
+    'home.additionalCoverageRequests.waterBackup': waterBackupCoverage,
+    'home.additionalCoverageRequests.personalProperty': personalPropertyCoverage,
+    'home.additionalCoverageRequests.mold': moldCoverage,
 };
 
 export default keysAndTexts;

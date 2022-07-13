@@ -1,5 +1,4 @@
-import { defineProps, type PropType } from "vue"
-import type { Select, Node } from './index'
+import { defineProps, type PropType } from 'vue'
 
 export const defineFieldProps = <Node>() => defineProps({
     field: {
@@ -10,6 +9,7 @@ export const defineFieldProps = <Node>() => defineProps({
 
 export type ButtonAction = {
     path: string
+    onClick?: () => void
     label: string
     disabled: boolean
 }

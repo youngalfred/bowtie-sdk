@@ -1,9 +1,8 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import { usePortfolio } from '@/store/portfolio';
+  import { onMounted, reactive } from 'vue';
   import { storeToRefs } from 'pinia';
   import NavBar from '../components/NavBar.vue';
-  import { submit } from '@/api/submit';
-  import { onMounted, reactive } from 'vue';
 
   const { app } = storeToRefs(usePortfolio())
   const data = reactive({
@@ -14,7 +13,11 @@
   onMounted(async () => {
       let succeeded = false
       try {
-        await submit(app.value.payload)
+        await app.value.submit({
+          headers: {
+            // any headers you might need to send
+          }
+        })
         succeeded = true  
       } catch (err) {
         console.error(err)

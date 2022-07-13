@@ -1,9 +1,9 @@
 
-import type { SDKFieldGroup } from "@/types"
-import type { FieldType } from "@youngalfred/bowtie-sdk"
-import type Portfolio from "@youngalfred/bowtie-sdk"
-import { makeAutoPagesRecord, type AutoSection } from "./auto"
-import { homePagesRecord, type HomeSection } from "./home"
+import type { SDKFieldGroup } from '@/types'
+import type { FieldType } from '@youngalfred/bowtie-sdk'
+import type Portfolio from '@youngalfred/bowtie-sdk'
+import { makeAutoPagesRecord, type AutoSection } from './auto'
+import { homePagesRecord, type HomeSection } from './home'
 
 export type StartStopPair = [string, string]
 export const getQuestionsForPage = (view: Portfolio['view'], page: HomeSection | AutoSection) => {
@@ -11,6 +11,7 @@ export const getQuestionsForPage = (view: Portfolio['view'], page: HomeSection |
         homePagesRecord[page as HomeSection]
         || makeAutoPagesRecord(page as AutoSection)
     )
+
     const startIds = startPath.split(' > ')
     const remainingFgs = startIds.reduce((acc, nextId, idx) => {
         const nextIds = new Set(nextId.split('|'))

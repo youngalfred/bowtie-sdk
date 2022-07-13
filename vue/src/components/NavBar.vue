@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
     import type { PropType } from 'vue';
     import { RouterLink } from 'vue-router'
     import type { ButtonAction } from '@/types/props'
@@ -25,8 +25,11 @@
 </script>
 
 <template>
-    <section :class="buttonCount">
-        <RouterLink v-for="btn in buttons" :key="btn.path" :class="`${btn.disabled ? 'disabled' : ''}`" :to="btn.path">{{btn.label}}</RouterLink>
+    <section :class='buttonCount'>
+        <template v-for='btn in buttons' :key='btn.path'>
+          <button v-if="btn.onClick" :disabled="btn.disabled" @click="btn.onClick" @keypress.enter="btn.onClick" role="link">{{btn.label}}</button>
+          <RouterLink v-else :to='btn.path' :class="`${btn.disabled ? 'disabled' : ''}`">{{btn.label}}</RouterLink>
+        </template>
     </section>
 </template>
 
@@ -37,31 +40,32 @@
         width: 100%;
         bottom: 0;
         height: 100px;
-        background-color: hsla(160, 100%, 37%, 1);
+        background-color: #559d29;
         padding: 1em;
         margin: 0 auto;
         text-align: center;
     }
     
-    a {
+    a, button {
         padding: 1em;
         align-self: center;
         border-radius: 5px;
         border: 1px solid white;
         background-color: white;
-        color: hsla(160, 100%, 37%, 1);
+        color: #559d29;
         font-weight: 700;
     }
 
-    a.disabled {
+    a.disabled, button:disabled {
         pointer-events: none;
         background-color: #efefef;
         color: #ababab;
     }
 
-    a:hover, a:active {
+    a:hover, a:active,
+    button:hover, button:active {
         color: white;
-        background-color: rgb(112, 226, 188);
+        background-color: rgb(85,157,41, 0.25);
     }
 
     .one {

@@ -1,13 +1,13 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import { usePortfolio } from '@/store/portfolio';
   import { storeToRefs } from 'pinia';
   import HubController from '../components/fieldgroups/HubController.vue'
-import NavBar from '../components/NavBar.vue'
+  import NavBar from '../components/NavBar.vue'
 
   const portfolio = usePortfolio()
   const { countOf } = storeToRefs(portfolio)
   
-  const makeAutoLink = (basePath: 'driver'|'vehicle', label: string) => (count: number) => {
+  const makeAutoLink = (basePath: 'driver'|'vehicle', label: string) => (count: number): [string, string][] => {
     if (count < 0) return []
 
     const pathToLinkRecord = Array.from(Array(count))

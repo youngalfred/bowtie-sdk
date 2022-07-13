@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import type { PropType } from 'vue'
   import { RouterLink } from 'vue-router'
 
@@ -21,18 +21,19 @@
     <div id='wrapper'>
       <div
         class='entity'
-        v-for="([path, label], index) of makePathLabelPair()"
+        v-for='([path, label], index) of makePathLabelPair()'
         >
         <RouterLink
-          :to="path"
-        >
-          {{label}}
+          :to='path'
+          custom
+          v-slot="{ navigate }">
+          <button @click="navigate" @keypress.enter="() => navigate()" role="link">{{label}}</button>
         </RouterLink>
-        <div @click="removeEntity?.(index)">
+        <button v-if="index" @click='removeEntity?.(index)'>
           Remove
-        </div>
+        </button>
       </div>
-      <button @click="addEntity">
+      <button @click='addEntity'>
         Add +
       </button>
     </div>
@@ -55,21 +56,21 @@
     width: 300px;
   }
 
+  #wrapper > button {
+    align-self: flex-start;
+  }
+
   .entity {
     display: flex;
     justify-content: space-between;
+    width: 100%;
     align-items: center;
     border: 1px solid black;
     background-color: #efefef;
     padding: 5px;
   }
 
-  .entity > * {
+  button {
     cursor: pointer;
-  }
-
-  a {
-    display: block;
-    margin: 5px 0;
   }
 </style>

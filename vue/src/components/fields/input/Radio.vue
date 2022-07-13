@@ -1,5 +1,5 @@
 
-<script setup lang="ts">
+<script setup lang='ts'>
     import type { PropType } from 'vue'
     import type { Radio } from '@/types'
 
@@ -9,13 +9,12 @@
             required: true
         }
     })
-
 </script>
 
 <template>
     <input
-        type="radio"
-        @change="field.onChange(field.option.name)"
-        :checked="field.value === field.option.name"
+        type='radio'
+        @change='field.onChange(field.option.name)'
+        :checked='field.value === field.option.name'
     />
 </template>

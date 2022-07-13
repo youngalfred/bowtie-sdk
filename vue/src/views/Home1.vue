@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
   import PolicySection from '@/components/PolicySection.vue';
 import { usePortfolio } from '@/store/portfolio';
 import { storeToRefs } from 'pinia';

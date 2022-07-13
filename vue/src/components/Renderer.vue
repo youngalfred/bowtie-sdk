@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang='ts'>
     import type { PropType } from 'vue'
     import Label from './Label.vue'
     import type { CustomRenderer, Node } from '../types'
@@ -9,26 +9,36 @@
         field: {
             type: Object as PropType<Node>,
             required: true
+        },
+        renderByKindOnly: {
+            type: Boolean,
+        },
+        withLabel: {
+            type: Boolean,
         }
     })
 
-    const Component = (
-        ID_HANDLERS[props.field.id.replace(/-[0-9]+/g, '-n')]
-        || CUSTOM_RENDERER_HANDLERS[props.field.renderer || '' as CustomRenderer]
-        || TYPE_HANDLERS[props.field.kind]
-    )
+    const Component = props.renderByKindOnly
+        ? TYPE_HANDLERS[props.field.kind]
+        : (
+            ID_HANDLERS[props.field.id.replace(/-[0-9]+/g, '-n')]
+            || CUSTOM_RENDERER_HANDLERS[props.field.renderer || '' as CustomRenderer]
+            || TYPE_HANDLERS[props.field.kind]
+        )
 </script>
 
 <template>
     <div class='wrapper'>
-        <Label :field="field" />
-        <Warning :field="field" />
-        <Component :field="field"/>
+        <template v-if="field.renderer !== 'card' || withLabel">
+            <Label :field='field' />
+        </template>
+        <Warning :field='field' />
+        <Component :field='field'/>
     </div>
 </template>
 
 <style>
-    .wrapper {
+    /* .wrapper {
         padding-left: 1.5em;
-    }
+    } */
 </style>
