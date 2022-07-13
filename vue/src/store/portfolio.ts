@@ -31,7 +31,9 @@ import type { VinData, BodyStylesData, MakesData, ModelsData, SdkAutoFn, ResultM
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
-      app: new Portfolio(JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}')),
+      app: new Portfolio({
+        application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}')
+      }),
       inReview: false,
   }),
   getters: {
@@ -71,7 +73,7 @@ export const usePortfolio = defineStore('portfolio', {
   actions: {
     updateField(fieldname = "") {
       const self = this;
-      const app = new Portfolio({...this.app.application})
+      const app = new Portfolio({ application: this.app.application })
       return (value = "") => {
         let field = app.find(fieldname) as SDKInputField;
 
@@ -89,7 +91,7 @@ export const usePortfolio = defineStore('portfolio', {
       this.updateField(id)(`${count+1}`)
     },
     removeAutoEntity(entity: 'driver'|'auto', id: number) {
-      const app = new Portfolio({...this.app.application})
+      const app = new Portfolio({ application: this.app.application })
 
       const prefix = `auto.${entity}s.`
       app.delMulti(`${prefix}${id}`, `${prefix}count`)
