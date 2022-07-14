@@ -54,6 +54,7 @@ export const usePortfolio = defineStore('portfolio', {
       inReview: false,
   }),
   getters: {
+    // Get the questions for a specific section (or page)
     view: (state) => (section: HomeSection|AutoSection): SDKFieldGroup[] => {
 
       return section
@@ -63,7 +64,7 @@ export const usePortfolio = defineStore('portfolio', {
     countOf: (state) => (entity: 'autos'|'drivers') => {
       return parseInt(state.app.find(`auto.${entity}.count`)?.value || '0', 10)
     },
-    // Request is not used currently. Probably no need
+    // Get a map of fields by their ids
     request: (state) => (fieldIds: string[]): Record<string, SDKField> => {
       const requestedFieldSet = new Set(fieldIds)
 
@@ -88,11 +89,11 @@ export const usePortfolio = defineStore('portfolio', {
     }
   },
   actions: {
-    // Because this.application is readonly ( this.app.set(field, value) will not trigger a re-render ),
+    // Because this.application is readonly ( meaning, this.app.set(field, value) will not trigger a re-render ),
     // we are forced to create a new Portfolio object on each update and overrwrite the existing portfolio;
-    // if you are a better way that doesn't require building a new Portfolio on each update, please
-    // share your approach! The current approach is highly suboptimal as it requires that we track the fields
-    // that have been overwritten.
+    // if you are aware of a better way that doesn't require building a new Portfolio on each update, please
+    // share your approach! The current approach is not ideal because it requires trackinf the fields
+    // that have been overwritten within the sdk through this.fieldOverrides.
     async updateApp(cb: (_app: Portfolio) => Promise<Portfolio|null>) {
 
       const app = await cb(
