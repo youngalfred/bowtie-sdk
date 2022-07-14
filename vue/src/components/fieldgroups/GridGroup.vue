@@ -9,7 +9,6 @@
             required: true
         }
     })
-
 </script>
 
 <template>

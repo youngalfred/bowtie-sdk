@@ -107,6 +107,10 @@ export const usePortfolio = defineStore('portfolio', {
         this.app = app
       }
     },
+    resetApplication() {
+      this.app = new Portfolio(config)
+      window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(this.app.application));
+    },
     updateField(fieldname = '') {
       const self = this;
       return (value = '') => {

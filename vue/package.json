@@ -9,6 +9,7 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
+    "@vueform/multiselect": "^2.5.1",
     "@youngalfred/bowtie-sdk": "2.0.0",
     "pinia": "^2.0.14",
     "vue": "^3.2.33",

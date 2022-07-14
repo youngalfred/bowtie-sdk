@@ -9,16 +9,16 @@
 
   const route = useRoute()
   const portfolio = usePortfolio()
-  const { app, request } = storeToRefs(portfolio)
+  const { app, request, inReview } = storeToRefs(portfolio)
 
-  const makeNextButton = (valid: boolean, {'start.policyType': policyType }: Record<string, SDKField>) => {
+  const makeNextButton = (valid: boolean, inReview: boolean, {'start.policyType': policyType }: Record<string, SDKField>): ButtonAction|null => {
 
     if (!valid) {
       return {
         label: 'Highlight Invalid',
         path: route.path,
         onClick: () => portfolio.setInReview(true),
-        disabled: false
+        disabled: inReview
       }
     }
 
@@ -50,7 +50,7 @@
         path: '/policy-details',
         disabled: false
       },
-      makeNextButton(app.valid, request(['start.policyType']))
+      makeNextButton(app.valid, inReview, request(['start.policyType']))
       
     ].filter(b => b) as ButtonAction[])"/>
 </template>

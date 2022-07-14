@@ -27,8 +27,8 @@
 <template>
     <section :class='buttonCount'>
         <template v-for='btn in buttons' :key='btn.path'>
-          <button v-if="btn.onClick" :disabled="btn.disabled" @click="btn.onClick" @keypress.enter="btn.onClick" role="link">{{btn.label}}</button>
-          <RouterLink v-else :to='btn.path' :class="`${btn.disabled ? 'disabled' : ''}`">{{btn.label}}</RouterLink>
+          <button v-if="btn.onClick" tabindex='0' :disabled="btn.disabled" @click="btn.onClick" @keypress.enter="btn.onClick" role="link">{{btn.label}}</button>
+          <RouterLink v-else :to='btn.path' tabindex='0' :class="`${btn.disabled ? 'disabled' : ''}`">{{btn.label}}</RouterLink>
         </template>
     </section>
 </template>
@@ -64,6 +64,7 @@
 
     a:hover, a:active,
     button:hover, button:active {
+        cursor: pointer;
         color: white;
         background-color: rgb(85,157,41, 0.25);
     }

@@ -1,7 +1,7 @@
 import { DECORATORS } from '@/decorators/question-images';
 import type { Fieldgroup, Node, SDKOptionType, Select } from '@/types';
 import modifyField from './field-modifiers';
-import { makeDefaultConverter, toCardGroup, type BaseConverter, type InterrimConverter } from './shared-modifiers';
+import { assignModifierToFieldsByPrefixes, makeDefaultConverter, toCardGroup, type BaseConverter, type InterrimConverter } from './shared-modifiers';
 
 const defaultConverter = makeDefaultConverter<Fieldgroup>()
 type FieldGroupConverter = InterrimConverter<BaseConverter<Fieldgroup, Node>>
@@ -31,6 +31,16 @@ const toRadioGroup: FieldGroupConverter = (converter = defaultConverter) => (fg:
     }, [] as Node[])
 })
 
+/**
+ * The purpose of this function is to move a child from its
+ * current level (of nesting) n, to level n + 1, and it also
+ * requires a new id for the replaced child. Any children omitted 
+ * from the childrenMap are untouched and returned in their original form.
+ * 
+ * @param childrenMap an object mapping { currentId: newId }
+ * @returns the same field group as was provided but with re-arranged children,
+ * according to the childrenMap argument.
+ */
 const regroupChildren = (childrenMap: Record<string, string>): FieldGroupConverter => (converter = defaultConverter) => (node: Fieldgroup): Node => converter({
     ...node,
     children: node.children.reduce((acc: Node[], field: Node) => {
@@ -47,8 +57,8 @@ const regroupChildren = (childrenMap: Record<string, string>): FieldGroupConvert
                     id: newFgId,
                     kind: 'fieldgroup',
                     label: field.label,
-                    valid: field.valid,
-                    warning: '',
+                    valid: field.valid && node.valid,
+                    warning: field.warning,
                     subtitle: '',
                     info: '',
                     key: '',
@@ -75,13 +85,10 @@ const regroupChildren = (childrenMap: Record<string, string>): FieldGroupConvert
     }, [] as Node[])
 })
 
-const toGridGroup: FieldGroupConverter = (converter = defaultConverter) => (node: Fieldgroup): Node => {
-    console.log(node);
-    return converter({
+const toGridGroup: FieldGroupConverter = (converter = defaultConverter) => (node: Fieldgroup): Node => converter({
     ...node,
     renderer: 'grid-group',
 })
-}
 
 const toGridRadioGroup = toGridGroup(toRadioGroup())
 
@@ -95,7 +102,6 @@ const modifierMap: Record<string, BaseConverter<Fieldgroup, Node>> = {
     'roof-material': toGridRadioGroup,
     'roof-shape': toGridRadioGroup,
     'plan-type': toGridRadioGroup,
-    'primary-heat-source': toGridRadioGroup,
     'occupants': toGridGroup(),
     'start-name': toGridGroup(),
     'start-address-n': toGridGroup(),
@@ -105,6 +111,11 @@ const modifierMap: Record<string, BaseConverter<Fieldgroup, Node>> = {
     'valuables': toGridGroup(),
     'any-updates': toGridGroup(),
     'secondary-months-occupied': toGridGroup(),
+    'primary-heat-source': regroupChildren({
+        // current id: new id
+        'home.heating.primarySource': 'home-heat-primary-source'
+    })(),
+    'home-heat-primary-source': toGridRadioGroup,
     'get-started': regroupChildren({
         'start.firstName': 'start-name',
         'start.lastName': 'start-name',
@@ -117,37 +128,61 @@ const modifierMap: Record<string, BaseConverter<Fieldgroup, Node>> = {
     'secondary-policy-holder': regroupChildren({
         'home.secondaryPolicyHolder': 'add-secondary-policy-holder'
     })(),
-    'occupants-adults': toCardGroup(),
-    'occupants-children': toCardGroup(),
-    'occupants-tenants': toCardGroup(),
-    'occupants-otherFamilies': toCardGroup(),
-    ...[
-        'none',
-        'cat',
-        'akita',
-        'chowChow',
-        'doberman',
-        'alaskanMalamute',
-        'pitBull',
-        'rottweiler',
-        'staffordshireBullTerrier',
-        'germanShepherd',
-        'presaCanario',
-        'wolfHybrid',
-        'husky',
-        'otherDogBreed',
-        'other',
-        'exoticPet'
-    ].reduce((acc, next) => ({
-        ...acc,
-        [`pets-n-${next}`]: toCardGroup()
-    }), {}),
-    ...[
-        'none', 'jewelry', 'fur', 'photoVideoEquipment', 'musicalInstruments', 'arts', 'silverware', 'golfEquipment', 'postageStamps', 'coins', 'firearms', 'computerEquipment'
-    ].reduce((acc, next) => ({
-        ...acc,
-        [`valuables-${next}`]: toCardGroup()
-    }), {}),
+    'none-updated': toCardGroup(),
+    'heating-updated': toCardGroup(),
+    'roof-updated': toCardGroup(),
+    'electrical-updated': toCardGroup(),
+    'waterHeater-updated': toCardGroup(),
+    'plumbing-updated': toCardGroup(),
+    ...assignModifierToFieldsByPrefixes(toCardGroup())(
+        [
+            'occupants-',
+            [
+                'adults',
+                'children',
+                'tenants',
+                'otherFamilies'
+            ]
+        ],
+        [
+            'pets-n-',
+            [
+                'none',
+                'cat',
+                'akita',
+                'chowChow',
+                'doberman',
+                'alaskanMalamute',
+                'pitBull',
+                'rottweiler',
+                'staffordshireBullTerrier',
+                'germanShepherd',
+                'presaCanario',
+                'wolfHybrid',
+                'husky',
+                'otherDogBreed',
+                'other',
+                'exoticPet'
+            ]
+        ],
+    [
+        'valuables-',
+        [
+            'none',
+            'jewelry',
+            'fur',
+            'photoVideoEquipment',
+            'musicalInstruments',
+            'arts',
+            'silverware',
+            'golfEquipment',
+            'postageStamps',
+            'coins',
+            'firearms',
+            'computerEquipment'
+        ]
+    ],
+    )
 }
 
 export const modifyFieldGroup = (node: Fieldgroup) => {

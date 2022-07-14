@@ -3,6 +3,26 @@ import type { Node, Fieldgroup, SDKField, SDKFieldGroup, SDKInputField} from '@/
 import { modifyField } from './field-modifiers';
 import { modifyFieldGroup } from './group-modifiers'
 
+const getDecorationTarget = (id: string): string => {
+  const idParts = id.split('.')
+  const popped = idParts.pop() || ''
+  
+  /**
+   * There are two field groups where this approach
+   * fails to correctly find the desired image decoration:
+   * - hasUpdate
+   * - hasPets (without this case, there would be duplicate images)
+   */
+  if (popped === 'hasUpdate') {
+    return idParts.pop() || ''
+  }
+  if (/hasPets/.test(id)) {
+    return popped.replace('_', '')
+  }
+
+  return popped
+}
+
 // Filter out any questions that shouldn't be rendered
 // and add event handlers to the individual fields
 export const makeFieldGroups = (
@@ -29,7 +49,9 @@ export const makeFieldGroups = (
                 subtitle: '',
                 info: '',
                 key: '',
-                warning: inReview ? warning : '',
+                warning: inReview
+                  ? warning || (valid ? '' : 'A value is required here.')
+                  : '',
                 valid,
                 kind: 'fieldgroup',
                 children: children.reduce(propsReducer, [])
@@ -42,15 +64,7 @@ export const makeFieldGroups = (
             throw new Error('Unexpected type hidden. Should have been filtered out already.')
         }
 
-        const idParts = id.split('.')
-        let target = idParts.pop()
-        if (target === 'hasUpdate') {
-          target = idParts.pop()
-        }
-        if (/hasPets/.test(id)) {
-          target = target?.replace('_', '')
-        }
-
+        const decorationTarget = getDecorationTarget(id)
         const { [id]: override } = store.fieldOverrides
 
         return [
@@ -61,9 +75,9 @@ export const makeFieldGroups = (
             placeholder: '',
             subtitle: '',
             info: '',
-            decoration: groupDecorations[target || ''] || '',
+            decoration: groupDecorations[decorationTarget] || '',
             key: '',
-            warning: inReview ? warning: '',
+            warning: inReview ? warning : '',
             valid,
             onChange: store.updateField(id),
             /*
