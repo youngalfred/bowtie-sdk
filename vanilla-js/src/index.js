@@ -501,13 +501,7 @@ function maybeLocalstore() {
 
     function setupSubmitButton() {
         document.getElementById("ya-submit-button").addEventListener("click", function () {
-            fetch("/portfolio/submit", {
-                method: "POST",
-                body: JSON.stringify({ data: portfolio.payload }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
+            portfolio.submit()
                 .then(function (response) {
                     response.json().then(async function (result) {
                         portfolioId = result.portfolioId;
