@@ -2,8 +2,7 @@
 <script setup lang='ts'>
     import type { PropType } from 'vue'
     import type { Field } from '../../../types'
-    import { onCheck } from '@/utils/change-event';
-import { computed } from '@vue/reactivity';
+    import { computed } from '@vue/reactivity';
 
     const props = defineProps({
         field: {
