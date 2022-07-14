@@ -3,36 +3,22 @@
 ![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
 This Bowtie demo was developed with Vue 3 and Vite.
-# The Young Alfred Bowtie SDK: A Basic Angular Implementation Demo
-
-This repository contains two items:
-1. an Angular app, which implements a complete, functional, and interactive UI for the Young Alfred Bowtie SDK.
-2. a simple implementation of the forwarding server.
+# The Young Alfred Bowtie SDK: A Basic Vue3 Implementation Demo
 
 ## The implementation
 
-In the `./src` folder, you will find a complete Angular implementation of the
-application process. Because the form is highly dynamic, it is not a
-traditional HTML form, but instead a reactive system that maintains keys
-and values internally. With every significant button click, dropdown selection, and input keystroke,
-the application is automatically checked, validated, and updated.
+The Vue demo is more advanced (compared to both the Vanilla JS and Angular demos) in that it demos how to render questions based on the current url,
+guards which pages can be viewed (based on the policy type and portfolio validation status), and is much closer to the insurance experience offered at www.credible.com/insurance and www.youngalfred.com.
 
 The implementation consists of several components that generate the standard
 HTML input objects:
 
-- root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
-- parent component to all field groups (and individual fields) (`field-group.component`)
-- text box (`text-field.component`)
-- check box (`checkbox-field.component`)
-- select dropdown (`select-field.component`)
-- radio button (`radio-field.component`)
-
-And two managerial functions:
-
-- the renderer for nested collections of application questions (`makeFieldGroups`)
-- the reducer that adds event handlers to each field object (`propsReducer`)
-
-Plus, `updateField`, which serves as a re-usable event handler.
+- text input (`Text.vue`)
+- file input (`File.vue`)
+- check input (`Check.vue`)
+- select input (`Select.vue`)
+- multi-select input (`MultiSelect.vue`)
+- radio button input (`Radio.vue`)
 
 ## The forwarding server
 
@@ -44,7 +30,7 @@ forward that content to the Young Alfred Bowtie API with your
 API Key.
 
 This instance of the forwarding server also includes a static file
-service for the built Angular implementation.
+service for the built Vue implementation.
 
 ## Running the demonstration
 
@@ -60,24 +46,11 @@ The BOWTIE_API_KEY environment variable is required and has no default.
 The running application will be available on your local machine at port
 3001: [http://localhost:3001/](http://localhost:3001/).
 
-### Running the test
-
-First, run the Angular demonstration by following the directions above.
-Then, follow the instructions described in the [README.md](../README.md#running-the-test) of the project root's directory.
-
 ## LICENSE
 
 This repository constitutes "explanatory related materials for the
 Bowtie SDK," and as such is covered under the Bowtie SDK END USER
 LICENSE AGREEMENT. [A copy of that license has been provided.](./LICENSE.md)
-
-
-
-
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
 
 ## Type Support for `.vue` Imports in TS
 
