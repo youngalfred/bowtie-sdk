@@ -2,9 +2,10 @@
 
 #### Portfolio Initialization & Sdk Config
 Prior to this change, the portfolio constructor accepted two arguments:
-    1. an application (you might have stored apps in local storage and updated them each time a customer edited a question)
-    2. a data model, which is the root field group of the tree of insurance questions (you've probably never used this argument before, and there's really no need to)
-We've updated the portfolio's constructor to accept an sdk config now, which is an object with the following properties (if you use TypeScript, you can import and take a look at the config type: `BowtieSdkConfig`):
+    1. an application (you might have used this parameter to initialize a portfolio with values based on a app stored in local storage between user sessions, as each of the Bowtie demos showcase)
+    2. a data model, which is the root field group of the tree of insurance questions (you've probably never used this argument before and you likely never will; in theory, you could render a completely different set of questions, assuming you're familiar with the internal field group api)
+
+We've updated the portfolio's constructor to accept an sdk config, which is an object with the following properties (if you use TypeScript, you can import and take a look at the config type: `BowtieSdkConfig`):
 - application: this is the same as the previous constructor's first argument; it's simply an existing application (or a set of sdk answers) to base the newly created portfolio.
 - dataModel: this is the same as the previous constructor's second argument. You are not likely to use this property.
 - apiUrls: this is new. The sdk can be configured to send submission and auto retrieval requests to your proxy server. The apiUrls property allows you to specify the endpoint paths. For example, if the submit endpoint on your proxy server is `/api/v2/premium/insurance/submit`, you would specify this endpiont path by the following:
@@ -20,17 +21,17 @@ apiUrls: {
     // getAutoBodyTypesByYearMakeAndModel
 }
 ``` 
-- retryErrorCodes: this property is an object with the same properties as apiUrls (submit, getAutoByVin, etc...). However, the value associated with each api call is an array of http error status codes. If or when these status codes are encountered during api requests, the sdk will attempt to retry the request (up to 2 more times, yielding 3 possible attempts in total).
-The sdk will also retry requests that fail to send and requests where no response is received. If you omit an http status array for a given api call (submit, for example), the request will only be retried when it fails to send or when no response is received. The request will be retried only two times at most, no matter what caused the request error.
+- retryErrorCodes: this is also now. This property is an object with the same properties as `apiUrls` (submit, getAutoByVin, etc...). However, the value associated with each api call is an array of http error status codes. If or when these status codes are encountered during network requests, the sdk will attempt to retry the request (up to two more times, yielding three possible attempts in total).
+The sdk will also retry requests that fail to begin or requests that receive no response. If you omit an http status array for a given api call (submit, for example), the request will only be retried when it fails to send or when no response is received. The sdk will retry failed network requests two times at most, no matter what caused the error.
 
 The portfolio object can be initialized correctly with either a missing, empty, partial, or complete sdk config.
 
 #### Submission
-If you haven't been using the portfolio's submit method, we really hope you will moving forward! We've tried to make the method more friendly and, uh, usable in hopes that you'll adopt it. If you choose not to use the portfolio.submit() method, you will need to manage the `bowtie-api-version` header yourself when submitting to the Bowtie API, but you should just let us do that for you--just remember to forward the header when submitting from your proxy server to the Bowtie API.
+If you haven't been using the portfolio's submit method, now is the time to begin! We have made the method more friendly and, uh, usable in hopes that you'll adopt it. Also keep in mind, if you choose not to use the portfolio.submit() method, you will need to manage the `bowtie-api-version` header yourself when submitting to the Bowtie API. That is more work than we plan for you to take on, and we handle that already inside the sdk's submit method--just remember to forward the header when submitting from your proxy server to the Bowtie API.
 
-For a little more context, the sdk has always contained a `portfolio.submit()` method that would bundle the portfolio payload and ship it to a proxy server. If you are already aware of this function, you probably chose not to use it... and we don't blame you. The previous `.submit()` method dictated how you wrote your proxy server by requiring the submit endpoint to be located at `/api/v1/submit`, and it only sent the request headers we specified internally. Meaning, if your proxy server requires authentication before accepting requests, you could not use portfolio.submit(). Another frustration of the old implementation is that it swallowed the original http error and simply returned an object with a boolean `isSuccess` property. It really wasn't helpful for understanding what went wrong. Lastly, the old submit() function required an integration and a session token (as the first two arguments), which might have left you confused. There was no explanation for those arguments.
+For more context, the sdk has always contained a `portfolio.submit()` method that would bundle the portfolio payload and ship it to a proxy server. If you are already aware of this function, you probably chose not to use it... and we don't blame you. The previous `.submit()` method dictated how you wrote your proxy server by requiring the submit endpoint to be located at `/api/v1/submit`, and it only sent the request headers we specified internally. Meaning, if your proxy server requires authentication before accepting requests, you could not use portfolio.submit(). Another frustration of the old implementation is that it swallowed the original http error and simply returned an object with a boolean `isSuccess` property. It really wasn't helpful for understanding what went wrong. Lastly, the old submit() function required an integration and a session token (as the first two arguments), which might have left you confused. There was no explanation for those arguments, and the function no longer requires those arguments.
 
-We've already addressed the issue of dictating the path of your submit endpoint by offering the `apiUrls` option in the `BowtieSdkConfig`. As for passing custom headers, the new submit method accepts an optional options object that looks like the following:
+We've already addressed the issue of dictating the path of your submit endpoint by offering the `apiUrls` option in the `BowtieSdkConfig`. As for passing custom headers, the new submit method accepts an optional options object that can be used as such:
 
 ```
 portfolio.submit({
@@ -43,7 +44,7 @@ portfolio.submit({
 ```
 In addition to the headers you provide, we set the `'Content-Type'` to `'application/json'` AND, more importantly, the `bowtie-api-version` header, which you should simply forward along when submitting from your proxy server to the Bowtie API.
 
-The submit method now throws an exception when the request fails (after all the retries have failed). The exception object is encompassed in the SubmitError type, and has the following properties:
+The submit method now throws an exception when the request fails (after all the retries have failed) so that you can handle it as you wish. The exception object is encompassed in the SubmitError type, and has the following properties:
 ```
 {
     message: string;
@@ -55,7 +56,7 @@ The submit method now throws an exception when the request fails (after all the 
 ```
 If you are unfamiliar with TypeScript, the `?` character marks properties as optional or possibly `undefined`.
 
-As of this release, the request body sent from portfolio.submit() is a JSON object with a single `application` property. Meaning, if you are using the Express framework for your proxy server, you can access the object with `req.body.application`, whereas in prior versions, you would have accessed it with `req.body.data.application`.
+As of this release, the request body sent from portfolio.submit() is a JSON object with a single `application` property. Meaning, if you are using the Express framework for your proxy server, you can access the object with `req.body.application`, whereas in prior sdk versions, you would have accessed it with `req.body.data.application`.
 
 #### Auto APIs
 The portfolio object now has four new methods that will fetch auto data and either update the auto's identity or update its options for the insurance applicant to select from. We recommend using the Bowtie API as the source of auto years, makes, models, and body types, but you may retrieve data from any source as long as your data conforms to the SDK's expected type and format:
@@ -63,7 +64,7 @@ The portfolio object now has four new methods that will fetch auto data and eith
 - updateAutoMakeOptions
 - updateAutoModelOptions
 - updateAutoBodyTypeOptions
-Note: if the Bowtie API is your auto data source, the year must be between 1981 and the current year for the make, model, and body type queries.
+Note: if the Bowtie API is your automobile data source, the year must be between 1981 and the current year for the make, model, and body type queries.
 
 When invoking these methods from your UI, you must specify the index of the auto you wish to get data for as well as a result mapper that converts the data from your source to the object or options list used by the sdk:
 ```
