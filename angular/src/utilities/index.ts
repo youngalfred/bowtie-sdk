@@ -10,8 +10,7 @@ export const onChangeJson = (e: Event, existingValue: Record<string,string>, cha
 };
 
 export const onChange = (e: Event, changeHandler: UpdateFunction) => {
-    const { value = "", ...rest } = e.target as HTMLInputElement | HTMLSelectElement;
-    console.log({e})
+    const { value = "" } = e.target as HTMLInputElement | HTMLSelectElement;
     changeHandler(value);
 };
 
