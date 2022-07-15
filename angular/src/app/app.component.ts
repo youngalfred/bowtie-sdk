@@ -191,6 +191,7 @@ export class AppComponent implements OnInit {
           // any headers you might want to send to your proxy server
         }
       });
+      this.isPortolioSubmitted = true;
       this.portfolioId = portfolioId;
       console.log({ message });
     } catch (err: any) {
