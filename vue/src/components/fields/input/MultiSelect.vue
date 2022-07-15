@@ -47,7 +47,7 @@
     />
 </template>
 
-<style src='@vueform/multiselect/themes/default.css' scoped>
+<style src='@vueform/multiselect/themes/default.css'>
     .multiselect-tag {
         background-color: #559d29 !important;
         background: #559d29 !important;
