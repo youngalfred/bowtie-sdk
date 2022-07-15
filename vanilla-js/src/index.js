@@ -325,15 +325,16 @@ function maybeLocalstore() {
             text: '<div class="question">' + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
                 return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
+                    return new Promise((resolve, _reject) => {
+                        const { value = "", options } = event.target;
+                        const label = Array.from(options).find((o) => o.selected)?.label;
 
-                    const { value = "", options } = event.target;
-                    const label = Array.from(options).find((o) => o.selected)?.label;
+                        if (!label) {
+                            throw new Error("Developer error. Unable to find label of selected option.");
+                        }
 
-                    if (!label) {
-                        throw new Error("Developer error. Unable to find label of selected option.");
-                    }
-
-                    Promise.resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
+                        resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
+                    })
                 } : undefined);
             }),
         },
