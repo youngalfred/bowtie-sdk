@@ -23,6 +23,7 @@ export type AppField = {
     options?: OptionType[];  // Options for enumerated / listed values.
     onChange: (_: string) => void;  // The event handler.
     testId: string;
+    applySideEffect?: () => Promise<void>;
 } & Pick<FieldType, "valid" | "id" | "label">;
 
 export type FileField = {

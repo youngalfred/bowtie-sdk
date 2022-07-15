@@ -1,7 +1,5 @@
-![Language: Javascript](https://img.shields.io/badge/language-Javascript-green.svg)
-![JS Framework: Angular 12](https://img.shields.io/npm/v/@angular/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=dd0330)
-![Topic: Web Development](https://img.shields.io/badge/topic-Web_Development-green.svg)
-![Status: Beta](https://img.shields.io/badge/status-Beta-yellow.svg)
+![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![JS Framework: Angular 12](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
 
 # The Young Alfred Bowtie SDK: A Basic Angular Implementation Demo
 
@@ -23,6 +21,7 @@ HTML input objects:
 - root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
 - parent component to all field groups (and individual fields) (`field-group.component`)
 - text box (`text-field.component`)
+- file input (`file-field.component`)
 - check box (`checkbox-field.component`)
 - select dropdown (`select-field.component`)
 - radio button (`radio-field.component`)

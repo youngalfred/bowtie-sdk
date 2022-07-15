@@ -30,31 +30,66 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const Portfolio = require("@youngalfred/bowtie-sdk").Portfolio;
+const { Portfolio } = require("@youngalfred/bowtie-sdk");
 const FileField = require("./file-field");
+const getSideEffectFor = require("./side-effects");
 
-// Attempt to recover an item from the sessionStorage (the current
+const prevFields = {}
+const bowtieConfig = {
+    // We provide defaults values for the below endpoints,
+    // but feel free to customize as needed:
+    apiUrls: {
+      submit: "/portfolio/submit",
+      getAutoByVin: "/auto/vin/", // notice the trailing "/"
+      getAutoMakesByYear: "/auto/makes",
+      getAutoModelsByYearAndMake: "/auto/models",
+      getAutoBodyTypesByYearMakeAndModel: "/auto/bodystyles"
+    },
+    /**
+     * The sdk will retry failed requests (for the above api endpoints)
+     * three times at most (after the initial failure) when one of the following conditions is met:
+     * - an http error code that you specified in the retryErrorCodes section below is received
+     * - the request fails to send
+     * - no response is received (timeout)
+     */
+    retryErrorCodes: {
+      submit: [500, 503, 504],
+      /**
+       * By omitting retry codes for the following endpoints,
+       * you are signaling not to retry failed requests:
+       * 
+       * - getAutoByVin: [],
+       * - getAutoMakesByYear: [],
+       * - getAutoModelsByYearAndMake: [],
+       * - getAutoBodyTypesByYearMakeAndModel: [],
+       */
+    }
+}
+
+// Attempt to recover an item from the localStorage (the current
 // live browser tab or window _only_; this information will disappear
 // when you close the tab or window).
 
 function maybeLocalstore() {
     try {
-        const application = window.sessionStorage.getItem("young_alfred");
+        const application = window.localStorage.getItem("bowtie_sdk_demo");
         return JSON.parse(application ? application : "{}");
     } catch (e) {
         console.log(e);
         return {};
     }
-}
+};
 
-(function () {
+(async function () {
     // The portfolio object this session is managing.
 
-    portfolio = new Portfolio(maybeLocalstore());
+    portfolio = new Portfolio({ ...bowtieConfig, application: maybeLocalstore() });
 
     // When complete, we should get back a valid portfolio ID.
 
     portfolioId = null;
+
+    sideEffects = [];
 
     // After a round-trip through your local service, this will be
     // populated with the results of your submission.
@@ -85,7 +120,7 @@ function maybeLocalstore() {
     // fairly standard behavior: an object with an ID generates an event that
     // will then trigger an update.  The event handler has four side-effects:
     // - it updates the portfolio
-    // - it saves the portfolio to sessionStorage
+    // - it saves the portfolio to localStorage
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
@@ -95,7 +130,7 @@ function maybeLocalstore() {
             event.preventDefault();
             eventValueExtractor(event).then(value => {
                 portfolio.set(node, value);
-                window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(portfolio.application));
 
                 // Because the portfolio tree of questions may change on
                 // every update, requiring a re-render, the focus of the
@@ -248,7 +283,6 @@ function maybeLocalstore() {
     }
 
     // Render a <select> input object for enumerated fields.
-
     function renderSelect(node) {
         const mid = m(node.id);
         tabIndex++;
@@ -298,7 +332,7 @@ function maybeLocalstore() {
                         if (!label) {
                             throw new Error("Developer error. Unable to find label of selected option.");
                         }
-    
+
                         resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
                     })
                 } : undefined);
@@ -317,7 +351,7 @@ function maybeLocalstore() {
                     handler: function () {
                         const { [selectedLabel]: removed, ...newValue } = parsedMultiValue;
                         portfolio.set(node, JSON.stringify(newValue));
-                        window.sessionStorage.setItem("young_alfred", JSON.stringify(portfolio.application));
+                        window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(portfolio.application));
                         setTimeout(renderPortfolio, 0);
                     },
                 }))
@@ -416,6 +450,13 @@ function maybeLocalstore() {
         }
 
         node.children.forEach(function (childnode) {
+            const sideEffect = getSideEffectFor(portfolio, childnode);
+            // Currently, only select & text fields have side effects
+            if (sideEffect && prevFields[childnode.id]?.value !== childnode.value) {
+                sideEffects.push(sideEffect)
+                prevFields[childnode.id] = childnode;
+            }
+
             switch (childnode.kind) {
                 case "hidden":
                     break;
@@ -461,15 +502,9 @@ function maybeLocalstore() {
 
     function setupSubmitButton() {
         document.getElementById("ya-submit-button").addEventListener("click", function () {
-            fetch("/portfolio/submit", {
-                method: "POST",
-                body: JSON.stringify({ data: portfolio.payload }),
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
+            portfolio.submit()
                 .then(function (response) {
-                    response.json().then(function (result) {
+                    response.json().then(async function (result) {
                         portfolioId = result.portfolioId;
                         validationDetails = {
                             valid: result.kind === "success",
@@ -485,7 +520,7 @@ function maybeLocalstore() {
                                 : [],
                         };
                         console.log(validationDetails);
-                        renderPortfolio();
+                        await renderPortfolio();
                     });
                 })
                 .catch(function (response) {
@@ -542,15 +577,13 @@ function maybeLocalstore() {
         );
     }
 
-    function renderFinished() { }
-
     let previousEvents = [];
 
     // The root renderer.  One thing you can be assured of is thatthe
     // all objects of the `portfolio.view` root are Fieldgroups, and
     // calling the `renderFieldgroup()` function above is correct.
 
-    function renderPortfolio() {
+    async function renderPortfolio() {
         let innerHTML = "";
         let events = [];
         tabIndex = 0;
@@ -651,9 +684,24 @@ function maybeLocalstore() {
                     }
                 }
             }
+
+            (async function applySideEffects() {
+                let shouldRerender = false
+
+                for (let i = 0; i < sideEffects.length; i++) {
+                    if (await sideEffects[i]()) {
+                        shouldRerender = true
+                    }
+                }
+    
+                sideEffects = []
+                if (shouldRerender) {
+                    await renderPortfolio();
+                }
+            })()
         }, 0);
     }
 
     // Kickstart the Application process.
-    renderPortfolio();
+    await renderPortfolio();
 })();

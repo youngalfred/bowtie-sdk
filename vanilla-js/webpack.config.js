@@ -11,7 +11,7 @@ module.exports = {
      * into the 'bundled' file, and should use substitution syntax in
      * the `output` clause.
      */
-    entry: { main: "./src/index.js" },
+    entry: ["regenerator-runtime/runtime.js", "./src/index.js" ],
 
     /* There can only be one output definition.  To use it with
      * multiple entries, you can specify the filename as [name].js,

@@ -1,4 +1,5 @@
-![Language: Javascript](https://img.shields.io/badge/language-Javascript-green.svg)
+![Language: Javascript](https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E)
+![Webpack](https://img.shields.io/badge/Webpack-8DD6F9?style=for-the-badge&logo=Webpack&logoColor=white)
 ![Topic: Web Development](https://img.shields.io/badge/topic-Web_Development-green.svg)
 ![Status: Beta](https://img.shields.io/badge/status-Beta-yellow.svg)
 

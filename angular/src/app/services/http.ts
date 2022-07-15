@@ -11,10 +11,6 @@ export class HttpService {
         "Content-Type": "application/json",
     };
 
-    // Uncomment during local development or else you'll get 404
-    // private urlBase = "http://localhost:3001";
-    private urlBase = "";
-
     constructor(private http: HttpClient) { }
 
     makeHeaders(customHeaders: Record<string, string | string[]>) {
@@ -26,16 +22,7 @@ export class HttpService {
         return new HttpHeaders(combinedHeaders);
     }
 
-    submit(data: Object, customHeaders: Record<string, string | string[]>): Observable<any> {
-        const body = { data };
-        const headers = this.makeHeaders(customHeaders);
-
-        return this.http.post(`${this.urlBase}/portfolio/submit`, body, {
-            headers
-        });
-    }
-
-    uploadFiles = async (files: File[], headers: Record<string, string>): Promise<{ fileName: string; objectId: string; }[]> => {
+    uploadFiles = async (files: File[], headers: Record<string, string> = {}): Promise<{ fileName: string; objectId: string; }[]> => {
         const results: { fileName: string; objectId: string }[] = [];
     
         for (let i = 0; i < files.length; i += 1) {
