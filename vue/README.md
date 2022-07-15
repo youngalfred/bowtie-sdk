@@ -2,13 +2,13 @@
 ![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
 ![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
-This Bowtie demo was developed with Vue 3 and Vite.
+This Bowtie demo was developed with [Vue3 (the composition API)](https://devdocs.io/vue~3-api-composition-api/), [Piñia](https://pinia.vuejs.org/), and Vite.
 # The Young Alfred Bowtie SDK: A Basic Vue3 Implementation Demo
 
 ## The implementation
 
-The Vue demo is more advanced (compared to both the Vanilla JS and Angular demos) in that it demos how to render questions based on the current url,
-guards which pages can be viewed (based on the policy type and portfolio validation status), and is much closer to the insurance experience offered at www.credible.com/insurance and www.youngalfred.com.
+The Vue demo is more advanced (compared to both the Vanilla JS and Angular demos) in that it demos how to render questions based on the current url, filter specific sdk questions based on a given page section,
+and guard which pages can be viewed (based on the policy type and portfolio validation status). This demo is much more similar to the insurance experience offered at www.credible.com/insurance and www.youngalfred.com.
 
 The implementation consists of several components that generate the standard
 HTML input objects:
@@ -52,7 +52,7 @@ This repository constitutes "explanatory related materials for the
 Bowtie SDK," and as such is covered under the Bowtie SDK END USER
 LICENSE AGREEMENT. [A copy of that license has been provided.](./LICENSE.md)
 
-## Type Support for `.vue` Imports in TS
+### Type Support for `.vue` Imports in TS
 
 TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
 
@@ -63,17 +63,13 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
     2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
-## Customize configuration
+## Other Vue-Related Notes & Resources
+### Customize configuration
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
 
-## Project Setup
-
-```sh
-npm install
-```
-
 ### Compile and Hot-Reload for Development
+Notice the image assets do not appear correctly during development.
 
 ```sh
 npm run dev
