@@ -92,7 +92,13 @@ const toGridGroup: FieldGroupConverter = (converter = defaultConverter) => (node
 
 const toGridRadioGroup = toGridGroup(toRadioGroup())
 
+const toWindMitGroup: FieldGroupConverter = (converter = defaultConverter) => (node: Fieldgroup): Node => converter({
+    ...node,
+    renderer: 'fl-windmit'
+})
+
 const modifierMap: Record<string, BaseConverter<Fieldgroup, Node>> = {
+    'wind-mitigation-fl': toWindMitGroup(),
     'house-type': toGridRadioGroup,
     'construction-type': toGridRadioGroup,
     'policy-type': toGridRadioGroup,

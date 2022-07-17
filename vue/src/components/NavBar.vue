@@ -44,6 +44,7 @@
         padding: 1em;
         margin: 0 auto;
         text-align: center;
+        z-index: 20;
     }
     
     a, button {

@@ -1,5 +1,5 @@
 <script setup lang='ts'>
-    import type { PropType } from 'vue';
+    import { ref, type PropType } from 'vue';
     import type { Field, Node } from '@/types'
     
     const props = defineProps({
@@ -9,6 +9,15 @@
         }
     })
     const { decoration = '' } = props.field as Field
+    const decorationPath = ref(decoration)
+
+    const handleDevAssetImport = () => {
+        // I'm confident there's a vite options for this, but I couldn't find it quickly, so...
+        // the image decorations don't work when running 'npm run dev'
+        // without this error handler that updates the <img/> src attribute
+        decorationPath.value = `src/assets/${decorationPath.value}`
+    }
+
     const handleClick = () => {
         switch (props.field.kind) {
             case 'check':
@@ -23,8 +32,8 @@
 </script>
 
 <template>
-    <img v-if='decoration' :src='decoration' @click="handleClick"/>
-    <h3 :id='field.id' v-html='field.label' @click="handleClick" />
+    <img v-if='decoration' :src='decorationPath' @click="handleClick" @error="handleDevAssetImport"/>
+    <h3 v-html='field.label' @click="handleClick" />
 </template>
 
 <style scoped>

@@ -12,21 +12,23 @@ import Select from '../fields/input/Select.vue'
 import Fieldgroup from './Index.vue'
 import GridGroup from './GridGroup.vue'
 import Card from './CardGroup.vue'
+import WindMit from './WindMit/Index.vue'
 
-import type { CustomRenderer, Node } from '../../types'
+import type { TypeHandler, CustomRendererHandler } from '../../types'
 
-export const TYPE_HANDLERS: Record<Node['kind'], any> = {
+export const TYPE_HANDLERS: TypeHandler = {
   'text': Text,
   'select': Select,
   'radio': Radio,
   'check': Check,
   'file': File,
-  'fieldgroup': Fieldgroup
+  'fieldgroup': Fieldgroup,
 }
 
-export const CUSTOM_RENDERER_HANDLERS: Record<CustomRenderer, any> = {
+export const CUSTOM_RENDERER_HANDLERS: CustomRendererHandler = {
   'grid-group': GridGroup,
   'async-field': FieldWithSideEffect,
   'card': Card,
   'multi-select': MultiSelect,
+  'fl-windmit': WindMit,
 }
