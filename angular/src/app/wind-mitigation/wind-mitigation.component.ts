@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
 import { InputNode, Fieldgroup, Node } from 'src/types';
 import modifyWindMitField from 'src/utilities/modifiers/windmit';
 import { emptyGroup } from '../field-group/field-group.component';
@@ -6,16 +6,13 @@ import { emptyGroup } from '../field-group/field-group.component';
 @Component({
   selector: 'wind-mitigation',
   templateUrl: './wind-mitigation.component.html',
-  styleUrls: ['./wind-mitigation.component.css']
+  styleUrls: ['./wind-mitigation.component.scss']
 })
 export class WindMitigationComponent implements OnInit {
 
   constructor() { }
-  children: InputNode[] = []
 
-  ngOnInit(): void {
-    this.children = this.flattenModifiedChildren(this.fg)
-  }
+  ngOnInit(): void {}
 
   @Input("fg") fg: Fieldgroup = emptyGroup;
   @Input("depth") depth: number = 0;
@@ -33,4 +30,6 @@ export class WindMitigationComponent implements OnInit {
     return fieldgroup.children.reduce(assembleFieldset, [])
   }
 
+  // Prevents infinite re-render when wind mit is in effect
+  trackBy = (_: number, item: Node) => item.id;
 }

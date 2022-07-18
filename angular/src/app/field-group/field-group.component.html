@@ -1,15 +1,13 @@
 <div [id]="fg.id" [class]="depth === 1 ? 'fg' : ''">
-    <h3 *ngIf="depth === 1; else fieldlabel">{{fg.label}}</h3>
-    <ng-template #fieldlabel>
-        <field-label [for]="fg.id">{{fg.label}}</field-label>
-    </ng-template>
+    <field-label [field]="fg">{{fg.label}}</field-label>
     <info-hover [fieldname]="fg.id"></info-hover>
 
-    <renderer
-        class="question"
-        [depth]="depth"
-        [class]="classes + depth > 1 ? ' inner-fg' : ''"
-        *ngFor="let field of fg.children; index as i; trackBy: trackBy"
-        [node]="decorate(field)">
-    </renderer>
+    <div [class]="fg.classes">
+        <renderer
+            [depth]="depth"
+            [class]="depth > 1 ? ' inner-fg' : ''"
+            *ngFor="let field of fg.children; index as i; trackBy: trackBy"
+            [node]="decorate(field)">
+        </renderer>
+    </div>
 </div>

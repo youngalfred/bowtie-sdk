@@ -1,21 +1,29 @@
 import { InputNode, Select, Field } from "src/types"
 import { assignModifierToFieldsWithPrefix, BaseConverter } from "."
 
+const getCheckValue = (value: string, optionName: string) => (
+    value === optionName ? '1' : ''
+)
+const handleCheckChange = (value: string, onChange: (value: string) => void) => () =>
+    onChange(value)
+
 const toCheckGroup: BaseConverter<InputNode, InputNode[]> = (node) => {
     const { options, label, ...rest } = node as Select
     return options.map(({ name }) => ({
         ...rest,
         label: '',
-        value: node.value === name ? '1' : '',
+        value: getCheckValue(node.value, name),
         id: `${node.id}-${name}`,
         kind: 'check',
-        onChange: () => node.onChange(name),
+        onChange: handleCheckChange(name, node.onChange),
     }))
 }
 
 const toCheck: BaseConverter<InputNode, InputNode> = (node: InputNode): Field => ({
     ...node,
+    value: getCheckValue(node.value, 'yes'),
     label: '',
+    onChange: handleCheckChange('yes', node.onChange),
     kind: 'check'
 })
 

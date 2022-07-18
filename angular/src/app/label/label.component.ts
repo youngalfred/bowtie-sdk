@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-
+import { Component, Input } from '@angular/core';
+import { emptyField } from '../shared/fields';
+import { Node } from 'src/types'
 @Component({
   selector: 'field-label',
   templateUrl: './label.component.html',
@@ -8,9 +9,6 @@ import { Component, OnInit, Input } from '@angular/core';
 export class LabelComponent {
 
   constructor() { }
-
-  @Input("label") label?: string = "";
-  @Input("for") fieldname?: string = "";
-  @Input("decoration") image: string = "";
-
+  
+  @Input("field") field: Pick<Node, 'id'|'label'|'image'> = emptyField;
 }

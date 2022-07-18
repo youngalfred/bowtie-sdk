@@ -3,10 +3,9 @@
 <field *ngIf="isInputField(node.kind); else maybeWindMit" [field]="node" [depth]="newDepth"></field>
 
 <ng-template #maybeWindMit >
-    <wind-mitigation *ngIf="node.id === 'wind-mitigation-fl'; else fieldgroup;" [fg]="node" [depth]="newDepth"></wind-mitigation>
+    <wind-mitigation *ngIf="node.id === 'wind-mitigation-fl'; else fieldgroup;" [fg]="node" [class]="node.classes" [depth]="newDepth"></wind-mitigation>
 </ng-template>
 <ng-template #fieldgroup>
-    <!-- {{node.kind}} - {{node.id}} -->
     <field-group *ngIf="node.kind === 'fieldgroup'" [fg]="node"  [highlightErrors]="highlightErrors" [depth]="newDepth"></field-group>
 </ng-template>
 

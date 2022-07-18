@@ -1,9 +1,7 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Fieldgroup, Node } from 'src/types';
-import { modifyFieldGroup } from 'src/utilities/modifiers/groups';
-import { DECORATORS } from '../decorators/question-images';
 
-export const emptyGroup: Fieldgroup = { id: "", kind: "fieldgroup", label: "", classes: "", children: [] };
+export const emptyGroup: Fieldgroup = { id: "", decoration: {}, kind: "fieldgroup", label: "", classes: "", children: [] };
 @Component({
   selector: 'field-group',
   templateUrl: './field-group.component.html',
@@ -18,22 +16,13 @@ export class FieldGroupComponent implements OnChanges, OnInit {
   @Input("highlightErrors") highlightErrors: boolean = false;
   @Input("depth") depth: number = 0;
 
-  decoration: Record<string, string> = {};
+  ngOnChanges(_: SimpleChanges) {}
 
-  ngOnChanges(_: SimpleChanges) {
-    this.fg = modifyFieldGroup(this.fg);
-  }
+  ngOnInit(): void {}
 
-  ngOnInit(): void {
-    this.fg = modifyFieldGroup(this.fg);
-    this.decoration = DECORATORS[this.fg.id] || {};
-  }
-
-  decorate = (field: Node): Node => field.kind === 'fieldgroup'
-  ? field
-  : ({
+  decorate = (field: Node): Node => ({
     ...field,
-    image: this.decoration[field.id.split(".").pop() || ""] as string || ""
+    image: this.fg.decoration[field.id.split(".").pop() || ""] as string || ""
   });
 
   // Necessary to maintain focus on text fields 

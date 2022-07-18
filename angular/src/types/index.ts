@@ -26,7 +26,9 @@ export interface Fieldgroup {
     id: string
     kind: 'fieldgroup'
     label: string
+    image?: string
     classes: string
+    decoration: Record<string,string>
     children: Node[]
 };
 

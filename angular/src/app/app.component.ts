@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services/http';
 import { Portfolio, BowtieSdkConfig, SubmitError, ISubmitResult } from "@youngalfred/bowtie-sdk";
 import { Fieldgroup, Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types';
-import { makeTestId } from 'src/utilities/modifiers/groups';
 import { combineClasses } from './shared/fields';
 import { getSideEffectFor } from 'src/utilities/async-fields';
 import modifyField from 'src/utilities/modifiers/fields';
+import { makeTestId, modifyFieldGroup } from 'src/utilities/modifiers/groups';
 
 @Component({
   selector: 'app-root',
@@ -110,27 +110,29 @@ export class AppComponent implements OnInit {
     }
   };
 
-  propsReducer = (acc: Node[], child: SDKField): Node[] => {
-    // Do not render prefilled or hidden fields
-    if (child.kind === "hidden") {
+  fieldReducer = (acc: Node[], field: SDKField): Node[] => {
+    // Do not render prefilled or hidden fields;
+    // Filter out any fieldgroups you wish to hide
+    if (field.kind === "hidden" || this.hiddenFieldGroups.has(field.id)) {
       return acc;
     }
 
-    const { kind, children = [], ...groupRest } = child as SDKFieldGroup;
+    const { kind, children = [], ...groupRest } = field as SDKFieldGroup;
     // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
     if (["multigroup", "fieldgroup"].includes(kind)) {
+
       return [
         ...acc,
-        {
+        modifyFieldGroup({
           ...groupRest,
-          kind,
-          classes: combineClasses(child, this.invalidFieldsAreHighlighted),
-          children: children.reduce(this.propsReducer, [])
-        }
+          kind: 'fieldgroup', // notice that multigroups become fieldgroups
+          classes: combineClasses(field, this.invalidFieldsAreHighlighted),
+          children: children.reduce(this.fieldReducer, [])
+        })
       ];
     }
 
-    const { id, ...rest } = child as SDKInputField;
+    const { id, ...rest } = field as SDKInputField;
     if (rest.kind === "hidden") {
       throw new Error(`Hidden field (${id}) is not meant to be rendered.`)
     }
@@ -140,7 +142,7 @@ export class AppComponent implements OnInit {
       modifyField({
         ...rest,
         id,
-        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
+        classes: combineClasses(field, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
         onChange: this.updateField(id),
         applySideEffect: getSideEffectFor(this.portfolio, { id, ...rest }),
@@ -148,24 +150,11 @@ export class AppComponent implements OnInit {
     ];
   };
 
-  // Filter out any questions that shouldn't be rendered
-  // and add event handlers to the individual fields
-  makeFieldGroups = (portfolio: Portfolio): Fieldgroup[] => {
-    return portfolio.view.reduce((acc: Fieldgroup[], fg: SDKFieldGroup): Fieldgroup[] => {
-      // Filter out any fieldgroups you wish to hide
-      if (this.hiddenFieldGroups.has(fg.id)) {
-        return acc;
-      }
-
-      return [
-        ...acc,
-        {
-          ...fg,
-          classes: combineClasses(fg, this.invalidFieldsAreHighlighted),
-          children: fg.children.reduce(this.propsReducer, [])
-        }
-      ];
-    }, []);
+  makeFieldGroups = (portfolio: Portfolio): Node[] => {
+    console.log({view: portfolio.view.reduce(this.fieldReducer, [] as Node[])})
+    return (
+      portfolio.view.reduce(this.fieldReducer, [] as Node[])
+    )
   };
 
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
