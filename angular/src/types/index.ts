@@ -1,5 +1,17 @@
-import Portfolio, { FieldType } from "@youngalfred/bowtie-sdk";
+import {
+    Portfolio,
+    OptionType,
+    FieldType as SDKField,
+    InputFieldType as SDKInputField,
+    FieldGroup as SDKFieldGroup
+} from "@youngalfred/bowtie-sdk";
 
+export {
+    OptionType,
+    SDKField,
+    SDKInputField,
+    SDKFieldGroup,
+}
 export interface Application {
     portfolio: Portfolio;
     currentSection: number;
@@ -10,28 +22,44 @@ export interface Application {
     sessionId: string;
     nextSectionSelected: boolean;
 }
-
-export type OptionType = {
-    name: string;
-    label: string;
+export interface Fieldgroup {
+    id: string
+    kind: 'fieldgroup'
+    label: string
+    classes: string
+    children: Node[]
 };
 
-export type AppField = {
-    kind: "text" | "select" | "check" | "file" | "hidden" | "multigroup" | "fieldgroup" | "radio";
-    value: string; // The field's value
-    classes: string; // A string of classes to assist the UI. Ex: phone number fields' classes => "input-phone ..."
-    options?: OptionType[];  // Options for enumerated / listed values.
-    onChange: (_: string) => void;  // The event handler.
+export interface GenericField {
+    id: string;
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    classes: string;  // A string of classes to assist the UI. Ex: phone number fields' classes => "input-phone ..."
     testId: string;
+    image?: string;
     applySideEffect?: () => Promise<void>;
-} & Pick<FieldType, "valid" | "id" | "label">;
+    valid: SDKField["valid"];
+};
 
-export type FileField = {
+export interface Field extends GenericField {
+    kind: 'text' | 'check'
+};
+
+export interface Select extends GenericField {
+    kind: 'select'
+    options: OptionType[]
+};
+
+export interface FileInput extends GenericField {
+    kind: 'file'
     uploadFiles: (files: File[]) => Promise<{fileName: string; objectId: string}[]>;
-} & AppField;
+};
 
-export type AppFieldGroup = {
-    children: (AppFieldGroup | AppField)[];
-} & Pick<AppField, "kind" | "valid" | "id" | "label" | "classes">;
+export interface Radio extends GenericField {
+    kind: 'radio'
+    option: OptionType
+};
 
-export type GroupOrField = AppField | AppFieldGroup;
+export type InputNode = Field | Select | Radio | FileInput;
+export type Node = InputNode | Fieldgroup;

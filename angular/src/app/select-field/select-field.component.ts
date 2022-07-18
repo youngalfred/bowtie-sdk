@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { onChange, onChangeJson } from 'src/utilities';
-import { AppField, OptionType } from '../../types';
+import { InputNode, OptionType, Select } from '../../types';
 import { emptyField } from '../shared/fields';
 
 @Component({
@@ -16,10 +16,10 @@ export class SelectFieldComponent implements OnInit, OnChanges {
   public selectedValues: string[] = [];
   constructor() { }
 
-  @Input("field") field: AppField = emptyField;
+  @Input("field") field: InputNode = emptyField;
 
   ngOnInit(): void {
-    const options = this.field?.options || [];
+    const options = (this.field as Select)?.options || [];
     this.updateOptions(options)
   }
 

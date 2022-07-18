@@ -1,7 +1,7 @@
-import { assignModifierToFieldsWithPrefix, type BaseConverter } from "@/modifiers/shared-modifiers"
-import type { InputNode, Field, Select } from "@/types"
+import { InputNode, Select, Field } from "src/types"
+import { assignModifierToFieldsWithPrefix, BaseConverter } from "."
 
-const toCheckGroup: BaseConverter<InputNode, Field[]> = (node) => {
+const toCheckGroup: BaseConverter<InputNode, InputNode[]> = (node) => {
     const { options, label, ...rest } = node as Select
     return options.map(({ name }) => ({
         ...rest,
@@ -13,14 +13,14 @@ const toCheckGroup: BaseConverter<InputNode, Field[]> = (node) => {
     }))
 }
 
-const toCheck: BaseConverter<InputNode, Field> = (node) => ({
+const toCheck: BaseConverter<InputNode, InputNode> = (node: InputNode): Field => ({
     ...node,
     label: '',
     kind: 'check'
 })
 
 type FieldConverter = BaseConverter<InputNode, InputNode|InputNode[]>
-const modifierMap: Record<string, FieldConverter> = {
+export const modifierMap: Record<string, FieldConverter> = {
     ...assignModifierToFieldsWithPrefix(
         'home.windmit.',
         toCheckGroup
@@ -50,7 +50,7 @@ const modifierMap: Record<string, FieldConverter> = {
     'home.windmit.roofCoveringType-other-NoInfo': toCheck,
 }
 
-export const modifyWindMitField = (node: InputNode) => {
+const modifyWindMitField = (node: InputNode) => {
     const converter = modifierMap[node.id]
     const { label, ...rest } = node
     return converter?.(node) || { ...rest, label: '' }

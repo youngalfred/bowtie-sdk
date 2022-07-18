@@ -5,7 +5,7 @@
     import Renderer from '../../Renderer.vue'
     import modifyWindMitField from './wm-modifiers';
 
-    const flattenChildren = (fieldgroup: Fieldgroup): InputNode[] => {
+    const flattenModifiedChildren = (fieldgroup: Fieldgroup): InputNode[] => {
       const assembleFieldset = (acc: InputNode[], field: Node): InputNode[] => {
         const { children = [] } = field as Fieldgroup
         if (children.length) {
@@ -32,7 +32,7 @@
     <div class='windmit'>
         <img class='windmitForm' :src='form' alt="Florida Wind Mitigation Inspection Form" />
         <div class='windmitPage'>
-            <Renderer v-for="child of flattenChildren(field)" :key="child.id" :field="child" />
+            <Renderer v-for="child of flattenModifiedChildren(field)" :key="child.id" :field="child" />
         </div>
     </div>
 </template>

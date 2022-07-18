@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services/http';
-import { Portfolio, FieldType, InputFieldType, FieldGroup, BowtieSdkConfig, SubmitError, ISubmitResult } from "@youngalfred/bowtie-sdk";
-import { AppFieldGroup, GroupOrField } from 'src/types';
-import { makeTestId } from 'src/utilities/groupModifiers';
+import { Portfolio, BowtieSdkConfig, SubmitError, ISubmitResult } from "@youngalfred/bowtie-sdk";
+import { Fieldgroup, Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types';
+import { makeTestId } from 'src/utilities/modifiers/groups';
 import { combineClasses } from './shared/fields';
 import { getSideEffectFor } from 'src/utilities/async-fields';
+import modifyField from 'src/utilities/modifiers/fields';
 
 @Component({
   selector: 'app-root',
@@ -87,7 +88,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() { }
 
-  // Retrieve the localstorage application, 
+  // Retrieve the localstorage application,
   // which may not exist
   maybeLocalstore = () => {
     try {
@@ -102,53 +103,55 @@ export class AppComponent implements OnInit {
   // When the destination field components call updateField() with a new value,
   // the UI re-renders with the updated portfolio
   updateField = (fieldname = "") => (value = "") => {
-    const field = this.portfolio.find(fieldname) as InputFieldType;
+    const field = this.portfolio.find(fieldname) as SDKInputField;
     if (field && field.value !== value) {
       this.portfolio.set(field, value);
       window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(this.portfolio.application));
     }
   };
 
-  propsReducer = (acc: GroupOrField[], child: FieldType): GroupOrField[] => {
+  propsReducer = (acc: Node[], child: SDKField): Node[] => {
     // Do not render prefilled or hidden fields
     if (child.kind === "hidden") {
       return acc;
     }
 
-    const { kind, children = [], ...groupRest } = child as FieldGroup;
+    const { kind, children = [], ...groupRest } = child as SDKFieldGroup;
     // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
     if (["multigroup", "fieldgroup"].includes(kind)) {
-      return [...acc,
-      {
-        ...groupRest,
-        kind,
-        classes: combineClasses(child, this.invalidFieldsAreHighlighted),
-        children: children.reduce(this.propsReducer, [])
-      }];
+      return [
+        ...acc,
+        {
+          ...groupRest,
+          kind,
+          classes: combineClasses(child, this.invalidFieldsAreHighlighted),
+          children: children.reduce(this.propsReducer, [])
+        }
+      ];
     }
 
-    const { id, ...rest } = child as InputFieldType;
+    const { id, ...rest } = child as SDKInputField;
+    if (rest.kind === "hidden") {
+      throw new Error(`Hidden field (${id}) is not meant to be rendered.`)
+    }
+
     return [
       ...acc,
-      {
+      modifyField({
         ...rest,
         id,
         classes: combineClasses(child, this.invalidFieldsAreHighlighted),
         testId: makeTestId(id),
         onChange: this.updateField(id),
         applySideEffect: getSideEffectFor(this.portfolio, { id, ...rest }),
-        ...rest.kind === "file"
-          ? {
-            uploadFiles: (files: File[]) => this.httpService.uploadFiles(files)
-          } : {}
-      }
+      }, { uploadFiles: this.httpService.uploadFiles })
     ];
   };
 
   // Filter out any questions that shouldn't be rendered
   // and add event handlers to the individual fields
-  makeFieldGroups = (portfolio: Portfolio) => {
-    return portfolio.view.reduce((acc: AppFieldGroup[], fg: FieldGroup): AppFieldGroup[] => {
+  makeFieldGroups = (portfolio: Portfolio): Fieldgroup[] => {
+    return portfolio.view.reduce((acc: Fieldgroup[], fg: SDKFieldGroup): Fieldgroup[] => {
       // Filter out any fieldgroups you wish to hide
       if (this.hiddenFieldGroups.has(fg.id)) {
         return acc;
@@ -162,7 +165,7 @@ export class AppComponent implements OnInit {
           children: fg.children.reduce(this.propsReducer, [])
         }
       ];
-    }, [] as AppFieldGroup[]);
+    }, []);
   };
 
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
@@ -186,7 +189,7 @@ export class AppComponent implements OnInit {
     const data = this.portfolio.payload;
 
     try {
-      const { portfolioId = "", message } = await this.portfolio.submit({
+      const { portfolioId = "", message }: ISubmitResult = await this.portfolio.submit({
         headers: {
           // any headers you might want to send to your proxy server
         }
@@ -202,6 +205,6 @@ export class AppComponent implements OnInit {
 
   // Necessary to maintain focus on text fields 
   // when typing
-  trackBy = (_: number, item: GroupOrField) => item.id;
+  trackBy = (_: number, item: Node) => item.id;
 
 }

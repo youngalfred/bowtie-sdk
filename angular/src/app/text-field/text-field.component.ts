@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { onChange } from 'src/utilities';
-import { AppField } from '../../types';
+import { InputNode } from '../../types';
 import { emptyField } from '../shared/fields';
 
 @Component({
@@ -12,7 +12,7 @@ export class TextFieldComponent {
 
   constructor() { }
 
-  @Input("field") field: AppField = emptyField;
+  @Input("field") field: InputNode = emptyField;
 
   onChangeInternal(e: Event) {
     onChange(e, this.field.onChange);

@@ -1,25 +1,15 @@
-<div class="question" [class]="classes + ['multigroup','fieldgroup'].includes(field.kind) ? ' inner-fg' : ''"
-    *ngFor="let field of fg.children; index as i; trackBy: trackBy">
+<div [id]="fg.id" [class]="depth === 1 ? 'fg' : ''">
+    <h3 *ngIf="depth === 1; else fieldlabel">{{fg.label}}</h3>
+    <ng-template #fieldlabel>
+        <field-label [for]="fg.id">{{fg.label}}</field-label>
+    </ng-template>
+    <info-hover [fieldname]="fg.id"></info-hover>
 
-    <div *ngIf="field.kind === 'multigroup'">
-        <field-group *ngFor="let innerFg of field.children" [fg]="innerFg" [highlightErrors]="highlightErrors">
-        </field-group>
-    </div>
-
-    <field-label *ngIf="field.kind === 'fieldgroup'" [for]="field.id" [decoration]="getDecoration(field.id)">{{field.label}}
-        <field-group [fg]="field" [highlightErrors]="highlightErrors">
-        </field-group>
-    </field-label>
-
-    <field-label *ngIf="isInputField(field.kind)" [for]="field.id" [decoration]="getDecoration(field.id)">{{field.label}}
-        <field [field]="field"></field>
-    </field-label>
-
-    <div *ngIf="highlightErrors && !field.valid.valid && field.valid.msg">
-        <div class="invalid-msg-container">
-            <span class="invalid-msg">
-                {{field.valid.msg}}
-            </span>
-        </div>
-    </div>
+    <renderer
+        class="question"
+        [depth]="depth"
+        [class]="classes + depth > 1 ? ' inner-fg' : ''"
+        *ngFor="let field of fg.children; index as i; trackBy: trackBy"
+        [node]="decorate(field)">
+    </renderer>
 </div>
