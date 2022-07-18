@@ -12,7 +12,7 @@ import Select from '../fields/input/Select.vue'
 import Fieldgroup from './Index.vue'
 import GridGroup from './GridGroup.vue'
 import Card from './CardGroup.vue'
-import WindMit from './WindMit/Index.vue'
+import WindMit from './WindMit/index.vue'
 
 import type { TypeHandler, CustomRendererHandler } from '../../types'
 
