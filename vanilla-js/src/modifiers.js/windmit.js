@@ -1,16 +1,17 @@
-import { assignModifierToFieldsWithPrefix, type BaseConverter } from "@/modifiers/shared-modifiers"
-import type { InputNode, Field, Select } from "@/types"
+const { assignModifierToFieldsWithPrefix } = require("./shared");
 
-const getCheckValue = (value: string, optionName: string) => (
+const getCheckValue = (value, optionName) => (
     value === optionName ? '1' : ''
 )
 
-const handleCheckChange = (value: string, onChange: (value: string) => void) =>
-    () => onChange(value)
+const handleCheckChange = (value, onChange) =>
+    () => onChange(value);
 
-const toCheckGroup: BaseConverter<InputNode, Field[]> = (node) => {
-    const { options, label, ...rest } = node as Select
-    return options.map(({ name }) => ({
+const withoutLabel = (node) => ({ ...node, label: '' });
+
+const toCheckGroup = (node) => {
+    const { options, label, ...rest } = node
+    return options.map(({ name }) => withoutLabel({
         ...rest,
         label: '',
         value: getCheckValue(node.value, name),
@@ -20,7 +21,8 @@ const toCheckGroup: BaseConverter<InputNode, Field[]> = (node) => {
     }))
 }
 
-const toCheck: BaseConverter<InputNode, Field> = (node) => ({
+
+const toCheck = (node) => withoutLabel({
     ...node,
     label: '',
     value: getCheckValue(node.value, 'yes'),
@@ -28,8 +30,7 @@ const toCheck: BaseConverter<InputNode, Field> = (node) => ({
     onChange: handleCheckChange('yes', node.onChange),
 })
 
-type FieldConverter = BaseConverter<InputNode, InputNode|InputNode[]>
-const modifierMap: Record<string, FieldConverter> = {
+const modifierMap = {
     ...assignModifierToFieldsWithPrefix(
         'home.windmit.',
         toCheckGroup
@@ -59,10 +60,11 @@ const modifierMap: Record<string, FieldConverter> = {
     'home.windmit.roofCoveringType-other-NoInfo': toCheck,
 }
 
-export const modifyWindMitField = (node: InputNode) => {
+const modifyWindMitField = (node) => {
     const converter = modifierMap[node.id]
-    const { label, ...rest } = node
-    return converter?.(node) || { ...rest, label: '' }
+    return converter?.(node) || withoutLabel(node)
 }
 
-export default modifyWindMitField
+module.exports = {
+    modifyWindMitField
+}

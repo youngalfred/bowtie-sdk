@@ -1,0 +1,206 @@
+body {
+    font-size: 16px;
+}
+
+.fieldset {
+    border: 1px solid #aaa;
+    border-radius: 0.8rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    width: clamp(400px, 60rem, 1012px);
+}
+
+.fieldset.invalid {
+    border: 2px solid red;
+}
+
+.label {
+    display: inline-block;
+    width: 36ch;
+    text-align: right;
+    margin-right: 0.5rem;
+}
+
+.question {
+    margin-bottom: 0.32rem;
+}
+
+/* CSS targeting a specific field group. */
+.house-type {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.house-type img {
+    padding-right: 1rem;
+}
+
+div.tag {
+    width: max-content;
+    background-color: silver;
+    border-radius: 4px;
+    height: fit-content;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+div.tag span {
+    padding: 5px;
+}
+
+div.tag span.remove-btn {
+    padding: 5px;
+    background-color: tomato;
+}
+
+$windmitCheckboxes: buildingCode-a 28px 76px 29px 690px,
+    buildingCode-b 28px 112px 29px 690px,
+  buildingCode-c 28px 146px 29px 690px,
+  aYearBuilt 317px 79px 14px 67px,
+  aBuildingPermitApplicationDate 417px 94px 14px 117px,
+  bYearBuilt 458px 113px 14px 47px,
+  bBuildingPermitApplicationDate 536px 128px 14px 160px,
+  roofCovering-a 28px 389px 29px 690px,
+  roofCovering-b 28px 423px 29px 690px,
+  roofCovering-c 28px 457px 14px 850px,
+  roofCovering-d 28px 476px 14px 375px,
+  roofCoveringType-asphaltOrFiberglassShingle 59px 253px 14px 120px,
+  roofCoveringType-asphaltOrFiberglassShingle-date 222px 257px 14px 120px,
+  roofCoveringType-asphaltOrFiberglassShingle-Approval 365px 257px 14px 120px,
+  roofCoveringType-asphaltOrFiberglassShingle-InstallationYear 511px 257px 14px 120px,
+  roofCoveringType-asphaltOrFiberglassShingle-NoInfo 657px 253px 14px 120px,
+  roofCoveringType-concreteOrClayTile 59px 275px 14px 120px,
+  roofCoveringType-concreteOrClayTile-date 222px 278px 14px 120px,
+  roofCoveringType-concreteOrClayTile-Approval 365px 278px 14px 120px,
+  roofCoveringType-concreteOrClayTile-InstallationYear 511px 278px 14px 120px,
+  roofCoveringType-concreteOrClayTile-NoInfo 657px 275px 14px 120px,
+  roofCoveringType-metal 59px 297px 14px 120px,
+  roofCoveringType-metal-date 222px 299px 14px 120px,
+  roofCoveringType-metal-Approval 365px 299px 14px 120px,
+  roofCoveringType-metal-InstallationYear 511px 299px 14px 120px,
+  roofCoveringType-metal-NoInfo 657px 297px 14px 120px,
+  roofCoveringType-builtUp 59px 319px 14px 120px,
+  roofCoveringType-builtUp-date 222px 322px 14px 120px,
+  roofCoveringType-builtUp-Approval 365px 322px 14px 120px,
+  roofCoveringType-builtUp-InstallationYear 511px 322px 14px 120px,
+  roofCoveringType-builtUp-NoInfo 657px 319px 14px 120px,
+  roofCoveringType-membrane 59px 342px 14px 120px,
+  roofCoveringType-membrane-date 222px 342px 14px 120px,
+  roofCoveringType-membrane-Approval 365px 342px 14px 120px,
+  roofCoveringType-membrane-InstallationYear 511px 342px 14px 120px,
+  roofCoveringType-membrane-NoInfo 657px 340px 14px 120px,
+  roofCoveringType-other 59px 363px 14px 120px,
+  roofCoveringType-other-date 222px 364px 14px 120px,
+  roofCoveringType-other-Approval 365px 364px 14px 120px,
+  roofCoveringType-other-InstallationYear 511px 364px 14px 120px,
+  roofCoveringType-other-NoInfo 657px 364px 14px 120px,
+  roofCoveringType-other-Description 105px 361px 14px 105px,
+  roofDeckAttachment-a 28px 518px 56px 710px,
+  roofDeckAttachment-b 28px 583px 56px 710px,
+  roofDeckAttachment-c 28px 648px 90px 710px,
+  roofDeckAttachment-d 28px 746px 14px 215px,
+  roofDeckAttachment-e 28px 765px 14px 385px,
+  roofDeckAttachment-f 28px 784px 14px 180px,
+  roofDeckAttachment-g 28px 803px 14px 130px,
+  roofToWallAttachment-a 28px 861px 14px 90px,
+  roofToWallAttachment-b 28px 1025px 14px 75px, 
+  roofToWallAttachment-c 28px 1097px 45px 710px,
+  roofToWallAttachment-d 28px 1147px 14px 125px,
+  roofToWallAttachment-e 28px 1250px 14px 470px,
+  roofToWallAttachment-f 28px 1269px 14px 405px,
+  roofToWallAttachment-g 28px 1288px 14px 185px,
+  roofToWallAttachment-h 28px 1307px 14px 125px,
+  roofGeometry-a 28px 1369px 28px 605px,
+  roofGeometry-b 28px 1401px 28px 670px,
+  roofGeometry-c 28px 1432px 14px 435px,
+  secondaryWaterResistance-a 28px 1489px 42px 710px,
+  secondaryWaterResistance-b 28px 1537px 17px 100px,
+  secondaryWaterResistance-c 28px 1553px 14px 195px,
+  aToeNailsTrussRafter-a 106px 880px 28px 630px,
+  aToeNailsTrussRafter-b 106px 914px 14px 630px,
+  minConditionBCDSecured 106px 957px 14px 355px,
+  minConditionBCDAttached 106px 976px 42px 630px,
+  dDoubleWraps-2straps 106px 1166px 45px 630px,
+  dDoubleWraps-1strap 106px 1216px 30px 630px,
+  bClips-nowrap 106px 1044px 14px 390px,
+  bClips-1strap 106px 1063px 30px 630px,
+  openingProtection-a 22px 1654px 154px 715px,
+  openingProtection-b 22px 1905px 185px 715px,
+  openingProtection-c 22px 2099px 104px 715px,
+  openingProtection-n 22px 2215px 113px 715px,
+  openingProtection-x 22px 2339px 14px 610px,
+  openingProtectionA-a1 45px 1831px 14px 485px,
+  openingProtectionA-a2 45px 1849px 28px 690px,
+  openingProtectionA-a3 45px 1882px 14px 465px,
+  openingProtectionB-b1 45px 2026px 14px 505px,
+  openingProtectionB-b2 45px 2044px 28px 685px,
+  openingProtectionB-b3 45px 2077px 14px 445px,
+  openingProtectionC-c1 45px 2138px 14px 525px,
+  openingProtectionC-c2 45px 2157px 28px 680px,
+  openingProtectionC-c3 45px 2189px 14px 430px,
+  openingProtectionN-n1 34px 2264px 14px 585px,
+  openingProtectionN-n2 34px 2284px 28px 690px,
+  openingProtectionN-n3 34px 2315px 14px 420px,
+  eOtherDescription 108px 765px 16px 302px,
+  fOtherDescription 111px 1269px 16px 315px,
+  aHipRoofTotalLengthOfNonHipFeatures 331px 1385px 16px 42px,
+  aHipRoofTotalRoofSystemPerimeter 557px 1386px 16px 50px,
+  bFlatRoofSlopeLessThan212 426px 1418px 16px 55px,
+  bFlatRoofTotalRoofArea 596px 1418px 16px 67px;
+
+
+  .windmit {
+    position: relative;
+    width: 815px;
+
+    .windmitForm {
+        top: 0;
+        left: 0;
+        width: auto;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        border: 1px solid #efefef;
+    }
+
+    .windmitPage {
+        top: 0;
+        left: 0;
+        position: absolute;
+        width: 815px;
+        height: 100%;
+    }
+}
+
+@each $key, $left, $top, $height, $width in $windmitCheckboxes {
+    [id^='home-windmit-#{$key}'] {
+        background: transparent;
+        position: absolute;
+        top: $top;
+        left: $left;
+        height: $height;
+        width: $width;
+
+        input {
+            position: absolute;
+            background-color: #e9f9fa;
+            top: 0;
+            left: 0;
+        }
+        input[type='text'] {
+            width: 100%;
+            height: 100%;
+        }
+
+        .warning {
+            padding: 3px;
+            background-color: red;
+            width: fit-content;
+            color: white;
+            font-weight: 500;
+            font-size: 13px;
+            z-index: 20;
+          }
+    }
+}

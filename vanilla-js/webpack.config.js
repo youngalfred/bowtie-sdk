@@ -11,7 +11,11 @@ module.exports = {
      * into the 'bundled' file, and should use substitution syntax in
      * the `output` clause.
      */
-    entry: ["regenerator-runtime/runtime.js", "./src/index.js" ],
+    entry: [
+        "regenerator-runtime/runtime.js",
+        "./src/index.js",
+        "./src/styles.scss"
+    ],
 
     /* There can only be one output definition.  To use it with
      * multiple entries, you can specify the filename as [name].js,
@@ -46,6 +50,14 @@ module.exports = {
                         presets: ["@babel/preset-env"],
                     },
                 },
+            },
+            {
+                test: /\.scss$/,
+                use: [
+                    "style-loader",
+                    "css-loader",
+                    "sass-loader"
+                ]
             },
         ],
     },
