@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from './services/http';
 import { Portfolio, BowtieSdkConfig, SubmitError, ISubmitResult } from "@youngalfred/bowtie-sdk";
-import { Fieldgroup, Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types';
+import { Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types';
 import { combineClasses } from './shared/fields';
 import { getSideEffectFor } from 'src/utilities/async-fields';
 import modifyField from 'src/utilities/modifiers/fields';
 import { makeTestId, modifyFieldGroup } from 'src/utilities/modifiers/groups';
-
+import { prefilledFields } from '../data/home-prefill-example'
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -35,10 +35,11 @@ export class AppComponent implements OnInit {
      * - no response is received (timeout)
      */
     retryErrorCodes: {
-      submit: [500, 503, 504], // please do not retry when the bowtie api returns a 400 error
+      submit: [500, 503, 504],
       /**
        * By omitting retry codes for the following endpoints,
-       * you are signaling not to retry failed requests for said endpoints:
+       * you are signaling not to retry requests that complete
+       * with an http error code:
        * 
        * - getAutoByVin: [],
        * - getAutoMakesByYear: [],
@@ -52,44 +53,20 @@ export class AppComponent implements OnInit {
   public isPortolioSubmitted: boolean = false;
   public portfolioId: string = "";
 
+  // you may hide "policy-type", for example, if you want to provide only home insurance 
   private hiddenFieldGroups: Set<string> = new Set([
-    // "policy-type" // hide "policy-type" if you want to provide only home insurance 
+    // "policy-type"
   ]);
 
   // Provide your own dynamic data to prefill the
-  // portfolio in the constructor OR ngOnInit()
-  private prefilledFields: Record<string, string> = {
-    // "start.policyType": "home",
-    // "start.zipCode": "33020",
-    // "start.city": "Seattle",
-    // "start.state": "MA",
-    // "start.firstName": "Alfred",
-    // "start.lastName": "Butler",
-    // "start.streetAddress": "123 Main Street",
-    // "start.emailAddress": "alfred@youngalfred.com",
-    // "home.hasOccupants._adults": "1",
-    // "home.occupants.adults": "n1",
-    // "home.email": "alfred@youngalfred.com",
-    // "home.primaryPolicyHolder.birthDate": "1980-05-17",
-    // "home.primaryPolicyHolder.gender": "male",
-    // "home.primaryPolicyHolder.maritalStatus": "separated",
-    // "home.primaryPolicyHolder.careerStatus": "employed",
-    // "home.primaryPolicyHolder.occupation": "photographerOrPhotographyStudio",
-    // "home.secondaryPolicyHolder": "yes",
-    // "home.propertyType": "House",
-    // "home.propertyStyle": "duplex",
-    // "home.propertyUse.typeOfUse": "primary",
-    // "home.propertyUse.isShortTermRental": "no",
-    // "home.plan.requestedPolicyStart": "on",
-    // "home.plan.requestedPolicyStartDate": "2021-08-10",
-    // "home.dateOfPurchase": "1999-01-01",
-    // "home.numberOfMortgages": "n1",
-  };
+  // portfolio in the constructor OR ngOnInit();
+  // Uncomment prefilledFields below to see the portfolio pre-populated.
+  private prefilledFields: Record<string, string> = prefilledFields;
 
   ngOnInit() { }
 
   // Retrieve the localstorage application,
-  // which may not exist
+  // which may or may not exist
   maybeLocalstore = () => {
     try {
       const application = window.localStorage.getItem("bowtie_sdk_demo");
@@ -150,12 +127,9 @@ export class AppComponent implements OnInit {
     ];
   };
 
-  makeFieldGroups = (portfolio: Portfolio): Node[] => {
-    console.log({view: portfolio.view.reduce(this.fieldReducer, [] as Node[])})
-    return (
-      portfolio.view.reduce(this.fieldReducer, [] as Node[])
-    )
-  };
+  makeFieldGroups = (portfolio: Portfolio): Node[] => (
+    portfolio.view.reduce(this.fieldReducer, [] as Node[])
+  );
 
   // Initialize fieldgroup questions based on the (possibly empty) portfolio
   constructor(private httpService: HttpService) {
@@ -175,8 +149,6 @@ export class AppComponent implements OnInit {
   // Once the portfolio has been completely filled out,
   // submit the application to your proxy server (and then to the api with your api key)
   submit = async () => {
-    const data = this.portfolio.payload;
-
     try {
       const { portfolioId = "", message }: ISubmitResult = await this.portfolio.submit({
         headers: {

@@ -1,5 +1,5 @@
 import type { FileInput, InputNode } from "src/types";
-import { makeDefaultConverter, BaseConverter, InterrimConverter, assignModifierToFieldsWithPrefix } from '.';
+import { makeDefaultConverter, BaseConverter, InterrimConverter } from '.';
 
 const defaultConverter = makeDefaultConverter<InputNode>()
 type FieldConverter = InterrimConverter<BaseConverter<InputNode, InputNode>>
@@ -11,7 +11,7 @@ type FieldWithoutAdditions = Omit<InputNode, "uploadFiles">
 
 const toFileUploader: FieldConverter = (converter = defaultConverter) => (node, additions) => converter({
     ...node,
-    kind: 'file', // node was already of kind file, but TS doesn't know that
+    kind: 'file', // this node was already of kind file, but TS doesn't know that
     uploadFiles: (files: File[]) => additions.uploadFiles(files),
 }, additions)
 

@@ -1,5 +1,6 @@
 import { InputNode, Select, Field } from "src/types"
 import { assignModifierToFieldsWithPrefix, BaseConverter } from "."
+import { makeTestId } from "./groups"
 
 const getCheckValue = (value: string, optionName: string) => (
     value === optionName ? '1' : ''
@@ -13,6 +14,7 @@ const toCheckGroup: BaseConverter<InputNode, InputNode[]> = (node) => {
         ...rest,
         label: '',
         value: getCheckValue(node.value, name),
+        testId: makeTestId(`${node.testId}-${name}`),
         id: `${node.id}-${name}`,
         kind: 'check',
         onChange: handleCheckChange(name, node.onChange),
