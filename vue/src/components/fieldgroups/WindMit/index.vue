@@ -24,8 +24,6 @@
           required: true
       }
     })
-
-    console.log({ field: props.field })
 </script>
 
 <template>

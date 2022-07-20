@@ -5,8 +5,6 @@ import { makeTestId } from "./groups"
 const getCheckValue = (value: string, optionName: string) => (
     value === optionName ? '1' : ''
 )
-const handleCheckChange = (value: string, onChange: (value: string) => void) => () =>
-    onChange(value)
 
 const toCheckGroup: BaseConverter<InputNode, InputNode[]> = (node) => {
     const { options, label, ...rest } = node as Select
@@ -17,7 +15,7 @@ const toCheckGroup: BaseConverter<InputNode, InputNode[]> = (node) => {
         testId: makeTestId(`${node.testId}-${name}`),
         id: `${node.id}-${name}`,
         kind: 'check',
-        onChange: handleCheckChange(name, node.onChange),
+        onChange: () => node.onChange(name),
     }))
 }
 
@@ -25,7 +23,7 @@ const toCheck: BaseConverter<InputNode, InputNode> = (node: InputNode): Field =>
     ...node,
     value: getCheckValue(node.value, 'yes'),
     label: '',
-    onChange: handleCheckChange('yes', node.onChange),
+    onChange: () => node.onChange(node.value === 'yes' ? 'no' : 'yes'),
     kind: 'check'
 })
 
@@ -39,8 +37,6 @@ export const modifierMap: Record<string, FieldConverter> = {
         'roofCovering',
         'roofDeckAttachment',
         'roofToWallAttachment',
-        'minConditionBCDAttached',
-        'minConditionBCDSecured',
         'aToeNailsTrussRafter',
         'bClips',
         'dDoubleWraps',
@@ -52,12 +48,24 @@ export const modifierMap: Record<string, FieldConverter> = {
         'openingProtectionC',
         'openingProtectionN',
     ),
-    'home.windmit.roofCoveringType-concreteOrClayTile-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-builtUp-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-membrane-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-asphaltOrFiberglassShingle-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-metal-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-other-NoInfo': toCheck,
+    ...assignModifierToFieldsWithPrefix(
+        'home.windmit.',
+        toCheck
+    )(
+        'minConditionBCDAttached',
+        'minConditionBCDSecured',
+    ),
+    ...assignModifierToFieldsWithPrefix(
+        'home.windmit.roofCoveringType-',
+        toCheck
+    )(
+        'concreteOrClayTile-NoInfo',
+        'builtUp-NoInfo',
+        'membrane-NoInfo',
+        'asphaltOrFiberglassShingle-NoInfo',
+        'metal-NoInfo',
+        'other-NoInfo',
+    )
 }
 
 const modifyWindMitField = (node: InputNode) => {

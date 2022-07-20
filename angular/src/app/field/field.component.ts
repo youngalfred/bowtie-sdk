@@ -15,7 +15,6 @@ export class FieldComponent implements OnInit, OnChanges {
   @Input("field") field: InputNode = emptyField;
   
   async ngOnInit(): Promise<void> {
-    this.field.id === "auto.autos.0.make" && console.log("updated")
     await this.field.applySideEffect?.()
   }
 

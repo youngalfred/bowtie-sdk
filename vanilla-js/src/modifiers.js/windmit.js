@@ -1,34 +1,29 @@
-const { assignModifierToFieldsWithPrefix } = require("./shared");
+const { assignModifierToFieldsWithPrefix, withMungedId } = require("./shared");
 
 const getCheckValue = (value, optionName) => (
     value === optionName ? '1' : ''
 )
 
-const handleCheckChange = (value, onChange) =>
-    () => onChange(value);
-
 const withoutLabel = (node) => ({ ...node, label: '' });
 
 const toCheckGroup = (node) => {
     const { options, label, ...rest } = node
-    return options.map(({ name }) => withoutLabel({
+    return options.map(({ name }) => withMungedId(withoutLabel({
         ...rest,
-        label: '',
-        value: getCheckValue(node.value, name),
-        id: `${node.id}-${name}`,
         kind: 'check',
-        onChange: handleCheckChange(name, node.onChange),
-    }))
+        value: getCheckValue(node.value, name),
+        modifiedId: `${node.id}-${name}`,
+        onChange: () => Promise.resolve(name),
+    })))
 }
 
-
-const toCheck = (node) => withoutLabel({
+const toCheck = (node) => withMungedId(withoutLabel({
     ...node,
-    label: '',
-    value: getCheckValue(node.value, 'yes'),
     kind: 'check',
-    onChange: handleCheckChange('yes', node.onChange),
-})
+    value: getCheckValue(node.value, 'yes'),
+    // Allow the checkbox to be unchecked
+    onChange: () => Promise.resolve(node.value === 'yes' ? 'no' : 'yes'),
+}))
 
 const modifierMap = {
     ...assignModifierToFieldsWithPrefix(
@@ -39,8 +34,6 @@ const modifierMap = {
         'roofCovering',
         'roofDeckAttachment',
         'roofToWallAttachment',
-        'minConditionBCDAttached',
-        'minConditionBCDSecured',
         'aToeNailsTrussRafter',
         'bClips',
         'dDoubleWraps',
@@ -52,17 +45,29 @@ const modifierMap = {
         'openingProtectionC',
         'openingProtectionN',
     ),
-    'home.windmit.roofCoveringType-concreteOrClayTile-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-builtUp-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-membrane-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-asphaltOrFiberglassShingle-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-metal-NoInfo': toCheck,
-    'home.windmit.roofCoveringType-other-NoInfo': toCheck,
+    ...assignModifierToFieldsWithPrefix(
+        'home.windmit.',
+        toCheck
+    )(
+        'minConditionBCDAttached',
+        'minConditionBCDSecured',
+    ),
+    ...assignModifierToFieldsWithPrefix(
+        'home.windmit.roofCoveringType-',
+        toCheck
+    )(
+        'concreteOrClayTile-NoInfo',
+        'builtUp-NoInfo',
+        'membrane-NoInfo',
+        'asphaltOrFiberglassShingle-NoInfo',
+        'metal-NoInfo',
+        'other-NoInfo',
+    )
 }
 
 const modifyWindMitField = (node) => {
     const converter = modifierMap[node.id]
-    return converter?.(node) || withoutLabel(node)
+    return converter?.(node) || withMungedId(withoutLabel(node))
 }
 
 module.exports = {

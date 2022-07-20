@@ -10,8 +10,7 @@ import { emptyField } from '../shared/fields';
 })
 export class CheckboxFieldComponent {
 
-  constructor() {
-  }
+  constructor() { }
 
   @Input("field") field: InputNode = emptyField;
 

@@ -1,4 +1,5 @@
 const modifyNode = require(".");
+const { modifyField } = require("./fields");
 const { modifyWindMitField } = require("./windmit");
 
 const flattenChildren = (fieldModifier = modifyNode) => (fieldgroup) => {
@@ -18,8 +19,33 @@ const flattenChildren = (fieldModifier = modifyNode) => (fieldgroup) => {
     }
   }
 
+const toRadioGroup = (node) => {
+    const selectField = node.children[0];
+    return {
+        ...node,
+        children: [
+            ...selectField.options.map(({ name, label }, optionIdx) => modifyField({
+                ...selectField,
+                kind: 'radio',
+                modifiedId: `${selectField.id}-${optionIdx + 1}`,
+                option: { name, label }
+            })),
+            ...node.children.length > 1
+                ? [{
+                    id: `${node.id}-nested`,
+                    kind: 'fieldgroup',
+                    label: '',
+                    children: node.children.slice(1)
+                }]
+                : []
+        ]
+    };
+}
+
 const modifierMap = {
-    'wind-mitigation-fl': flattenChildren(modifyWindMitField)
+    'wind-mitigation-fl': flattenChildren(modifyWindMitField),
+    'house-type': toRadioGroup,
+    'construction-type': toRadioGroup,
 }
 
 const modifyFieldGroup = (node) => {

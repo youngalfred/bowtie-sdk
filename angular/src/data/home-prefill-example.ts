@@ -2,7 +2,7 @@ export const prefilledFields = {
     "start.policyType": "home",
     "start.zipCode": "33020",
     "start.city": "Seattle",
-    "start.state": "MA",
+    // "start.state": "MA",
     "start.firstName": "Alfred",
     "start.lastName": "Butler",
     "start.streetAddress": "123 Main Street",
