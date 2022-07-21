@@ -41,8 +41,10 @@ describe("Simple application form submission", () => {
             }
         }
 
-        $("#ya-submit-button").click();
-        $("#success-message").waitForExist({ timeout: 5000 });
-        expect($("#success-message")).toHaveTextContaining("Your application has successfully been sent");
+        setTimeout(() => {
+            $("#ya-submit-button").click();
+            $("#success-message").waitForExist({ timeout: 5000 });
+            expect($("#success-message")).toHaveTextContaining("Your application has successfully been sent");
+        }, 1000)
     });
 });

@@ -1,33 +1,44 @@
 <script setup lang='ts'>
     import type { PropType } from 'vue'
     import Label from './Label.vue'
-    import type { CustomRenderer, Node } from '../types'
+    import type { CustomRenderer, Node, CustomRendererHandler, TypeHandler } from '../types'
     import { CUSTOM_RENDERER_HANDLERS, TYPE_HANDLERS } from './fieldgroups/handlers'
     import Warning from './Warning.vue'
 
     const props = defineProps({
         field: {
             type: Object as PropType<Node>,
-            required: true
+            required: true,
         },
         renderByKindOnly: {
             type: Boolean,
         },
         withLabel: {
             type: Boolean,
-        }
+        },
+        typeHandlers: {
+            type: Object as PropType<TypeHandler>,
+        },
+        customHandlers: {
+            type: Object as PropType<CustomRendererHandler>,
+        },
     })
 
+    const {
+        customHandlers = CUSTOM_RENDERER_HANDLERS,
+        typeHandlers = TYPE_HANDLERS
+    } = props
+
     const Component = props.renderByKindOnly
-        ? TYPE_HANDLERS[props.field.kind]
+        ? typeHandlers[props.field.kind]
         : (
-            CUSTOM_RENDERER_HANDLERS[props.field.renderer || '' as CustomRenderer]
-            || TYPE_HANDLERS[props.field.kind]
+            customHandlers[props.field.renderer || '' as CustomRenderer]
+            || typeHandlers[props.field.kind]
         )
 </script>
 
 <template>
-    <div class='wrapper'>
+    <div class='wrapper' :id='field.id'>
         <template v-if="field.renderer !== 'card' || withLabel">
             <Label :field='field' />
         </template>

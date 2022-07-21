@@ -33,6 +33,7 @@
 const { Portfolio } = require("@youngalfred/bowtie-sdk");
 const FileField = require("./file-field");
 const getSideEffectFor = require("./side-effects");
+const modifyNode = require("./modifiers.js");
 
 const prevFields = {}
 const bowtieConfig = {
@@ -85,6 +86,10 @@ function maybeLocalstore() {
 
     portfolio = new Portfolio({ ...bowtieConfig, application: maybeLocalstore() });
 
+    // The initial html and input events
+
+    makeInitialResult = () => ({ events: [], innerHTML: '' });
+
     // When complete, we should get back a valid portfolio ID.
 
     portfolioId = null;
@@ -108,13 +113,13 @@ function maybeLocalstore() {
 
     highlightValidity = false;
 
-    // Bowtie uses a JSON-driven dotted format for its naming scheme.
-    // This function turns the dotted fieldnames of the Bowtie input
-    // objects into dashed names suitable to HTML and CSS.
+    // These are special renderers or overrides.
+    // Notice that the fieldgroup with id 'wind-mitigation-fl' renders with a .png
+    // instead of the normal tree of select, check, and text inputs.
 
-    function m(s) {
-        return s.replace(/\./g, "-");
-    }
+    renderers = {
+        'wind-mitigation-fl': renderFLWindMitFieldGroup,
+    };
 
     // This is a pure HTML implementation.  Most of our input objects have a
     // fairly standard behavior: an object with an ID generates an event that
@@ -124,12 +129,30 @@ function maybeLocalstore() {
     // - it pushes a "focus on next render" event into the state handler.
     // - it pushes a "render" call onto the execution queue.
 
-    function makeHandler(node, eventValueExtractor = (event) => Promise.resolve(event.target.value)) {
+    // Returns an HTML label if label text is present; an empty string
+    // otherwise.
+
+    function maybeLabel(node) {
+        return node.label ? '<label class="label">' + node.label + ": </label>" : "";
+    }
+
+    // The renderers for our application.  Each renderer is
+    // responsible for generating two things: An HTML respresentation
+    // of the field, and a detached event handler,along with the
+    // metadata needed to make the event handler behave correctly.  We
+    // create *detached* event handlers in this phase because we're
+    // going to re-draw the entire form first, and then attach the
+    // event handlers afterward.  Note that the ID being passed here
+    // is the HTML ID Attribute of the object that _will be_ attached
+    // to the DOM during the draw phase of the render task.
+
+
+    function handleChange(node, eventValueExtractor = node.onChange || ((event) => Promise.resolve(event.target.value))) {
         function update(event, direction) {
             direction = direction ? direction : 0;
             event.preventDefault();
             eventValueExtractor(event).then(value => {
-                portfolio.set(node, value);
+                portfolio.set(portfolio.find(node.id), value);
                 window.localStorage.setItem("bowtie_sdk_demo", JSON.stringify(portfolio.application));
 
                 // Because the portfolio tree of questions may change on
@@ -143,7 +166,7 @@ function maybeLocalstore() {
                 // If there is a relatedTarget, the user deliberately
                 // interacted with that target, and the focus must be
                 // moved there.
-    
+
                 lastTabEvent =
                     event.relatedTarget === null || event.relatedTarget === undefined
                         ? { target: event.target.id, direction: direction }
@@ -168,28 +191,11 @@ function maybeLocalstore() {
         };
     }
 
-    // Returns an HTML label if label text is present; an empty string
-    // otherwise.
-
-    function maybeLabel(node) {
-        return node.label ? '<label class="label">' + node.label + ": </label>" : "";
-    }
-
-    // The renderers for our application.  Each renderer is
-    // responsible for generating two things: An HTML respresentation
-    // of the field, and a detached event handler,along with the
-    // metadata needed to make the event handler behave correctly.  We
-    // create *detached* event handlers in this phase because we're
-    // going to re-draw the entire form first, and then attach the
-    // event handlers afterward.  Note that the ID being passed here
-    // is the HTML ID Attribute of the object that _will be_ attached
-    // to the DOM during the draw phase of the render task.
-
-    function mapObjectEventToHandler(event, id, node, eventValueExtractor) {
+    function mapObjectEventToHandler(event, id, handler) {
         return {
             event: event,
             id: id,
-            handler: makeHandler(node, eventValueExtractor),
+            handler,
         };
     }
 
@@ -200,19 +206,19 @@ function maybeLocalstore() {
     // in order to display it to the customer.
 
     function renderText(node) {
-        const mid = m(node.id);
+        const mid = node.mid;
         tabIndex++;
-        const input = `<input id="${mid}" name="${mid}" value="${node.value}" data-automation-id="${mid}" tabindex="${tabIndex}"/>`;
+        const input = `<input id="${mid}" name="${mid}" value="${node.value}" data-automation-id="${mid}" type="text" tabindex="${tabIndex}"/>`;
         return {
-            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
+            innerHTML: `<div id="${mid}-container" class="question">` + maybeLabel(node) + input + "</div>",
             events: ["blur", "keydown"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node);
+                return mapObjectEventToHandler(event, mid, handleChange(node));
             }),
         };
     }
 
     function renderCheckbox(node) {
-        const mid = m(node.id);
+        const mid = node.mid;
         tabIndex++;
 
         // There's a clever (read: hacky) trick in here.  With every
@@ -227,12 +233,12 @@ function maybeLocalstore() {
         // HTML Form expects, but Bowtie isn't an HTML Form.
 
         const checked = node.value === "1" ? 'value="" checked' : 'value="1"';
-        const input = `<input type="checkbox" id="${mid}" name="${mid}" ${checked} data-automation-id="${mid}" tabindex="${tabIndex}" />`;
+        const input = `<input id="${mid}" type="checkbox" name="${mid}" ${checked} data-automation-id="${mid}" tabindex="${tabIndex}" />`;
 
         return {
-            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
+            innerHTML: `<div id="${mid}-container" class="question">` + maybeLabel(node) + input + "</div>",
             events: ["click", "keydown"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node);
+                return mapObjectEventToHandler(event, mid, handleChange(node));
             }),
         };
     }
@@ -244,39 +250,39 @@ function maybeLocalstore() {
     // by adopting the following pattern: '{"file1 name":"objectId returned from the api", "file2 name":"objectId returned from the api"}`.
     // This pattern will also make it easy to display which files have uploaded successfully to your customers.
     function renderFile(node) {
-        const mid = m(node.id);
+        const mid = node.mid;
         let fileField = new FileField();
         const uploadId = `${mid}-upload-files`;
         const selectFilesId = `${mid}-select-files`;
         const parsedValue = JSON.parse(node.value);
-        const uploadedFiles = `<br>Successfully uploaded files<br>${Object.keys(parsedValue).map(fileName => `<span>${fileName}</span>`).join("<br>")}`;
+        const uploadedFilesHTML = `<br>Successfully uploaded files<br>${Object.keys(parsedValue).map(fileName => `<span>${fileName}</span>`).join("<br>")}`;
 
         return [
             {
-                text: '<div class="question">' + maybeLabel(node) + uploadedFiles + "</div>",
+                innerHTML: `<div id="${mid}-container" class="question">` + maybeLabel(node) + uploadedFilesHTML + "</div>",
                 events: []
             },
             {
-                text: `<button id="${selectFilesId}" tabindex="${++tabIndex}" data-automation-id="${selectFilesId}">Select files</button>`,
+                innerHTML: `<button id="${selectFilesId}" tabindex="${++tabIndex}" data-automation-id="${selectFilesId}">Select files</button>`,
                 events: ["click"].map(function (event) {
-                    return mapObjectEventToHandler(event, selectFilesId, node, function() {
+                    return mapObjectEventToHandler(event, selectFilesId, handleChange(node, function() {
                         fileField.makeNewFileInput();
                         // Reject to prevent a re-draw, which would
                         // cause fileField to lose track of all selected files
                         return Promise.reject("");
-                    });
+                    }));
                 }),
             },
             {
-                text: `<button id="${uploadId}" tabindex="${++tabIndex}" data-automation-id="${uploadId}">Upload files</button>`,
+                innerHTML: `<button id="${uploadId}" tabindex="${++tabIndex}" data-automation-id="${uploadId}">Upload files</button>`,
                 events: ["click"].map(function (event) {
-                    return mapObjectEventToHandler(event, uploadId, node, function () {
+                    return mapObjectEventToHandler(event, uploadId, handleChange(node, function () {
                         return new Promise((resolve, _reject) => {
                             fileField.uploadFiles().then(successfullyUploadedFiles => {
                                 resolve(JSON.stringify({...parsedValue, ...successfullyUploadedFiles}));
                             });
                         });
-                    });
+                    }));
                 }),
             },
         ];
@@ -284,7 +290,7 @@ function maybeLocalstore() {
 
     // Render a <select> input object for enumerated fields.
     function renderSelect(node) {
-        const mid = m(node.id);
+        const mid = node.mid;
         tabIndex++;
 
         // The list of enumerated options may need to be modified if
@@ -298,15 +304,15 @@ function maybeLocalstore() {
         // an internal implementation detail that you or I, as
         // consumers of the API, should not rely upon.
 
+        const isMultiSelect = node.classes.includes("multi-select-dropdown");
+
         let options = node.options;
-        if (node.value === "") {
-            options = node.options.map(function (a) {
-                return a;
-            });
-            options.splice(0, 0, { name: "", label: "" });
+        if (node.value === "" || isMultiSelect) {
+            options = [
+                { name: "", label: "" }
+            ].concat(node.options);
         }
 
-        const isMultiSelect = node.classes.includes("multi-select-dropdown");
         const parsedMultiValue = isMultiSelect ? JSON.parse(node.value) : {};
 
         // Draw (as strings) all the '<option>' objects, and join them
@@ -322,9 +328,9 @@ function maybeLocalstore() {
         const input = `<select id="${mid}" name="${mid}" tabindex="${tabIndex}" data-automation-id="${mid}">${renderedOptions}</select>`;
 
         return [{
-            text: '<div class="question">' + maybeLabel(node) + input + "</div>",
+            innerHTML: `<div id="${mid}-container" class="question">` + maybeLabel(node) + input + "</div>",
             events: ["change", "keydown"].map(function (event) {
-                return mapObjectEventToHandler(event, mid, node, isMultiSelect ? function (event) {
+                return mapObjectEventToHandler(event, mid, handleChange(node, isMultiSelect ? function (event) {
                     return new Promise((resolve, _reject) => {
                         const { value = "", options } = event.target;
                         const label = Array.from(options).find((o) => o.selected)?.label;
@@ -335,13 +341,13 @@ function maybeLocalstore() {
 
                         resolve(JSON.stringify({...parsedMultiValue, [label]: value }));
                     })
-                } : undefined);
+                } : undefined));
             }),
         },
         ...Object.entries(parsedMultiValue).map(([selectedLabel, selectedValue]) => {
             const id = `${mid}.${selectedValue}.remove`;
             return {
-                text: `<div id="${id}" data-automation-id="${id}" class="tag">
+                innerHTML: `<div id="${id}" data-automation-id="${id}" class="tag">
                             <span>${selectedLabel}</span>
                             <span class="remove-btn">x</span>
                         </div>`,
@@ -377,59 +383,84 @@ function maybeLocalstore() {
     // field, and then mapping an event on a single option back to
     // node associated with the whole field.
 
-    function renderRadioFieldGroup(node) {
-        let innerHTML = "<h3>" + node.label + "</h3>";
-        const field = node.children[0];
-        const mid = m(field.id);
-
-        function makeRadio(option, optionIdx) {
-            tabIndex++;
-            const checked = option.name === field.value ? "checked " : " ";
-            const radioId = `${mid}-${optionIdx + 1}`;
-            const html = `
-<div class="${m(node.id)}">
-  <img src="./images/${option.name}.jpg" />
-  <div> 
-    <input type="radio" 
-           id="${radioId}"
-           class="${mid}" 
-           name="${mid}" 
-           value="${option.name}"
-           tabindex="${tabIndex}" 
-           data-automation-id="${radioId}"
-           ${checked}
-    />
-    <label for="${option.name}">${option.label}</label>
-  </div>
-</div>`;
-            return [html, radioId];
-        }
-
-        const radios = field.options.map(makeRadio);
-        const radioHTML = radios.map(function (r) {
-            return r[0];
-        });
-
-        const radioEvents = radios.reduce(function (accum, radio) {
-            accum.push(mapObjectEventToHandler("click", radio[1], field));
-            accum.push(mapObjectEventToHandler("keydown", radio[1], field));
-            return accum;
-        }, []);
+    function renderFLWindMitFieldGroup(node, depth) {
+        const { innerHTML: windMitHTML, events } = node.children.reduce(...childRenderReducer(depth))
+        const innerHTML = `
+            <div class="fieldset" id="ya-fg-${node.mid}">
+                <h3>${node.label}</h3>
+                <div class="windmit">
+                    <img class="windmitForm" src="./images/windmit-form.png" alt="Florida Wind Mitigation Inspection Form" />
+                    <div class="windmitPage">
+                        ${windMitHTML}
+                    </div>
+                </div>
+            </div>
+        `;
 
         return {
-            text: innerHTML + radioHTML.join("\n"),
-            events: radioEvents,
+            innerHTML,
+            events,
         };
     }
 
-    function renderFieldgroup(node) {
+    function renderRadio(node) {
+        const mid = node.mid;
+        tabIndex++;
+        const { option: { name, label }, value } = node;
+        const checked = name === value ? "checked " : " ";
+            
+        const innerHTML = `
+            <div class="${mid}">
+                <img src="./images/${name}.jpg" />
+                <div>
+                    <input type="radio"
+                        id="${mid}"
+                        class="${mid}"
+                        name="${mid}"
+                        value="${name}"
+                        tabindex="${tabIndex}"
+                        data-automation-id="${mid}"
+                        ${checked}
+                    />
+                    <label for="${name}">${label}</label>
+                </div>
+            </div>`;
+
+        return {
+            innerHTML,
+            events: ["click", "keydown"].map(function (event) {
+                return mapObjectEventToHandler(event, mid, handleChange(node))
+            }),
+        };
+    }
+
+    function combineResults(resultA, resultB) {
+        return {
+            innerHTML: resultA.innerHTML + resultB.innerHTML,
+            events: resultA.events.concat(resultB.events),
+        }
+    }
+
+    function childRenderReducer (depth, innerHTML = '') {
+        return [
+            (acc, node) => (
+            combineResults(acc, render(node, depth))
+            ),
+            { events: [], innerHTML }
+        ]
+    }
+
+    function renderFieldgroup(node, depth) {
         let innerHTML = "";
-        let events = [];
-        let result;
+
         if (node.label) {
             innerHTML += "<h3>" + node.label + "</h3>";
         }
 
+        return node.children.reduce(...childRenderReducer(depth, innerHTML));
+    }
+
+    function render(rawNode, depth = 0) {
         // The core of the renderer, and the inner loop of the Bowtie
         // Application. For each child of a fieldgroup provided by the
         // Bowtie Portfolio, the switch statement decides how to
@@ -444,56 +475,57 @@ function maybeLocalstore() {
         // rendered inputs, and then hooks up all the events as
         // requested.
 
-        function addResult(result) {
-            innerHTML += result.text;
-            events = events.concat(result.events);
+        const node = modifyNode(rawNode);
+        const newDepth = depth + 1;
+
+        const sideEffect = getSideEffectFor(portfolio, node);
+        if (sideEffect && prevFields[node.id]?.value !== node.value) {
+            sideEffects.push(sideEffect)
+            prevFields[node.id] = node;
         }
 
-        node.children.forEach(function (childnode) {
-            const sideEffect = getSideEffectFor(portfolio, childnode);
-            // Currently, only select & text fields have side effects
-            if (sideEffect && prevFields[childnode.id]?.value !== childnode.value) {
-                sideEffects.push(sideEffect)
-                prevFields[childnode.id] = childnode;
-            }
+        const customRenderer = renderers[node.id];
+        if (customRenderer) {
+            return customRenderer(node, newDepth);
+        }
 
-            switch (childnode.kind) {
-                case "hidden":
-                    break;
-                case "file":
-                    renderFile(childnode)
-                        .forEach(element => addResult(element));
-                    break;
-                case "select":
-                    renderSelect(childnode)
-                        .forEach(element => addResult(element));
-                    break;
-                case "text":
-                    addResult(renderText(childnode));
-                    break;
-                case "check":
-                    addResult(renderCheckbox(childnode));
-                    break;
-                case "fieldgroup":
-                    result = renderFieldgroup(childnode);
-                    innerHTML += result.text;
-                    events = events.concat(result.events);
-                    break;
-                case "multigroup":
-                    childnode.children.map(renderFieldgroup).forEach(function (result) {
-                        innerHTML += result.text;
-                        events = events.concat(result.events);
-                    });
-                    break;
-                default:
-                    console.log("Unhandled:", childnode);
-                    break;
-            }
-        });
-        return {
-            text: innerHTML,
-            events: events,
-        };
+        switch (node.kind) {
+            case "hidden":
+                return makeInitialResult();
+            case "file":
+                return renderFile(node, newDepth)
+                    .reduce(combineResults);
+            case "select":
+                return renderSelect(node, newDepth)
+                    .reduce(combineResults);
+            case "text":
+                return renderText(node, newDepth);
+            case "radio":
+
+                // Note: the sdk does not have fields of kind radio by default;
+                // radio fields are a result of the toRadioGroup modifier located at:
+                //  vanilla-js/src/modifiers/groups.js.
+                return renderRadio(node, newDepth);
+            case "check":
+                return renderCheckbox(node, newDepth);
+            case "fieldgroup":
+                let { innerHTML, events } = renderFieldgroup(node, newDepth);
+                
+                // This is a top-level field group in the portfolio.view object
+                if (depth === 0) {
+                    const invalid = node.valid.valid === false && highlightValidity ? " invalid" : "";
+                    innerHTML = `<div class="fieldset${invalid}" id="ya-fg-${node.mid}">${innerHTML}</div>`;
+                }
+
+                return {
+                    events,
+                    innerHTML,
+                };
+            case "multigroup":
+                return node.children.reduce(...childRenderReducer(newDepth));
+            default:
+                throw new Error(`Unhandled node: ${node.kind}`)
+        }
     }
 
     // After each render, we must set up the control.  In order, we set up
@@ -579,13 +611,10 @@ function maybeLocalstore() {
 
     let previousEvents = [];
 
-    // The root renderer.  One thing you can be assured of is thatthe
-    // all objects of the `portfolio.view` root are Fieldgroups, and
-    // calling the `renderFieldgroup()` function above is correct.
+    // The root renderer.  One thing you can be assured of is that
+    // all objects of the `portfolio.view` root are Fieldgroups.
 
     async function renderPortfolio() {
-        let innerHTML = "";
-        let events = [];
         tabIndex = 0;
 
         // This frees the event/input relationship, which saves memory
@@ -602,13 +631,7 @@ function maybeLocalstore() {
         // have no listeners anymore, they will now be correctly
         // reaped by the Javascript VM.
 
-        portfolio.view.forEach(function (node) {
-            const renderer = ["house-type", "construction-type"].includes(node.id) ? renderRadioFieldGroup : renderFieldgroup;
-            const r = renderer(node);
-            const invalid = node.valid.valid === false && highlightValidity ? " invalid" : "";
-            innerHTML += `<div class="fieldset${invalid}" id="ya-fg-${m(node.id)}">${r.text}</div>`;
-            events = events.concat(r.events);
-        });
+        let { innerHTML, events } = portfolio.view.reduce(...childRenderReducer(0));
 
         // If the portfolio is completely valid, we offer a submit
         // button, otherwise we offerthe user the option of

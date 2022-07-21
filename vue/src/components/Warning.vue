@@ -11,7 +11,7 @@
 </script>
 
 <template>
-    <span>
+    <span v-if="!!field.warning" class='warning'>
         {{field.warning}}
     </span>
 </template>

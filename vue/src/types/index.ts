@@ -8,7 +8,16 @@ export type {
 } from '@youngalfred/bowtie-sdk';
 export type { GroupType as SDKGroupType } from '@youngalfred/bowtie-sdk/build/types'
 
-export type CustomRenderer = 'grid-group'|'async-field'|'card'|'multi-select'
+export type CustomRenderer =
+  |'grid-group'
+  |'async-field'
+  |'card'
+  |'multi-select'
+  |'fl-windmit'
+
+export type CustomRendererHandler = Record<CustomRenderer, any>
+export type TypeHandler = Record<Node['kind'], any>
+
 export interface Fieldgroup {
   id: string
   kind: 'fieldgroup'

@@ -1,0 +1,8 @@
+<div class='windmit fg'>
+    <img class='windmitForm' src='/assets/windmit/form.png' alt="Florida Wind Mitigation Inspection Form" />
+    <div class='windmitPage'>
+        <div *ngFor="let child of flattenModifiedChildren(fg); trackBy: trackBy" [id]="'wind-mit-' + child.id">
+            <renderer [node]="child" depth="depth"></renderer>
+        </div>
+    </div>
+</div>

@@ -1,7 +1,7 @@
 
 import Portfolio, { InputFieldType } from "@youngalfred/bowtie-sdk";
 import { OptionType } from "@youngalfred/bowtie-sdk";
-import { AppField } from "src/types";
+import { InputNode } from "src/types";
 import { BodyStylesData, MakesData, ModelsData, VinData } from "src/types/auto-service";
 
 const getAutoWith17DigitVin: AsyncRuleMap[string] = (app, _field, [idxOfAuto = 0]) => async (): Promise<void> => {
@@ -96,7 +96,7 @@ type AsyncRuleMap = Record<
         app: Portfolio,
         field: InputFieldType,
         replaced: number[]
-    ) => AppField["applySideEffect"]
+    ) => InputNode["applySideEffect"]
 >
 
 const fieldsWithSideEffects: AsyncRuleMap = {

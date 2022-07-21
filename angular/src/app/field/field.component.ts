@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { OptionType } from '@youngalfred/bowtie-sdk';
-import { AppField } from '../../types';
+import { InputNode } from '../../types';
 import { emptyField } from '../shared/fields';
 
 @Component({
@@ -12,10 +12,9 @@ export class FieldComponent implements OnInit, OnChanges {
 
   constructor() { }
 
-  @Input("field") field: AppField = emptyField;
+  @Input("field") field: InputNode = emptyField;
   
   async ngOnInit(): Promise<void> {
-    this.field.id === "auto.autos.0.make" && console.log("updated")
     await this.field.applySideEffect?.()
   }
 

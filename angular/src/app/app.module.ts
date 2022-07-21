@@ -12,6 +12,8 @@ import { RadioFieldComponent } from './radio-field/radio-field.component';
 import { InfoHoverComponent } from './info-hover/info-hover.component';
 import { FileFieldComponent } from './file-field/file-field.component';
 import { FieldComponent } from './field/field.component';
+import { WindMitigationComponent } from './wind-mitigation/wind-mitigation.component';
+import { RendererComponent } from './renderer/renderer.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { FieldComponent } from './field/field.component';
     RadioFieldComponent,
     InfoHoverComponent,
     FileFieldComponent,
-    FieldComponent
+    FieldComponent,
+    WindMitigationComponent,
+    RendererComponent
   ],
   imports: [
     BrowserModule,

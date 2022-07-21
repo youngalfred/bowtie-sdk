@@ -82,8 +82,9 @@
   <RouterView />
 </template>
 
-<style>
+<style lang="scss">
   @import '@/assets/base.css';
+  @import '@/windmit.scss';
 
   #app {
     width: 100%;

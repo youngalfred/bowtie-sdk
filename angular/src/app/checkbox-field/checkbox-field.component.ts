@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AppField } from 'src/types';
+import { InputNode } from 'src/types';
 import { onCheck } from 'src/utilities';
 import { emptyField } from '../shared/fields';
 
@@ -10,10 +10,9 @@ import { emptyField } from '../shared/fields';
 })
 export class CheckboxFieldComponent {
 
-  constructor() {
-  }
+  constructor() { }
 
-  @Input("field") field: AppField = emptyField;
+  @Input("field") field: InputNode = emptyField;
 
   onChangeInternal(e: Event) {
     onCheck(e, this.field.onChange);

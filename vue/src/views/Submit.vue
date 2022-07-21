@@ -30,7 +30,6 @@
         data.isSubmitting = false
         data.isSuccess = succeeded
         if (succeeded) {
-          console.log('should be resetting now~~')
           portfolio.resetApplication()
         }
       }

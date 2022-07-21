@@ -1,5 +1,5 @@
 import { Component, Input, SimpleChanges, OnChanges, Output, EventEmitter } from '@angular/core';
-import { AppField, FileField } from 'src/types';
+import { InputNode, FileInput } from 'src/types';
 import { emptyField } from '../shared/fields';
 
 export const defaultFileUploader = (_files: File[]) => Promise.resolve([]);
@@ -54,7 +54,7 @@ type UploadResult = Pick<InvalidFile, "name"> & {
 export class FileFieldComponent implements OnChanges {
 
   constructor() { }
-  @Input("field") field: FileField = { ...emptyField, uploadFiles: defaultFileUploader };
+  @Input("field") field: InputNode = emptyField;
 
   invalidFiles: InvalidFile[] = [];
   failedFiles: UploadResult[] = [];
@@ -84,7 +84,7 @@ export class FileFieldComponent implements OnChanges {
 
   uploadFiles = async () => {
       this.isUploadDisabled = true;
-      const results = await this.field.uploadFiles(this.selectedFiles);
+      const results = await (this.field as FileInput).uploadFiles(this.selectedFiles);
 
       this.selectedFiles = [];
       // Indicate to user which files failed the upload

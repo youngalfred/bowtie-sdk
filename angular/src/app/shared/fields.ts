@@ -1,5 +1,5 @@
 import { FieldGroup, FieldType } from "@youngalfred/bowtie-sdk";
-import { AppField } from "src/types";
+import { InputNode } from "src/types";
 import classNames from "../decorators/styles"
 
 // return true if at least one of the children is invalid
@@ -22,7 +22,7 @@ export const combineClasses = ({ id, valid, classes = [], ...rest }: FieldType, 
     return [...classes, ...decoratorClasses, ...errorClass].join(' ');
 };
 
-export const emptyField: AppField = {
+export const emptyField: InputNode = {
     id: "",
     classes: "",
     kind: "text",
@@ -30,6 +30,5 @@ export const emptyField: AppField = {
     label: "",
     valid: { valid: false, msg: "This field should not be empty" },
     testId: "",
-    options: [],
     onChange: (_: string) => { },
 };
