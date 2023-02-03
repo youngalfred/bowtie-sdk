@@ -3,9 +3,13 @@
         <button (click)="makeNewFileInput()" [attr.data-automation-id]="field.testId + '-select-files'">
             Select Files
         </button>
-    
+
         <div *ngIf="selectedFiles.length">
-            <Button (click)="uploadFiles()" [disabled]="isUploadDisabled" [attr.data-automation-id]="field.testId + '-upload-files'">
+            <Button
+                (click)="uploadFiles()"
+                [disabled]="isUploadDisabled"
+                [attr.data-automation-id]="field.testId + '-upload-files'"
+            >
                 Upload
             </Button>
         </div>
@@ -15,20 +19,19 @@
         <div>
             <h5>Selected files:</h5>
             <div *ngFor="let file of selectedFiles">
-                {{file.name}}
+                {{ file.name }}
             </div>
-            
+
             <h5 *ngIf="failedFiles.length">The following files failed to upload (please try again):</h5>
             <div *ngFor="let file of failedFiles">
-                {{file.name}}
+                {{ file.name }}
             </div>
         </div>
         <div>
             <h5>Successfully uploaded files:</h5>
             <div *ngFor="let name of uploadedFiles">
-                {{name}}
+                {{ name }}
             </div>
         </div>
     </div>
 </div>
-

@@ -1,2 +1,9 @@
-<input type="checkbox" [id]="field.id" [name]="field.id" [class]="field.classes"
-    [attr.data-automation-id]="field.testId" (change)="onChangeInternal($event)" [checked]="field.value === '1'" />
+<input
+    type="checkbox"
+    [id]="field.id"
+    [name]="field.id"
+    [class]="field.classes"
+    [attr.data-automation-id]="field.testId"
+    (change)="onChangeInternal($event)"
+    [checked]="field.value === '1'"
+/>

@@ -1,5 +1,5 @@
 <div [id]="fg.id" [class]="depth === 1 ? 'fg' : ''">
-    <field-label [field]="fg">{{fg.label}}</field-label>
+    <field-label [field]="fg">{{ fg.label }}</field-label>
     <info-hover [fieldname]="fg.id"></info-hover>
 
     <div [class]="fg.classes">
@@ -7,7 +7,8 @@
             [depth]="depth"
             [class]="depth > 1 ? ' inner-fg' : ''"
             *ngFor="let field of fg.children; index as i; trackBy: trackBy"
-            [node]="decorate(field)">
+            [node]="decorate(field)"
+        >
         </renderer>
     </div>
 </div>

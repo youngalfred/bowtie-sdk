@@ -11,5 +11,5 @@ export const roofmaterial = {
     tarOrGravel: "roofmaterial/tar.jpg",
     foam: "roofmaterial/foam.jpg",
     clayTile: "roofmaterial/clay-tile.jpg",
-    spanishTile: "roofmaterial/spanish.jpg"
+    spanishTile: "roofmaterial/spanish.jpg",
 };

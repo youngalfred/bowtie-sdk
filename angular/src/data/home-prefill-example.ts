@@ -24,4 +24,4 @@ export const prefilledFields = {
     "home.plan.requestedPolicyStartDate": "2021-08-10",
     "home.dateOfPurchase": "1999-01-01",
     "home.numberOfMortgages": "n1",
-}
+};

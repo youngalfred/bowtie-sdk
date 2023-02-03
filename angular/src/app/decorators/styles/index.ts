@@ -3,10 +3,10 @@ const classNames: Record<string, string[]> = {
     "house-type": flexWrap,
     occupants: flexWrap,
     "construction-type": flexWrap,
-    "valuables": flexWrap,
-    "extras": flexWrap,
+    valuables: flexWrap,
+    extras: flexWrap,
     "any-updates": flexWrap,
-    "pets": flexWrap,
+    pets: flexWrap,
     "extra-coverages": flexWrap,
 };
 

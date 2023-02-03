@@ -114,7 +114,6 @@ all Homeowners policies. The mold insurance add-on provides coverage for
 property damage and liability losses arising out of fungi, wet or dry
 rot, or bacteria.`;
 
-
 export const keysAndTexts: Info = {
     "home.interiorFinishingQuality-economy": economyGrade,
     "home.interiorFinishingQuality-builder": buildersGrade,
