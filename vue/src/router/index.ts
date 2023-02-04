@@ -5,24 +5,23 @@ import GetStarted from '../views/GetStarted.vue'
 import { homePagesRecord } from '@/data/pages/home'
 
 const enforceHomeSelection = (to: any, from: any) => {
-      const portfolio = usePortfolio()
-      const { app } = storeToRefs(portfolio)
-      const destination = to.fullPath.substring(1)
-  
-      if (Object.keys(homePagesRecord).includes(destination)) {
-        const policyType = app.value.find('start.policyType')?.value
-        
-        if (!/^home/.test(policyType || '')) {
-          return '/'
-        }
-        
-        const homeType = app.value.find('home.propertyType')?.value
+  const portfolio = usePortfolio()
+  const { app } = storeToRefs(portfolio)
+  const destination = to.fullPath.substring(1)
 
-        if (!homeType && destination !== 'applicant-details') {
-          return 'applicant-details'
-        }
+  if (Object.keys(homePagesRecord).includes(destination)) {
+    const policyType = app.value.find('start.policyType')?.value
 
-      }
+    if (!/^home/.test(policyType || '')) {
+      return '/'
+    }
+
+    const homeType = app.value.find('home.propertyType')?.value
+
+    if (!homeType && destination !== 'applicant-details') {
+      return 'applicant-details'
+    }
+  }
 }
 
 const guardAutoRPages = (to: any, from: any) => {
@@ -30,12 +29,9 @@ const guardAutoRPages = (to: any, from: any) => {
   const { app } = storeToRefs(portfolio)
   const destination = to.fullPath.substring(1)
 
-    if ((
-      destination === 'auto-summary'
-      && app.value.find('start.policyType')?.value !== 'auto'
-    )) {
-      return '/'
-    }
+  if (destination === 'auto-summary' && app.value.find('start.policyType')?.value !== 'auto') {
+    return '/'
+  }
 }
 
 const enforceValidPortfolio = (to: any, from: any) => {
@@ -45,7 +41,7 @@ const enforceValidPortfolio = (to: any, from: any) => {
   if (!app.value.valid) return '/'
 }
 
-const guardAutoCount = (page: 'auto'|'driver') => (to: any) => {
+const guardAutoCount = (page: 'auto' | 'driver') => (to: any) => {
   const portfolio = usePortfolio()
   const { app } = storeToRefs(portfolio)
   const { id = '0' } = to?.params || {}
@@ -72,25 +68,25 @@ const router = createRouter({
       path: '/applicant-details',
       name: 'applicant-details',
       component: () => import('../views/Home1.vue'),
-      beforeEnter: enforceHomeSelection
+      beforeEnter: enforceHomeSelection,
     },
     {
       path: '/property-details',
       name: '2',
       component: () => import('../views/Home2.vue'),
-      beforeEnter: enforceHomeSelection
+      beforeEnter: enforceHomeSelection,
     },
     {
       path: '/policy-details',
       name: '3',
       component: () => import('../views/Home3.vue'),
-      beforeEnter: enforceHomeSelection
+      beforeEnter: enforceHomeSelection,
     },
     {
       path: '/home-summary',
       name: '4',
       component: () => import('../views/Home4.vue'),
-      beforeEnter: enforceHomeSelection
+      beforeEnter: enforceHomeSelection,
     },
     {
       path: '/auto-hub',
@@ -121,8 +117,8 @@ const router = createRouter({
       name: 'Submit',
       component: () => import('../views/Submit.vue'),
       beforeEnter: enforceValidPortfolio,
-    }
-  ]
+    },
+  ],
 })
 
 export default router

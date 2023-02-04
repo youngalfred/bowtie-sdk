@@ -1,24 +1,24 @@
-import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { LabelComponent } from "./label.component";
+import { LabelComponent } from './label.component'
 
-describe("LabelComponent", () => {
-    let component: LabelComponent;
-    let fixture: ComponentFixture<LabelComponent>;
+describe('LabelComponent', () => {
+  let component: LabelComponent
+  let fixture: ComponentFixture<LabelComponent>
 
-    beforeEach(async () => {
-        await TestBed.configureTestingModule({
-            declarations: [LabelComponent],
-        }).compileComponents();
-    });
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [LabelComponent],
+    }).compileComponents()
+  })
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(LabelComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LabelComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
-    it("should create", () => {
-        expect(component).toBeTruthy();
-    });
-});
+  it('should create', () => {
+    expect(component).toBeTruthy()
+  })
+})

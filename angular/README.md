@@ -19,18 +19,18 @@ the application is automatically checked, validated, and updated.
 The implementation consists of several components that generate the standard
 HTML input objects:
 
--   root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
--   parent component to all field groups (and individual fields) (`field-group.component`)
--   text box (`text-field.component`)
--   file input (`file-field.component`)
--   check box (`checkbox-field.component`)
--   select dropdown (`select-field.component`)
--   radio button (`radio-field.component`)
+- root component that contains, watches, and re-renders as the dynamic portfolio object is updated (`app.component`)
+- parent component to all field groups (and individual fields) (`field-group.component`)
+- text box (`text-field.component`)
+- file input (`file-field.component`)
+- check box (`checkbox-field.component`)
+- select dropdown (`select-field.component`)
+- radio button (`radio-field.component`)
 
 And two managerial functions:
 
--   the renderer for nested collections of application questions (`makeFieldGroups`)
--   the reducer that adds event handlers to each field object (`propsReducer`)
+- the renderer for nested collections of application questions (`makeFieldGroups`)
+- the reducer that adds event handlers to each field object (`propsReducer`)
 
 Plus, `updateField`, which serves as a re-usable event handler.
 

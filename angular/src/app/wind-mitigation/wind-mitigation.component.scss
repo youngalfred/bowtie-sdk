@@ -1,23 +1,23 @@
 .windmit {
-    position: relative;
-    display: flex;
-    justify-content: center;
+  position: relative;
+  display: flex;
+  justify-content: center;
 
-    .windmitForm {
-        top: 0;
-        left: 0;
-        width: auto;
-        max-width: 100%;
-        margin: 0;
-        padding: 0;
-        border: 1px solid rgb(181 191 199 / 100%);
-    }
+  .windmitForm {
+    top: 0;
+    left: 0;
+    width: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgb(181 191 199 / 100%);
+  }
 
-    .windmitPage {
-        top: 0;
-        left: 0;
-        position: absolute;
-        width: 815px;
-        height: 100%;
-    }
+  .windmitPage {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 815px;
+    height: 100%;
+  }
 }

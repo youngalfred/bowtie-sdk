@@ -3,6 +3,7 @@
 ![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
 This Bowtie demo was developed with [Vue3 (the composition API)](https://devdocs.io/vue~3-api-composition-api/), [Piñia](https://pinia.vuejs.org/), and Vite.
+
 # The Young Alfred Bowtie SDK: A Basic Vue3 Implementation Demo
 
 ## The implementation
@@ -23,7 +24,7 @@ HTML input objects:
 ## The forwarding server
 
 As a Young Alfred partner, you should have acquired a Young Alfred
-API Key. The API Key is *private*, and should not be exposed to the
+API Key. The API Key is _private_, and should not be exposed to the
 web. The forwarding server included in this repository serves as a basic
 demonstration of how to receive the content from the Bowtie SDK and
 forward that content to the Young Alfred Bowtie API with your
@@ -37,7 +38,7 @@ service for the built Vue implementation.
 After unpacking this archive and running `npm install` to acquire all
 dependencies, open a new terminal session and run the following:
 
-``` shellsession
+```shellsession
 $ export BOWTIE_API_KEY="<Your Bowtie API Key>"
 $ npm run server
 ```
@@ -59,16 +60,18 @@ TypeScript cannot handle type information for `.vue` imports by default, so we r
 If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
 
 1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
+   1. Run `Extensions: Show Built-in Extensions` from VSCode's command palette
+   2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
 ## Other Vue-Related Notes & Resources
+
 ### Customize configuration
 
 See [Vite Configuration Reference](https://vitejs.dev/config/).
 
 ### Compile and Hot-Reload for Development
+
 Notice the image assets do not appear correctly during development.
 
 ```sh

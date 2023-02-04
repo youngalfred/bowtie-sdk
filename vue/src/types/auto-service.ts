@@ -1,36 +1,39 @@
 import type { OptionType } from '@youngalfred/bowtie-sdk'
 
 export type VinData = {
-    year: number
-    make: string
-    model: string
-    bodyStyle: string
-    engineSize: string
+  year: number
+  make: string
+  model: string
+  bodyStyle: string
+  engineSize: string
 }
 
 export type MakesData = {
-    makes: {
-        make: VinData['make']
-        description: string
-    }[]
+  makes: {
+    make: VinData['make']
+    description: string
+  }[]
 }
 
 export type ModelsData = {
-    models: {
-        model: string
-    }[]
+  models: {
+    model: string
+  }[]
 }
 
 export type BodyStylesData = {
-    bodyStyles: {
-        bodyStyle: string
-        description: string
-    }[]
+  bodyStyles: {
+    bodyStyle: string
+    description: string
+  }[]
 }
 
 export type ResultMapper = (data: any) => OptionType[]
 
-export type SdkAutoFn = (idxOfAuto: number, options: {
+export type SdkAutoFn = (
+  idxOfAuto: number,
+  options: {
     resultsMapper: ResultMapper
     headers?: Record<string, any>
-}) => Promise<void>
+  },
+) => Promise<void>

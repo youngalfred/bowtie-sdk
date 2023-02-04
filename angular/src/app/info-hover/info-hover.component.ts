@@ -1,22 +1,22 @@
-import { Component, Input, OnInit } from "@angular/core";
-import { info } from "../decorators/information";
-import { icons } from "../decorators/question-images/icons";
+import { Component, Input, OnInit } from '@angular/core'
+import { info } from '../decorators/information'
+import { icons } from '../decorators/question-images/icons'
 
 @Component({
-    selector: "info-hover",
-    templateUrl: "./info-hover.component.html",
-    styleUrls: ["./info-hover.component.css"],
+  selector: 'info-hover',
+  templateUrl: './info-hover.component.html',
+  styleUrls: ['./info-hover.component.css'],
 })
 export class InfoHoverComponent implements OnInit {
-    public hoverableInfo: string = "";
-    public showInfo = false;
-    public infoIcon = icons.info;
+  public hoverableInfo: string = ''
+  public showInfo = false
+  public infoIcon = icons.info
 
-    constructor() {}
+  constructor() {}
 
-    @Input("fieldname") id: string = "";
+  @Input('fieldname') id: string = ''
 
-    ngOnInit() {
-        this.hoverableInfo = info[this.id] || "";
-    }
+  ngOnInit() {
+    this.hoverableInfo = info[this.id] || ''
+  }
 }

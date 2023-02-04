@@ -1,7 +1,7 @@
 <label [for]="field.id">
-    <div [ngClass]="{ 'image-box': !!field.image }">
-        <img *ngIf="field.image" [src]="field.image" />
-        <info-hover [fieldname]="field.id"></info-hover>
-        <ng-content></ng-content>
-    </div>
+  <div [ngClass]="{ 'image-box': !!field.image }">
+    <img *ngIf="field.image" [src]="field.image" />
+    <info-hover [fieldname]="field.id"></info-hover>
+    <ng-content></ng-content>
+  </div>
 </label>

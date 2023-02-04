@@ -5,7 +5,13 @@ import { getQuestionsForPage } from '@/data/pages'
 import type { HomeSection } from '@/data/pages/home'
 import type { AutoSection } from '@/data/pages/auto'
 import type { InputNode, SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/types'
-import type { VinData, BodyStylesData, MakesData, ModelsData, ResultMapper } from '@/types/auto-service'
+import type {
+  VinData,
+  BodyStylesData,
+  MakesData,
+  ModelsData,
+  ResultMapper,
+} from '@/types/auto-service'
 
 export type { PortfolioStore } from './types'
 
@@ -21,7 +27,7 @@ const config: BowtieSdkConfig = {
     getAutoByVin: `${base}/auto/vin/`, // notice the trailing '/'
     getAutoMakesByYear: `${base}/auto/makes`,
     getAutoModelsByYearAndMake: `${base}/auto/models`,
-    getAutoBodyTypesByYearMakeAndModel: `${base}/auto/bodystyles`
+    getAutoBodyTypesByYearMakeAndModel: `${base}/auto/bodystyles`,
   },
   /**
    * The sdk will retry failed requests (for the above api endpoints)
@@ -38,55 +44,66 @@ const config: BowtieSdkConfig = {
     /**
      * By omitting retry codes for the following endpoints,
      * you are signaling not to retry failed requests for said endpoints:
-     */ 
+     */
     getAutoBodyTypesByYearMakeAndModel: [],
-  }
+  },
 }
-
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
-      app: new Portfolio({
-        ...config,
-        application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}')
-      }),
-      fieldOverrides: {} as Record<string, Partial<InputNode>>,
-      inReview: false,
+    app: new Portfolio({
+      ...config,
+      application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}'),
+    }),
+    fieldOverrides: {} as Record<string, Partial<InputNode>>,
+    inReview: false,
   }),
   getters: {
     // Get the questions for a specific section (or page)
-    view: (state) => (section: HomeSection|AutoSection): SDKFieldGroup[] => {
-
-      return section
-        ? getQuestionsForPage(state.app.view, section) as SDKFieldGroup[]
-        : state.app.view
-    },
-    countOf: (state) => (entity: 'autos'|'drivers') => {
+    view:
+      state =>
+      (section: HomeSection | AutoSection): SDKFieldGroup[] => {
+        return section
+          ? (getQuestionsForPage(state.app.view, section) as SDKFieldGroup[])
+          : state.app.view
+      },
+    countOf: state => (entity: 'autos' | 'drivers') => {
       return parseInt(state.app.find(`auto.${entity}.count`)?.value || '0', 10)
     },
     // Get a map of fields by their ids
-    request: (state) => (fieldIds: string[]): Record<string, SDKField> => {
-      const requestedFieldSet = new Set(fieldIds)
+    request:
+      state =>
+      (fieldIds: string[]): Record<string, SDKField> => {
+        const requestedFieldSet = new Set(fieldIds)
 
-      const findField = (acc: Record<string, SDKField>, nextNode: SDKField): Record<string, SDKField> => {
-        if (requestedFieldSet.has(nextNode.id)) {
-          acc[nextNode.id] = nextNode
+        const findField = (
+          acc: Record<string, SDKField>,
+          nextNode: SDKField,
+        ): Record<string, SDKField> => {
+          if (requestedFieldSet.has(nextNode.id)) {
+            acc[nextNode.id] = nextNode
+          }
+
+          const { children = [] } = nextNode as SDKGroupType
+          if (children.length) {
+            return children.reduce(findField, acc)
+          }
+
+          return acc
         }
 
-        const { children = [] } = nextNode as SDKGroupType
-        if (children.length) {
-          return children.reduce(findField, acc)
-        }
-
-        return acc
-      }
-
-      return state.app.view.reduce(findField, {})
-    },
-    assertFieldEquals: (state) => (id: string, value: string|null, { negate }: { negate: boolean } = { negate: false }): boolean => {
-      const isEqual = state.app.find(id)?.value === value
-      return negate ? !isEqual : isEqual
-    }
+        return state.app.view.reduce(findField, {})
+      },
+    assertFieldEquals:
+      state =>
+      (
+        id: string,
+        value: string | null,
+        { negate }: { negate: boolean } = { negate: false },
+      ): boolean => {
+        const isEqual = state.app.find(id)?.value === value
+        return negate ? !isEqual : isEqual
+      },
   },
   actions: {
     // Because this.application is readonly ( meaning, this.app.set(field, value) will not trigger a re-render ),
@@ -94,32 +111,31 @@ export const usePortfolio = defineStore('portfolio', {
     // if you are aware of a better way that doesn't require building a new Portfolio on each update, please
     // share your approach! The current approach is not ideal because it requires trackinf the fields
     // that have been overwritten within the sdk through this.fieldOverrides.
-    async updateApp(cb: (_app: Portfolio) => Promise<Portfolio|null>) {
-
+    async updateApp(cb: (_app: Portfolio) => Promise<Portfolio | null>) {
       const app = await cb(
         new Portfolio({
           ...config,
-          application: this.app.application
-        })
+          application: this.app.application,
+        }),
       )
 
       if (app) {
-        window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(app.application));
+        window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(app.application))
         this.app = app
       }
     },
     resetApplication() {
       this.app = new Portfolio(config)
-      window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(this.app.application));
+      window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(this.app.application))
     },
     updateField(fieldname = '') {
-      const self = this;
+      const self = this
       return (value = '') => {
         self.updateApp(app => {
-          const field = app.find(fieldname) as SDKInputField;
-  
+          const field = app.find(fieldname) as SDKInputField
+
           if (field && field.value !== value) {
-            app.set(field, value);
+            app.set(field, value)
             return Promise.resolve(app)
           }
 
@@ -127,13 +143,13 @@ export const usePortfolio = defineStore('portfolio', {
         })
       }
     },
-    addAutoEntity(entity: 'driver'|'auto') {
+    addAutoEntity(entity: 'driver' | 'auto') {
       const id = `auto.${entity}s.count`
       const count = parseInt(this.app.find(id)?.value || '0', 10)
 
-      this.updateField(id)(`${count+1}`)
+      this.updateField(id)(`${count + 1}`)
     },
-    removeAutoEntity(entity: 'driver'|'auto', id: number) {
+    removeAutoEntity(entity: 'driver' | 'auto', id: number) {
       this.updateApp(app => {
         const prefix = `auto.${entity}s.`
         app.delMulti(`${prefix}${id}`, `${prefix}count`)
@@ -144,12 +160,12 @@ export const usePortfolio = defineStore('portfolio', {
       this.inReview = inReview
     },
     removeOverride(fieldname: string) {
-      const {[fieldname]: _removed, ...rest } = this.fieldOverrides
+      const { [fieldname]: _removed, ...rest } = this.fieldOverrides
       this.fieldOverrides = rest
     },
     async fetchAndFillAutoByVin(autoIdx: number, field: InputNode) {
       const idPrefix = `auto.autos.${autoIdx}.`
-      const hasVin = this.app.find(`${idPrefix}hasVinNumber`)?.value === 'yes';
+      const hasVin = this.app.find(`${idPrefix}hasVinNumber`)?.value === 'yes'
 
       const isValidVINLength = field?.value.length === 17
 
@@ -160,25 +176,29 @@ export const usePortfolio = defineStore('portfolio', {
       this.updateApp(async app => {
         try {
           await app.fillAutoWithVinData<VinData>(autoIdx, {
-            resultsMapper: ({ year, make, model, bodyStyle }) => ({ year, make, model, bodyType: bodyStyle }),
+            resultsMapper: ({ year, make, model, bodyStyle }) => ({
+              year,
+              make,
+              model,
+              bodyType: bodyStyle,
+            }),
             headers: {
-                // ... any headers you might need to send
-            }
+              // ... any headers you might need to send
+            },
           })
 
-          const autoOverrides = () => [
-            'year', 'make', 'model', 'bodyType'
-          ].reduce((acc, next) => {
-            const id = `auto.autos.${autoIdx}.${next}`
-            const field = app.find(id) as SelectField
+          const autoOverrides = () =>
+            ['year', 'make', 'model', 'bodyType'].reduce((acc, next) => {
+              const id = `auto.autos.${autoIdx}.${next}`
+              const field = app.find(id) as SelectField
 
-            return {
-              ...acc,
-              [id]: {
-                options: field.options
+              return {
+                ...acc,
+                [id]: {
+                  options: field.options,
+                },
               }
-            }
-          }, {})
+            }, {})
 
           this.fieldOverrides = {
             ...this.fieldOverrides,
@@ -191,51 +211,51 @@ export const usePortfolio = defineStore('portfolio', {
         }
       })
     },
-    async overrideAutoOptionsFor(key: 'make'|'model'|'bodyType', triggerField: InputNode, autoIdx: number) {
-      const sdkAutoFn = ({
+    async overrideAutoOptionsFor(
+      key: 'make' | 'model' | 'bodyType',
+      triggerField: InputNode,
+      autoIdx: number,
+    ) {
+      const sdkAutoFn = {
         make: 'updateAutoMakeOptions',
         model: 'updateAutoModelOptions',
         bodyType: 'updateAutoBodyTypeOptions',
-      })[key]
+      }[key]
 
       const resultMappers: Record<typeof key, ResultMapper> = {
-        'make': ({ makes }: MakesData) => makes.map(
-          ({ description }) => ({ name: description, label: description })
-        ),
-        'model': ({ models }: ModelsData) => models.map(
-          ({ model }) => ({ name: model, label: model })
-        ),
-        'bodyType': ({ bodyStyles }: BodyStylesData) => bodyStyles.map(
-          ({ description }) => ({ name: description, label: description })
-        ),
+        make: ({ makes }: MakesData) =>
+          makes.map(({ description }) => ({ name: description, label: description })),
+        model: ({ models }: ModelsData) =>
+          models.map(({ model }) => ({ name: model, label: model })),
+        bodyType: ({ bodyStyles }: BodyStylesData) =>
+          bodyStyles.map(({ description }) => ({ name: description, label: description })),
       }
 
       const autoPrefix = `auto.autos.${autoIdx}.`
       const fieldtoUpdate = this.app.find(`${autoPrefix}${key}`) as SelectField
-      const shallOverrideOptions = (
+      const shallOverrideOptions =
         /**
          * When the year entered is earlier than 1981,
          * the car identity fields (make, model, body type)
          * become text inputs because the national vin service
-         * does not have record of vehicles older than 1981. 
+         * does not have record of vehicles older than 1981.
          */
-        triggerField.kind === 'select'
+        triggerField.kind === 'select' &&
         // For example, ensure year has been selected before
         // trying to retrieve makes by year
-        && !!triggerField.value
+        !!triggerField.value &&
         // only override options when not using the sister service:
         // vin prefill, which causes the options to be length 1
-        && fieldtoUpdate?.options.length !== 1
-      )
+        fieldtoUpdate?.options.length !== 1
 
       if (!shallOverrideOptions) {
-          return
+        return
       }
 
       this.updateApp(async (app: Portfolio) => {
         try {
           await app[sdkAutoFn as keyof typeof app]?.(autoIdx, {
-            resultsMapper: resultMappers[key]
+            resultsMapper: resultMappers[key],
           })
           this.fieldOverrides = {
             ...this.fieldOverrides,
@@ -245,36 +265,36 @@ export const usePortfolio = defineStore('portfolio', {
 
               return {
                 [id]: {
-                  options: field.options
-                }
+                  options: field.options,
+                },
               }
-            })()
+            })(),
           }
           return app
         } catch (err: any) {
           const wasCarAlreadyRetrievedByVin = (err?.code || '') === 'ABORT_AUTO_OPTIONS_OVERRIDE'
-    
+
           if (wasCarAlreadyRetrievedByVin) {
-              // The service isn't down (no need to convert to text fields),
-              // we simply prioritized using the vin service's results 
-              return null
+            // The service isn't down (no need to convert to text fields),
+            // we simply prioritized using the vin service's results
+            return null
           }
 
           // Keep in order of progression (can't fill out model without make first)
-          const fieldsToConvert: typeof key[] = ['make', 'model', 'bodyType']
+          const fieldsToConvert: (typeof key)[] = ['make', 'model', 'bodyType']
           const idxOfCurrent = fieldsToConvert.indexOf(key)
           if (idxOfCurrent < 0) {
-              throw new Error('Ensure the auto field ids align with your expectations.')
+            throw new Error('Ensure the auto field ids align with your expectations.')
           }
 
           fieldsToConvert.slice(idxOfCurrent).forEach(keyOfFailure => {
-            const id = `${autoPrefix}${keyOfFailure}`  
+            const id = `${autoPrefix}${keyOfFailure}`
             // vin service is down,
             // but customers still need the ability
             // to enter their car's data:
             this.fieldOverrides = {
               ...this.fieldOverrides,
-              [id]: { kind: 'text' }
+              [id]: { kind: 'text' },
             }
           })
 

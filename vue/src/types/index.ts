@@ -1,19 +1,13 @@
-
 import type { OptionType } from '@youngalfred/bowtie-sdk'
 export type {
   FieldType as SDKField,
   FieldGroup as SDKFieldGroup,
   InputFieldType as SDKInputField,
-  OptionType as SDKOptionType
-} from '@youngalfred/bowtie-sdk';
+  OptionType as SDKOptionType,
+} from '@youngalfred/bowtie-sdk'
 export type { GroupType as SDKGroupType } from '@youngalfred/bowtie-sdk/build/types'
 
-export type CustomRenderer =
-  |'grid-group'
-  |'async-field'
-  |'card'
-  |'multi-select'
-  |'fl-windmit'
+export type CustomRenderer = 'grid-group' | 'async-field' | 'card' | 'multi-select' | 'fl-windmit'
 
 export type CustomRendererHandler = Record<CustomRenderer, any>
 export type TypeHandler = Record<Node['kind'], any>
@@ -65,5 +59,5 @@ export interface Radio extends GenericField {
 
 export type InputNode = Field | Select | Radio
 export type Node = InputNode | Fieldgroup
-export type ValidEvent = string | ((props: any) => void) 
+export type ValidEvent = string | ((props: any) => void)
 export type EventHandlerFactory = (_0: string) => (_1: ValidEvent) => void
