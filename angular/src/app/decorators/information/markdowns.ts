@@ -1,4 +1,4 @@
-import { Info } from ".";
+import { Info } from '.'
 
 const economyGrade = `
 **Cabinets:** Economy grade cabinets usually have the cheapest
@@ -17,7 +17,7 @@ low-cost lighting, and limited electrical outlets.
 
 **Floors:** Floors are made of the least expensive wood and may use
 inexpensive vinyl, carpeting, or other cheap material.
-`;
+`
 
 const buildersGrade = `
 **Cabinets:** Builder's grade cabinets are standard quality plywood or
@@ -41,7 +41,7 @@ adequate light fixtures and minimal electrical outlets.
 **Floors:** The floors have wood or steel joints. Common floor coverings
 include low-cost carpet, vinyl, or hardwood and cost between **$2 to $7
 per square foot.**
-`;
+`
 
 const semicustomGrade = `
 **Cabinets:** Instead of plywood, semi-custom cabinets are wood. The
@@ -66,7 +66,7 @@ additional outlets.
 
 **Floors:** A suitable combination of decent quality hardwood, vinyl,
 carpet, and ceramic tile are typical of semi-custom interiors.
-`;
+`
 
 const customGrade = `
 **Cabinets:** Custom cabinets, pantries, and islands are made of
@@ -89,41 +89,40 @@ craftsmanship.
 
 **Floors:** A combination of high-end solid hardwood flooring, tiles, and
 vinyl is typical for custom grade homes.
-`;
+`
 
 const floodCoverage = `**Flood Coverage:** Flood coverage is not
 included in your standard home insurance policy. Flood insurance is
 sponsored by the National Flood Insurance Program (NFIP). While it isn't
 federally required in moderate-risk areas, it's still a good idea. In
 fact, people in these areas file more than 20 percent of all NFIP flood
-insurance claims.`;
+insurance claims.`
 
 const waterBackupCoverage = `**Water Backup:** Homeowners policies do not
 cover losses from water that overflows from sump pumps or water that
 backs-up through sewers or drains. This add-on provides coverage for
-such incidents.`;
+such incidents.`
 
 const personalPropertyCoverage = `**Personal Property Replacement Costs:** 
 Your personal property depreciates, so if you have to file a
 claim, you might not get enough cash to buy the property new. This
 coverage ensures that you can replace property at the cost of buying it
-new.`;
+new.`
 
 const moldCoverage = `**Mold Coverage:** Mold coverage is excluded from
 all Homeowners policies. The mold insurance add-on provides coverage for
 property damage and liability losses arising out of fungi, wet or dry
-rot, or bacteria.`;
-
+rot, or bacteria.`
 
 export const keysAndTexts: Info = {
-    "home.interiorFinishingQuality-economy": economyGrade,
-    "home.interiorFinishingQuality-builder": buildersGrade,
-    "home.interiorFinishingQuality-semiCustom": semicustomGrade,
-    "home.interiorFinishingQuality-custom": customGrade,
-    "home.additionalCoverageRequests.flood": floodCoverage,
-    "home.additionalCoverageRequests.waterBackup": waterBackupCoverage,
-    "home.additionalCoverageRequests.personalProperty": personalPropertyCoverage,
-    "home.additionalCoverageRequests.mold": moldCoverage,
-};
+  'home.interiorFinishingQuality-economy': economyGrade,
+  'home.interiorFinishingQuality-builder': buildersGrade,
+  'home.interiorFinishingQuality-semiCustom': semicustomGrade,
+  'home.interiorFinishingQuality-custom': customGrade,
+  'home.additionalCoverageRequests.flood': floodCoverage,
+  'home.additionalCoverageRequests.waterBackup': waterBackupCoverage,
+  'home.additionalCoverageRequests.personalProperty': personalPropertyCoverage,
+  'home.additionalCoverageRequests.mold': moldCoverage,
+}
 
-export default keysAndTexts;
+export default keysAndTexts

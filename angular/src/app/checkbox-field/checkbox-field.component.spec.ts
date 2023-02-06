@@ -1,25 +1,24 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing'
 
-import { CheckboxFieldComponent } from './checkbox-field.component';
+import { CheckboxFieldComponent } from './checkbox-field.component'
 
 describe('CheckboxFieldComponent', () => {
-  let component: CheckboxFieldComponent;
-  let fixture: ComponentFixture<CheckboxFieldComponent>;
+  let component: CheckboxFieldComponent
+  let fixture: ComponentFixture<CheckboxFieldComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CheckboxFieldComponent ]
-    })
-    .compileComponents();
-  });
+      declarations: [CheckboxFieldComponent],
+    }).compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CheckboxFieldComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(CheckboxFieldComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

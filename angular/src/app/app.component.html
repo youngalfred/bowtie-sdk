@@ -1,7 +1,13 @@
 <div id="container">
-  <renderer *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy" [node]="fg" depth="0"></renderer>
+  <renderer
+    *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy"
+    [node]="fg"
+    depth="0"
+  ></renderer>
   <div class="flex">
-    <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true;">Highlight Invalid Fields</button>
+    <button *ngIf="!portfolio.valid" (click)="invalidFieldsAreHighlighted = true">
+      Highlight Invalid Fields
+    </button>
     <button id="ya-submit-button" [disabled]="!portfolio.valid" (click)="submit()">Submit</button>
   </div>
 

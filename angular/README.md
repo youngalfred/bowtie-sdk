@@ -4,6 +4,7 @@
 # The Young Alfred Bowtie SDK: A Basic Angular Implementation Demo
 
 This repository contains two items:
+
 1. an Angular app, which implements a complete, functional, and interactive UI for the Young Alfred Bowtie SDK.
 2. a simple implementation of the forwarding server.
 
@@ -36,7 +37,7 @@ Plus, `updateField`, which serves as a re-usable event handler.
 ## The forwarding server
 
 As a Young Alfred partner, you should have acquired a Young Alfred
-API Key. The API Key is *private*, and should not be exposed to the
+API Key. The API Key is _private_, and should not be exposed to the
 web. The forwarding server included in this repository serves as a basic
 demonstration of how to receive the content from the Bowtie SDK and
 forward that content to the Young Alfred Bowtie API with your
@@ -50,7 +51,7 @@ service for the built Angular implementation.
 After unpacking this archive and running `npm install` to acquire all
 dependencies, open a new terminal session and run the following:
 
-``` shellsession
+```shellsession
 $ export BOWTIE_API_KEY="<Your Bowtie API Key>"
 $ npm run server
 ```

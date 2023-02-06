@@ -1,6 +1,6 @@
-<span *ngIf="hoverableInfo" (mouseleave)="showInfo = false;">
-    <img [src]="infoIcon" (mouseenter)="showInfo = true;" />
-    <div *ngIf="showInfo" class="info">
-        {{hoverableInfo}}
-    </div>
+<span *ngIf="hoverableInfo" (mouseleave)="showInfo = false">
+  <img [src]="infoIcon" (mouseenter)="showInfo = true" />
+  <div *ngIf="showInfo" class="info">
+    {{ hoverableInfo }}
+  </div>
 </span>
