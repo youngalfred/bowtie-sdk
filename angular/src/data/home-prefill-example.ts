@@ -14,7 +14,7 @@ export const prefilledFields = {
   'home.primaryPolicyHolder.gender': 'male',
   'home.primaryPolicyHolder.maritalStatus': 'separated',
   'home.primaryPolicyHolder.careerStatus': 'employed',
-  'home.primaryPolicyHolder.occupation': 'photographerOrPhotographyStudio',
+  'home.primaryPolicyHolder.occupation': 'schoolTeacher',
   'home.secondaryPolicyHolder': 'yes',
   'home.propertyType': 'House',
   'home.propertyStyle': 'duplex',

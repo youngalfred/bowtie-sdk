@@ -9,6 +9,9 @@
       Highlight Invalid Fields
     </button>
     <button id="ya-submit-button" [disabled]="!portfolio.valid" (click)="submit()">Submit</button>
+    <button *ngIf="isPortolioSubmitted" (click)="newApplication()">
+      New Application
+    </button>
   </div>
 
   <div id="success-message" *ngIf="isPortolioSubmitted">

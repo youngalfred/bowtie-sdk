@@ -14,13 +14,13 @@
 }
 
 .flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 
 .flex-wrap > * {
-  max-width: 25%;
+  height: 100%;
 }
 
 .question-no-padding {

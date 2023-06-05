@@ -8,27 +8,8 @@ import { emptyField } from '../shared/fields'
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.css'],
 })
-export class FieldComponent implements OnInit, OnChanges {
+export class FieldComponent {
   constructor() {}
 
   @Input('field') field: InputNode = emptyField
-
-  async ngOnInit(): Promise<void> {
-    await this.field.applySideEffect?.()
-  }
-
-  async ngOnChanges(changes: SimpleChanges) {
-    const { value: prevValue, options: prevOptions = [] } = changes.field.previousValue || {}
-    const { value: currValue, options: newOptions = [] } = changes.field.currentValue
-    const [longer, shorter]: [OptionType[], OptionType[]] =
-      prevOptions.length > newOptions.length ? [prevOptions, newOptions] : [newOptions, prevOptions]
-
-    if (
-      prevValue !== currValue ||
-      prevOptions.length !== newOptions.length ||
-      longer.some((el, idx) => el.name !== shorter[idx]?.name)
-    ) {
-      await this.field.applySideEffect?.()
-    }
-  }
 }

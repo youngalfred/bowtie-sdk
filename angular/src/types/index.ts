@@ -35,7 +35,6 @@ export interface GenericField {
   classes: string // A string of classes to assist the UI. Ex: phone number fields' classes => "input-phone ..."
   testId: string
   image?: string
-  applySideEffect?: () => Promise<void>
   valid: SDKField['valid']
 }
 
