@@ -31,6 +31,7 @@ export class AppComponent implements OnInit {
   private base = 'http://localhost:3001/'
 
   public invalidFieldsAreHighlighted: boolean = false
+  public checkingForStoredApplication: boolean = true
   public isPortolioSubmitted: boolean = false
   public portfolioId: string = ''
 
@@ -117,6 +118,7 @@ export class AppComponent implements OnInit {
         ...this.bowtieConfig(newSessionId),
         application: this.maybeLocalstore(),
       })
+      this.checkingForStoredApplication = false
 
       // return early as no partial app exists in the backend yet
       // (the session was just now created)
@@ -130,6 +132,7 @@ export class AppComponent implements OnInit {
       ...this.bowtieConfig(sessionId),
       application,
     })
+    this.checkingForStoredApplication = false
 
     // Optional: prefill aspects of the portfolio here.
     // You will likely require a "mapper" to map your data's ids
@@ -182,13 +185,18 @@ export class AppComponent implements OnInit {
     const { kind, children = [], ...groupRest } = field as SDKFieldGroup
     // reduce the multigroup/fieldgroup's children (they need an onChange event handler and stringified classes)
     if (['multigroup', 'fieldgroup'].includes(kind)) {
+      const reducedChildren = children.reduce(this.fieldReducer, [])
+      if (reducedChildren.length === 0) {
+        return acc
+      }
+
       return [
         ...acc,
         modifyFieldGroup({
           ...groupRest,
           kind: 'fieldgroup', // notice that multigroups become fieldgroups
           classes: combineClasses(field, this.invalidFieldsAreHighlighted),
-          children: children.reduce(this.fieldReducer, []),
+          children: reducedChildren,
         }),
       ]
     }

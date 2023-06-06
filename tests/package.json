@@ -1,23 +1,23 @@
 {
-    "name": "bowtie-demo-test-runner",
-    "version": "0.0.8",
-    "description": "The test runner for each of the bowtie-sdk examples (vanilla-js, angular, react, vue, etc...).",
-    "scripts": {
-        "test": "npx wdio wdio.conf.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/orgs/youngalfred/bowtie-sdk"
-    },
-    "author": "Young Alfred Inc. <bowtie@youngalfred.com>",
-    "license": "UNLICENSED",
-    "devDependencies": {
-        "@wdio/cli": "^7.7.3",
-        "@wdio/local-runner": "^7.7.3",
-        "@wdio/mocha-framework": "^7.7.3",
-        "@wdio/spec-reporter": "^7.7.3",
-        "@wdio/sync": "^7.7.3",
-        "chromedriver": "^113.0.0",
-        "wdio-chromedriver-service": "^7.1.0"
-    }
+  "name": "bowtie-demo-test-runner",
+  "version": "0.0.8",
+  "description": "The test runner for each of the bowtie-sdk examples (vanilla-js, angular, react, vue, etc...).",
+  "scripts": {
+    "test": "npx wdio wdio.conf.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/orgs/youngalfred/bowtie-sdk"
+  },
+  "author": "Young Alfred Inc. <bowtie@youngalfred.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@wdio/cli": "^7.7.3",
+    "@wdio/local-runner": "^7.7.3",
+    "@wdio/mocha-framework": "^7.7.3",
+    "@wdio/spec-reporter": "^7.7.3",
+    "@wdio/sync": "^7.7.3",
+    "chromedriver": "^114.0.0",
+    "wdio-chromedriver-service": "^7.1.0"
+  }
 }

@@ -1,5 +1,4 @@
-<field-label class="question" [field]="field"
-  >{{ field.label }}
+<field-label class="question" [field]="field">
   <checkbox-field *ngIf="field.kind === 'check'" [field]="field"></checkbox-field>
   <text-field *ngIf="field.kind === 'text'" [field]="field"></text-field>
   <select-field *ngIf="field.kind === 'select'" [field]="field"></select-field>
