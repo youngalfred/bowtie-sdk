@@ -6,22 +6,9 @@ import {
   type BaseConverter,
   type InterrimConverter,
 } from './shared-modifiers'
-import { getSideEffectFor } from './side-effects'
 
 const defaultConverter = makeDefaultConverter<InputNode>()
 type FieldConverter = InterrimConverter<BaseConverter<InputNode, InputNode>>
-
-const toFieldWithSideEffects: FieldConverter =
-  (converter = defaultConverter) =>
-  (node, store) =>
-    converter(
-      {
-        ...node,
-        renderer: 'async-field',
-        sideEffect: getSideEffectFor(node, store),
-      },
-      store,
-    )
 
 const toMultiSelect: FieldConverter =
   (converter = defaultConverter) =>
@@ -33,10 +20,6 @@ const toMultiSelect: FieldConverter =
 
 const idModifierMap: Record<string, BaseConverter<InputNode, InputNode>> = {
   'home.pets.pet.otherDogBreed.n.mixedBreeds': toMultiSelect(),
-  'auto.autos.n.vinNumber': toFieldWithSideEffects(),
-  'auto.autos.n.year': toFieldWithSideEffects(),
-  'auto.autos.n.make': toFieldWithSideEffects(),
-  'auto.autos.n.model': toFieldWithSideEffects(),
   'home.propertyType.House': toCardGroup(),
   'home.propertyType.TownHome': toCardGroup(),
   'home.propertyType.MobileHome': toCardGroup(),

@@ -30,7 +30,7 @@ const getSessionRoutes = (BOWTIE_API_URL = '', api_key = '') => {
     try {
       const { data } = await axios.post(
         `${BOWTIE_API_URL}/v1/session/${sessionId}/authenticate`,
-        null,
+        req.body,
         {
           headers: {
             ...commonHeaders,

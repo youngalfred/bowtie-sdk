@@ -37,10 +37,12 @@ import {
   BowtieAutoMakesDataService,
   BowtieAutoModelsDataService,
   BowtieAutoBodyTypesDataService,
+  // authenticateSession,
+  getPartialPortfolio,
+  startBowtieSession,
 } from '@youngalfred/bowtie-sdk'
 const { getCookies, SESSION_ID } = require('./cookie')
 const FileField = require('./file-field')
-const { getPartialPortfolio } = require('./http-helpers')
 const modifyNode = require('./modifiers.js')
 
 // Attempt to recover an item from the localStorage (the current
@@ -529,7 +531,7 @@ function updateSessionId(id) {
   function setupSubmitButton() {
     document.getElementById('ya-submit-button').addEventListener('click', function () {
       portfolio
-        .submit()
+        .submit({ url: '/portfolio' })
         .then(function (response) {
           response.json().then(function (result) {
             portfolioId = result.portfolioId
@@ -739,7 +741,12 @@ function updateSessionId(id) {
         // custoemr progress is lost if/when they resume the app later.
         sendPartialUpdates: true,
         url: `/session/${sessionId ?? ''}/progress`,
-        handleError: _err => null,
+        handleError: (error) => {
+          if (error?.statusCode === 401) {
+            // Reload to force user to re-authenticate
+            window.location.reload()
+          }
+        },
       },
     }
   }
@@ -763,14 +770,32 @@ function updateSessionId(id) {
       return
     }
 
-    // Resume the partial portfolio associated with the session
-    const application = (await getPartialPortfolio(sessionId)) ?? {}
+    try {
+      // Resume the partial portfolio associated with the session
+      const { data: application } = await getPartialPortfolio({ url: `/session/${sessionId}/progress`})
+  
+      portfolio = new Portfolio({
+        ...bowtieConfig(sessionId),
+        application,
+      })
+      renderPortfolio()
+    } catch (error) {
+      // The Vanilla JS demo does not show an
+      // authentication screen like the Vue and Angular demos.
+      // Instead, it offers light instructions below for how you
+      // can authenticate the session again by calling the authenticateSession() method.
+      updateSessionId('')
+      window.location.reload()
 
-    portfolio = new Portfolio({
-      ...bowtieConfig(sessionId),
-      application,
-    })
-    renderPortfolio()
+      if (error?.statusCode === 401) {
+        // 1. Require the customer to complete a custom form
+        //    with email and birthdate fields
+        // 2. Call authenticateSession({ url: `/session/${sessionId}/authenticate` }).
+        //    Also keep in mind the following, when handling the response:
+        //    const { authenticated, attemtpsRemaining, lockedOut, ...rest } = await authenticateSession(...)
+        // 3. See the Vue or Angular demo for more details on how to handle the response object.
+      }
+    }
   }
 
   // Kickstart the Application process.

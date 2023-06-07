@@ -13,7 +13,8 @@ import { InfoHoverComponent } from './info-hover/info-hover.component'
 import { FileFieldComponent } from './file-field/file-field.component'
 import { FieldComponent } from './field/field.component'
 import { WindMitigationComponent } from './wind-mitigation/wind-mitigation.component'
-import { RendererComponent } from './renderer/renderer.component'
+import { RendererComponent } from './renderer/renderer.component';
+import { AuthenticateComponent } from './authenticate/authenticate.component'
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { RendererComponent } from './renderer/renderer.component'
     FieldComponent,
     WindMitigationComponent,
     RendererComponent,
+    AuthenticateComponent,
   ],
   imports: [BrowserModule, HttpClientModule],
   providers: [],

@@ -49,7 +49,7 @@ const options = computed(() =>
 
 <style src="@vueform/multiselect/themes/default.css">
 .multiselect-tag {
-  background-color: #559d29 !important;
-  background: #559d29 !important;
+  background-color: #014452 !important;
+  background: #014452 !important;
 }
 </style>

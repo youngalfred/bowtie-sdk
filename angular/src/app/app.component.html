@@ -1,7 +1,10 @@
 <main id="container">
   <h1>Angular Bowtie SDK Demo</h1>
   <div *ngIf="checkingForStoredApplication">...Checking for a stored application to resume...</div>
-  <div *ngIf="!checkingForStoredApplication">
+  <div *ngIf="!authorizedToAccessApp">
+    <authenticate [submit]="authenticate"></authenticate>
+  </div>
+  <div *ngIf="!checkingForStoredApplication && authorizedToAccessApp">
     <renderer
       *ngFor="let fg of makeFieldGroups(portfolio); index as i; trackBy: trackBy"
       [node]="fg"

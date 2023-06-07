@@ -18,10 +18,10 @@ const makeNextButton = (
 ): ButtonAction | null => {
   if (!valid) {
     return {
-      label: 'Highlight Invalid',
+      label: inReview ? 'Hide Invalid Highlighting' : 'Highlight Invalid',
       path: route.path,
-      onClick: () => portfolio.setInReview(true),
-      disabled: inReview,
+      onClick: () => portfolio.setInReview(!inReview),
+      disabled: false,
     }
   }
 

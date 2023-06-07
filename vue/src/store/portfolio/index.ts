@@ -1,71 +1,104 @@
-import Portfolio, { type BowtieSdkConfig, type SelectField } from '@youngalfred/bowtie-sdk'
+import {
+  Portfolio,
+  startBowtieSession,
+  BowtieHomePropertyDataService,
+  BowtieAutoIdentityDataService,
+  BowtieAutoMakesDataService,
+  BowtieAutoModelsDataService,
+  BowtieAutoBodyTypesDataService,
+  getPartialPortfolio,
+  authenticateSession,
+} from '@youngalfred/bowtie-sdk'
+
+import type {
+  BowtieApiPortfolio,
+  BowtieSdkConfig,
+  ISubmitResult,
+  PortfolioUpdatedCallback,
+} from '@youngalfred/bowtie-sdk'
 import { defineStore } from 'pinia'
 
 import { getQuestionsForPage } from '@/data/pages'
 import type { HomeSection } from '@/data/pages/home'
 import type { AutoSection } from '@/data/pages/auto'
-import type { InputNode, SDKField, SDKFieldGroup, SDKGroupType, SDKInputField } from '@/types'
-import type {
-  VinData,
-  BodyStylesData,
-  MakesData,
-  ModelsData,
-  ResultMapper,
-} from '@/types/auto-service'
+import type { SDKField, SDKFieldGroup, SDKInputField } from '@/types'
+import { SESSION_ID, getCookies } from '@/utils/cookie'
+import { reactive } from 'vue'
 
 export type { PortfolioStore } from './types'
 
-const base = ''
+const base = '/'
 // const base = 'http://localhost:3001' // during development
 
 const retryErrorCodes = [500, 503, 504]
-const config: BowtieSdkConfig = {
-  // We provide defaults values for the below endpoints,
-  // but you will likely need to overwrite/customize for your own app:
-  apiUrls: {
-    submit: `${base}/portfolio/submit`,
-    getAutoByVin: `${base}/auto/vin/`, // notice the trailing '/'
-    getAutoMakesByYear: `${base}/auto/makes`,
-    getAutoModelsByYearAndMake: `${base}/auto/models`,
-    getAutoBodyTypesByYearMakeAndModel: `${base}/auto/bodystyles`,
-  },
-  /**
-   * The sdk will retry failed requests (for the above api endpoints)
-   * three times at most (after the initial failure) when one of the following conditions is met:
-   * - an http error code that you specified in the retryErrorCodes section below is received
-   * - the request fails to send
-   * - no response is received (timeout)
-   */
-  retryErrorCodes: {
-    submit: retryErrorCodes,
-    getAutoByVin: retryErrorCodes,
-    getAutoMakesByYear: retryErrorCodes,
-    getAutoModelsByYearAndMake: retryErrorCodes,
-    /**
-     * By omitting retry codes for the following endpoints,
-     * you are signaling not to retry failed requests for said endpoints:
-     */
-    getAutoBodyTypesByYearMakeAndModel: [],
-  },
+
+const getNewSessionId = async (): Promise<string> => {
+  try {
+    const { sessionId } = await startBowtieSession({ url: `${base}session`, retryErrorCodes })
+    return sessionId
+  } catch (err) {
+    return 'NON_BOWTIE_SESSION_ID'
+  }
 }
+
+const config = (
+  sessionId: string,
+  onPortfolioUpdated?: PortfolioUpdatedCallback,
+): BowtieSdkConfig => ({
+  onPortfolioUpdated,
+  dataFillServices: {
+    autoIdentityDataService: new BowtieAutoIdentityDataService({
+      url: `${base}auto/vin/`,
+    }),
+    autoMakesDataService: new BowtieAutoMakesDataService({
+      url: `${base}auto/makes`,
+    }),
+    autoModelsDataService: new BowtieAutoModelsDataService({
+      url: `${base}auto/models`,
+    }),
+    autoBodyTypesDataService: new BowtieAutoBodyTypesDataService({
+      url: `${base}auto/bodystyles`,
+    }),
+    homePropertyDataService: new BowtieHomePropertyDataService({
+      url: `${base}property`,
+    }),
+  },
+  partialUpdateOptions: {
+    // configure the sdk send partial portfolio updates
+    // as the customer completes the form. That way no
+    // custoemr progress is lost if/when they resume the app later.
+    sendPartialUpdates: true,
+    url: `${base}session/${sessionId}/progress`,
+    handleError: (_err: unknown) => {
+      const error = _err as { statusCode?: number }
+      if (error?.statusCode === 401) {
+        // Reload to force user to re-authenticate
+        window.location.reload()
+      }
+    },
+  },
+})
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
-    app: new Portfolio({
-      ...config,
-      application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}'),
-    }),
-    fieldOverrides: {} as Record<string, Partial<InputNode>>,
+    app: new Portfolio(),
+    checkingForStoredApplication: true,
+    sessionId: getCookies()?.[SESSION_ID] ?? '',
     inReview: false,
+    authorizedToAccessApp: true,
   }),
   getters: {
     // Get the questions for a specific section (or page)
     view:
       state =>
       (section: HomeSection | AutoSection): SDKFieldGroup[] => {
-        return section
-          ? (getQuestionsForPage(state.app.view, section) as SDKFieldGroup[])
-          : state.app.view
+        try {
+          return section
+            ? (getQuestionsForPage(state.app.view, section) as SDKFieldGroup[])
+            : state.app.view
+        } catch (err) {
+          return state.app.view
+        }
       },
     countOf: state => (entity: 'autos' | 'drivers') => {
       return parseInt(state.app.find(`auto.${entity}.count`)?.value || '0', 10)
@@ -74,25 +107,18 @@ export const usePortfolio = defineStore('portfolio', {
     request:
       state =>
       (fieldIds: string[]): Record<string, SDKField> => {
-        const requestedFieldSet = new Set(fieldIds)
-
         const findField = (
           acc: Record<string, SDKField>,
-          nextNode: SDKField,
+          fieldname: string,
         ): Record<string, SDKField> => {
-          if (requestedFieldSet.has(nextNode.id)) {
-            acc[nextNode.id] = nextNode
-          }
-
-          const { children = [] } = nextNode as SDKGroupType
-          if (children.length) {
-            return children.reduce(findField, acc)
+          const field = state.app.find(fieldname)
+          if (field) {
+            acc[fieldname] = field
           }
 
           return acc
         }
-
-        return state.app.view.reduce(findField, {})
+        return fieldIds.reduce(findField, {})
       },
     assertFieldEquals:
       state =>
@@ -106,27 +132,95 @@ export const usePortfolio = defineStore('portfolio', {
       },
   },
   actions: {
-    // Because this.application is readonly ( meaning, this.app.set(field, value) will not trigger a re-render ),
-    // we are forced to create a new Portfolio object on each update and overrwrite the existing portfolio;
-    // if you are aware of a better way that doesn't require building a new Portfolio on each update, please
-    // share your approach! The current approach is not ideal because it requires trackinf the fields
-    // that have been overwritten within the sdk through this.fieldOverrides.
-    async updateApp(cb: (_app: Portfolio) => Promise<Portfolio | null>) {
-      const app = await cb(
-        new Portfolio({
-          ...config,
-          application: this.app.application,
-        }),
-      )
+    async authenticate(email: string, birthDate: string): Promise<boolean> {
+      try {
+        const {
+          authenticated,
+          // attemptsRemaining,
+          // lockedOut,
+          // lockExpirationDate,
+          // expirationDate
+        } = await authenticateSession({ url: `${base}session/${this.sessionId}/authenticate`, credentials: { email, birthDate } })
+        
+        if (authenticated) {
+          this.authorizedToAccessApp = true
+          return true
+        }
+      } catch (err) {
+        // Do nothing
+      }
+      return false
+    },
+    updateSessionId(id: string) {
+      // Remember the Bowtie Session Id to resume it later
+      document.cookie = `${SESSION_ID}=${id}`
+    },
+    async initPortfolio() {
+
+      if (!this.sessionId) {
+        // Create new session
+        const newSessionId = await getNewSessionId()
+
+        this.updateSessionId(newSessionId)
+        this.app = new Portfolio({
+          ...config(newSessionId, this.onPortfolioUpdatedBySdk),
+          application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}'),
+        })
+        this.checkingForStoredApplication = false
+
+        // return early as no partial app exists in the backend yet
+        // (the session was just now created)
+        return
+      }
+
+      try {
+        // Resume the partial portfolio associated with the session
+        const { data: application } = await getPartialPortfolio({ url: `${base}session/${this.sessionId}/progress`})
+        this.app = new Portfolio({
+          ...config(this.sessionId, this.onPortfolioUpdatedBySdk),
+          application,
+        })
+      } catch (_err) {
+        const error = _err as { statusCode?: number }
+        if (error?.statusCode === 401) {
+          this.authorizedToAccessApp = false
+        } else {
+          this.updateSessionId('')
+          window.location.reload()
+        }
+      } finally {
+        this.checkingForStoredApplication = false
+      }
+    },
+    onPortfolioUpdatedBySdk(err: unknown, portfolio: Portfolio) {
+      if (err) {
+        console.error('SDK emitted an error after a field was updated.', err)
+      }
+      this.app = portfolio
+    },
+    async updateApp(cb: (_app: Portfolio) => Portfolio | null) {
+      /**
+       * When accessing this.app, we are given a proxy to the Portfolio instead
+       * of the actual portfolio object (we want the actual portfolio, NOT the proxy).
+       * The only way for the form to update as the SDK makes internal changes to the form
+       * is to unwrap the proxy object with "reactive". After we have access to the true portfolio
+       * object, we're able to then manipulate it (with portfolio.set(field, value)) and then
+       * update vue's state with this.app = updatedApp.
+       * 
+       * For more info on reactive, see the following:
+       * https://vuejs.org/guide/essentials/reactivity-fundamentals.html#reactive-proxy-vs-original-1
+       */
+      const app = cb(reactive(this.app) as Portfolio)
 
       if (app) {
         window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(app.application))
         this.app = app
       }
     },
-    resetApplication() {
-      this.app = new Portfolio(config)
-      window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(this.app.application))
+    async resetApplication() {
+      this.app = new Portfolio()
+      window.localStorage.removeItem('bowtie_sdk_demo')
+      this.updateSessionId('')
     },
     updateField(fieldname = '') {
       const self = this
@@ -136,10 +230,10 @@ export const usePortfolio = defineStore('portfolio', {
 
           if (field && field.value !== value) {
             app.set(field, value)
-            return Promise.resolve(app)
+            return app
           }
 
-          return Promise.resolve(null)
+          return null
         })
       }
     },
@@ -153,153 +247,19 @@ export const usePortfolio = defineStore('portfolio', {
       this.updateApp(app => {
         const prefix = `auto.${entity}s.`
         app.delMulti(`${prefix}${id}`, `${prefix}count`)
-        return Promise.resolve(app)
+        return app
       })
     },
     setInReview(inReview: boolean) {
       this.inReview = inReview
     },
-    removeOverride(fieldname: string) {
-      const { [fieldname]: _removed, ...rest } = this.fieldOverrides
-      this.fieldOverrides = rest
-    },
-    async fetchAndFillAutoByVin(autoIdx: number, field: InputNode) {
-      const idPrefix = `auto.autos.${autoIdx}.`
-      const hasVin = this.app.find(`${idPrefix}hasVinNumber`)?.value === 'yes'
-
-      const isValidVINLength = field?.value.length === 17
-
-      if (!(hasVin && isValidVINLength)) {
-        this.removeOverride(`${idPrefix}year`)
-      }
-
-      this.updateApp(async app => {
-        try {
-          await app.fillAutoWithVinData<VinData>(autoIdx, {
-            resultsMapper: ({ year, make, model, bodyStyle }) => ({
-              year,
-              make,
-              model,
-              bodyType: bodyStyle,
-            }),
-            headers: {
-              // ... any headers you might need to send
-            },
-          })
-
-          const autoOverrides = () =>
-            ['year', 'make', 'model', 'bodyType'].reduce((acc, next) => {
-              const id = `auto.autos.${autoIdx}.${next}`
-              const field = app.find(id) as SelectField
-
-              return {
-                ...acc,
-                [id]: {
-                  options: field.options,
-                },
-              }
-            }, {})
-
-          this.fieldOverrides = {
-            ...this.fieldOverrides,
-            ...autoOverrides,
-          }
-          return app
-        } catch (err) {
-          console.error(err)
-          return null
-        }
-      })
-    },
-    async overrideAutoOptionsFor(
-      key: 'make' | 'model' | 'bodyType',
-      triggerField: InputNode,
-      autoIdx: number,
-    ) {
-      const sdkAutoFn = {
-        make: 'updateAutoMakeOptions',
-        model: 'updateAutoModelOptions',
-        bodyType: 'updateAutoBodyTypeOptions',
-      }[key]
-
-      const resultMappers: Record<typeof key, ResultMapper> = {
-        make: ({ makes }: MakesData) =>
-          makes.map(({ description }) => ({ name: description, label: description })),
-        model: ({ models }: ModelsData) =>
-          models.map(({ model }) => ({ name: model, label: model })),
-        bodyType: ({ bodyStyles }: BodyStylesData) =>
-          bodyStyles.map(({ description }) => ({ name: description, label: description })),
-      }
-
-      const autoPrefix = `auto.autos.${autoIdx}.`
-      const fieldtoUpdate = this.app.find(`${autoPrefix}${key}`) as SelectField
-      const shallOverrideOptions =
-        /**
-         * When the year entered is earlier than 1981,
-         * the car identity fields (make, model, body type)
-         * become text inputs because the national vin service
-         * does not have record of vehicles older than 1981.
-         */
-        triggerField.kind === 'select' &&
-        // For example, ensure year has been selected before
-        // trying to retrieve makes by year
-        !!triggerField.value &&
-        // only override options when not using the sister service:
-        // vin prefill, which causes the options to be length 1
-        fieldtoUpdate?.options.length !== 1
-
-      if (!shallOverrideOptions) {
-        return
-      }
-
-      this.updateApp(async (app: Portfolio) => {
-        try {
-          await app[sdkAutoFn as keyof typeof app]?.(autoIdx, {
-            resultsMapper: resultMappers[key],
-          })
-          this.fieldOverrides = {
-            ...this.fieldOverrides,
-            ...(() => {
-              const id = `auto.autos.${autoIdx}.${key}`
-              const field = app.find(id) as SelectField
-
-              return {
-                [id]: {
-                  options: field.options,
-                },
-              }
-            })(),
-          }
-          return app
-        } catch (err: any) {
-          const wasCarAlreadyRetrievedByVin = (err?.code || '') === 'ABORT_AUTO_OPTIONS_OVERRIDE'
-
-          if (wasCarAlreadyRetrievedByVin) {
-            // The service isn't down (no need to convert to text fields),
-            // we simply prioritized using the vin service's results
-            return null
-          }
-
-          // Keep in order of progression (can't fill out model without make first)
-          const fieldsToConvert: (typeof key)[] = ['make', 'model', 'bodyType']
-          const idxOfCurrent = fieldsToConvert.indexOf(key)
-          if (idxOfCurrent < 0) {
-            throw new Error('Ensure the auto field ids align with your expectations.')
-          }
-
-          fieldsToConvert.slice(idxOfCurrent).forEach(keyOfFailure => {
-            const id = `${autoPrefix}${keyOfFailure}`
-            // vin service is down,
-            // but customers still need the ability
-            // to enter their car's data:
-            this.fieldOverrides = {
-              ...this.fieldOverrides,
-              [id]: { kind: 'text' },
-            }
-          })
-
-          return app
-        }
+    async submit(): Promise<ISubmitResult> {
+      return this.app.submit({
+        url: `${base}portfolio`,
+        headers: {
+          'x-session-id': this.sessionId
+          // any headers you might need to send
+        },
       })
     },
   },

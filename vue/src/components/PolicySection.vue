@@ -14,14 +14,14 @@ const { section } = defineProps({
   },
 })
 
-const portfoliioStore = usePortfolio()
-const { view, inReview } = storeToRefs(portfoliioStore)
+const portfolioStore = usePortfolio()
+const { view, inReview } = storeToRefs(portfolioStore)
 </script>
 
 <template>
   <div id="wrapper">
     <Renderer
-      v-for="field of makeFieldGroups(view(section), portfoliioStore, inReview)"
+      v-for="field of makeFieldGroups(view(section), portfolioStore, inReview)"
       :key="field.id"
       :field="field"
     />

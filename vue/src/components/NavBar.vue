@@ -49,8 +49,8 @@ section {
   position: fixed;
   width: 100%;
   bottom: 0;
-  height: 100px;
-  background-color: #559d29;
+  height: 80px;
+  background-color: #2f7b8a;
   padding: 1em;
   margin: 0 auto;
   text-align: center;
@@ -64,7 +64,7 @@ button {
   border-radius: 5px;
   border: 1px solid white;
   background-color: white;
-  color: #559d29;
+  color: #2f7b8a;
   font-weight: 700;
 }
 
@@ -81,7 +81,7 @@ button:hover,
 button:active {
   cursor: pointer;
   color: white;
-  background-color: rgb(85, 157, 41, 0.25);
+  background-color: #c15165;
 }
 
 .one {

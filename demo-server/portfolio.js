@@ -12,7 +12,7 @@ const getPortfolioRoutes = (BOWTIE_API_URL = '', api_key = '') => {
     submits the form, your proxy server instance will forward the content to the 
     Bowtie API, using your private BOWTIE_API_KEY (along with the bowtie-api-version).
     */
-  router.post('/submit', (req, res) => {
+  router.post('/', (req, res) => {
     const { application } = req.body
     // if (env !== 'PROD') {
     console.log('Request:\n\n', JSON.stringify(application, null, 2))

@@ -12,6 +12,9 @@ import {
   BowtieAutoMakesDataService,
   BowtieAutoModelsDataService,
   BowtieAutoBodyTypesDataService,
+  getPartialPortfolio,
+  authenticateSession,
+  BowtieAuthSession,
 } from '@youngalfred/bowtie-sdk'
 import { Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types'
 import { combineClasses } from './shared/fields'
@@ -34,6 +37,7 @@ export class AppComponent implements OnInit {
   public checkingForStoredApplication: boolean = true
   public isPortolioSubmitted: boolean = false
   public portfolioId: string = ''
+  public authorizedToAccessApp: boolean = true
 
   /**
    * You may hide "policy-type", for example,
@@ -83,7 +87,13 @@ export class AppComponent implements OnInit {
       // custoemr progress is lost if/when they resume the app later.
       sendPartialUpdates: true,
       url: `${this.base}session/${sessionId ?? ''}/progress`,
-      handleError: (_err: unknown) => null,
+      handleError: (_err: unknown) => {
+        const error = _err as { statusCode?: number }
+        if (error?.statusCode === 401) {
+          // Reload to force user to re-authenticate
+          window.location.reload()
+        }
+      },
     },
   })
 
@@ -125,14 +135,25 @@ export class AppComponent implements OnInit {
       return
     }
 
-    // Resume the partial portfolio associated with the session
-    const application = (await this.httpService.getPartialPortfolio(sessionId)) ?? {}
-
-    this.portfolio = new Portfolio({
-      ...this.bowtieConfig(sessionId),
-      application,
-    })
-    this.checkingForStoredApplication = false
+    try {
+      // Resume the partial portfolio associated with the session
+      const { data: application } = await getPartialPortfolio({ url: `${this.base}session/${sessionId}/progress` })
+  
+      this.portfolio = new Portfolio({
+        ...this.bowtieConfig(sessionId),
+        application,
+      })
+    } catch (_err) {
+      const error = _err as { statusCode?: number }
+      if (error?.statusCode === 401) {
+        this.authorizedToAccessApp = false
+      } else {
+        this.updateSessionId('')
+        window.location.reload()
+      }
+    } finally {
+      this.checkingForStoredApplication = false
+    }
 
     // Optional: prefill aspects of the portfolio here.
     // You will likely require a "mapper" to map your data's ids
@@ -229,7 +250,7 @@ export class AppComponent implements OnInit {
   submit = async () => {
     try {
       const { portfolioId = '', message }: ISubmitResult = await this.portfolio.submit({
-        url: 'api/v1/submit ',
+        url: `${this.base}portfolio`,
         headers: {
           // any headers you might want to send to your proxy server
         },
@@ -246,6 +267,19 @@ export class AppComponent implements OnInit {
   }
 
   newApplication = window.location.reload
+
+  authenticate = async (email: string, birthDate: string): Promise<void> => {
+    const sessionId = getCookies()[SESSION_ID] ?? ''
+
+    try {
+      const response = await authenticateSession({ url: `${this.base}session/${sessionId}/authenticate`, credentials: { email, birthDate } })
+      if (response.authenticated) {
+        window.location.reload()
+      }
+    } catch (err) {
+      // Do nothing.
+    }
+  }
 
   /**
    * Necessary to maintain focus on text fields

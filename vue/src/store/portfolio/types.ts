@@ -3,6 +3,7 @@ import type { SDKField, SDKFieldGroup } from '@/types'
 import type { AutoSection } from '@/data/pages/auto'
 import type { HomeSection } from '@/data/pages/home'
 import type { Store } from 'pinia'
+import type { ISubmitResult } from '@youngalfred/bowtie-sdk'
 
 type State = {
   app: Readonly<Portfolio>
@@ -25,7 +26,6 @@ export type PortfolioStore = Store<
     addAutoEntity: (entity: 'driver' | 'auto') => void
     removeAutoEntity: (entity: 'driver' | 'auto', id: number) => void
     setInReview: (inReview: boolean) => void
-    fetchAndFillAutoByVin: (autoIdx: number) => Promise<void>
-    overrideAutoOptionsFor: (key: 'make' | 'model' | 'bodyType', autoIdx: number) => Promise<void>
+    submit: () => Promise<ISubmitResult>
   }
 >

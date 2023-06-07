@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { usePortfolio } from '@/store/portfolio'
 import { onMounted, reactive } from 'vue'
-import { storeToRefs } from 'pinia'
 import NavBar from '../components/NavBar.vue'
 import getPortfolioStatus from '@/api/portfolio-status'
 
 const portfolio = usePortfolio()
-const { app } = storeToRefs(portfolio)
+
 const data = reactive({
   isSubmitting: true,
   isSuccess: false,
@@ -17,11 +16,7 @@ const data = reactive({
 onMounted(async () => {
   let succeeded = false
   try {
-    const { portfolioId = '', message } = await app.value.submit({
-      headers: {
-        // any headers you might need to send
-      },
-    })
+    const { portfolioId = '', message } = await portfolio.submit()
     data.portfolioId = portfolioId
     succeeded = true
   } catch (err) {
@@ -34,6 +29,8 @@ onMounted(async () => {
     }
   }
 })
+
+const startOver = () => window.location.reload()
 </script>
 
 <template>
@@ -50,6 +47,7 @@ onMounted(async () => {
       {
         label: 'Submit Another',
         path: '/',
+        onClick: startOver,
         disabled: false,
       },
       ...(data.isSuccess
