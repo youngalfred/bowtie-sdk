@@ -8,8 +8,8 @@ import NavBar from '../components/NavBar.vue'
 import type { ButtonAction } from '@/types/props'
 
 const route = useRoute()
-const portfolio = usePortfolio()
-const { app, inReview, request } = storeToRefs(portfolio)
+const store = usePortfolio()
+const { portfolio, inReview, request } = storeToRefs(store)
 
 const makeNextButton = (
   valid: boolean,
@@ -20,7 +20,7 @@ const makeNextButton = (
     return {
       label: 'Highlight Invalid',
       path: route.path,
-      onClick: () => portfolio.setInReview(true),
+      onClick: () => store.setInReview(true),
       disabled: inReview,
     }
   }
@@ -54,7 +54,7 @@ const makeNextButton = (
       path: '/auto-hub',
       disabled: false
     },
-    makeNextButton(app.valid, inReview, request(['start.policyType']))
+    makeNextButton(portfolio.valid, inReview, request(['start.policyType']))
       
     ].filter(b => b) as ButtonAction[])"
   />

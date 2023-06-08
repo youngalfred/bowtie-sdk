@@ -6,14 +6,18 @@ import type { Store } from 'pinia'
 import type { ISubmitResult } from '@youngalfred/bowtie-sdk'
 
 type State = {
-  app: Readonly<Portfolio>
+  app: { portfolio: Readonly<Portfolio> }
   inReview: boolean
+  checkingForStoredApplication: boolean
+  sessionId: string
+  authorizedToAccessApp: boolean
 }
 
 export type PortfolioStore = Store<
   'portfolio',
   State,
   {
+    portfolio: (state: State) => Portfolio
     view: (state: State) => (section: HomeSection | AutoSection) => SDKFieldGroup[]
     countOf: (state: State) => (entity: 'autos' | 'drivers') => number
     request: (state: State) => (fieldIds: string[]) => Record<string, SDKField>
@@ -27,5 +31,10 @@ export type PortfolioStore = Store<
     removeAutoEntity: (entity: 'driver' | 'auto', id: number) => void
     setInReview: (inReview: boolean) => void
     submit: () => Promise<ISubmitResult>
+    authenticate: (email: string, birthDate: string) => Promise<boolean>
+    updateSessionId: (_: string) => void
+    initPortfolio: () => Promise<void>
+    onPortfolioUpdatedBySdk: (err: unknown, portfolio: Portfolio) => Promise<void>
+    resetApplication: () => Promise<void>
   }
 >

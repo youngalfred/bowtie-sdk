@@ -4,32 +4,38 @@ import { createRouter, createWebHistory } from 'vue-router'
 import GetStarted from '../views/GetStarted.vue'
 import { homePagesRecord } from '@/data/pages/home'
 
-type BeforeEnterCb = (to: any, from: any) => string|undefined
+type BeforeEnterCb = (store: any) => (to: any, from: any) => string | undefined
 
-const enforceAuthorization = (cb: BeforeEnterCb) => (to: any, from: any) => {
-  const portfolio = usePortfolio()
-  const { authorizedToAccessApp } = storeToRefs(portfolio)
-
-  if (!authorizedToAccessApp) {
-    return '/authenticate'
-  }
-
-  return cb(to, from)
+const withStore = (cb: BeforeEnterCb) => (to: any, from: any) => {
+  const store = storeToRefs(usePortfolio())
+  return cb(store)(to, from)
 }
 
-const enforceHomeSelection = (to: any, from: any) => {
-  const portfolio = usePortfolio()
-  const { app } = storeToRefs(portfolio)
+const enforceAuthorization =
+  (cb: BeforeEnterCb): BeforeEnterCb =>
+  store =>
+  (to: any, from: any) => {
+    const { authorizedToAccessApp } = store
+
+    if (!authorizedToAccessApp) {
+      return '/authenticate'
+    }
+
+    return cb(store)(to, from)
+  }
+
+const enforceHomeSelection = (store: any) => (to: any, from: any) => {
+  const { portfolio } = store
   const destination = to.fullPath.substring(1)
 
   if (Object.keys(homePagesRecord).includes(destination)) {
-    const policyType = app.value.find('start.policyType')?.value
+    const policyType = portfolio.value.find('start.policyType')?.value
 
     if (!/^home/.test(policyType || '')) {
       return '/'
     }
 
-    const homeType = app.value.find('home.propertyType')?.value
+    const homeType = portfolio.value.find('home.propertyType')?.value
 
     if (!homeType && destination !== 'applicant-details') {
       return 'applicant-details'
@@ -37,29 +43,28 @@ const enforceHomeSelection = (to: any, from: any) => {
   }
 }
 
-const guardAutoPages = (to: any, from: any) => {
-  const portfolio = usePortfolio()
-  const { app } = storeToRefs(portfolio)
+const guardAutoPages = (store: any) => (to: any, from: any) => {
+  const { portfolio } = store
   const destination = to.fullPath.substring(1)
 
-  if (destination === 'auto-summary' && app.value.find('start.policyType')?.value !== 'auto') {
+  if (
+    destination === 'auto-summary' &&
+    portfolio.value.find('start.policyType')?.value !== 'auto'
+  ) {
     return '/'
   }
 }
 
-const enforceValidPortfolio = (to: any, from: any) => {
-  const portfolio = usePortfolio()
-  const { app } = storeToRefs(portfolio)
-
-  if (!app.value.valid) return '/'
+const enforceValidPortfolio = (store: any) => (to: any, from: any) => {
+  const { portfolio } = store
+  if (!portfolio.value.valid) return '/'
 }
 
-const guardAutoCount = (page: 'auto' | 'driver') => (to: any) => {
-  const portfolio = usePortfolio()
-  const { app } = storeToRefs(portfolio)
+const guardAutoCount = (page: 'auto' | 'driver') => (store: any) => (to: any) => {
+  const { portfolio } = store
   const { id = '0' } = to?.params || {}
 
-  const sdkCount = app.value.find(`auto.${page}s.count`)?.value || '0'
+  const sdkCount = portfolio.value.find(`auto.${page}s.count`)?.value || '0'
 
   const count = parseInt(sdkCount.replace(/[^0-9]/g, ''), 10)
   const requestedPage = parseInt(id.replace(/[^0-9]/g, ''), 10)
@@ -76,7 +81,7 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: GetStarted,
-      beforeEnter: enforceAuthorization(() => undefined)
+      beforeEnter: withStore(enforceAuthorization(() => () => undefined)),
     },
     {
       path: '/authenticate',
@@ -87,55 +92,55 @@ const router = createRouter({
       path: '/applicant-details',
       name: 'applicant-details',
       component: () => import('../views/Home1.vue'),
-      beforeEnter: enforceAuthorization(enforceHomeSelection),
+      beforeEnter: withStore(enforceAuthorization(enforceHomeSelection)),
     },
     {
       path: '/property-details',
       name: '2',
       component: () => import('../views/Home2.vue'),
-      beforeEnter: enforceAuthorization(enforceHomeSelection),
+      beforeEnter: withStore(enforceAuthorization(enforceHomeSelection)),
     },
     {
       path: '/policy-details',
       name: '3',
       component: () => import('../views/Home3.vue'),
-      beforeEnter: enforceAuthorization(enforceHomeSelection),
+      beforeEnter: withStore(enforceAuthorization(enforceHomeSelection)),
     },
     {
       path: '/home-summary',
       name: '4',
       component: () => import('../views/Home4.vue'),
-      beforeEnter: enforceAuthorization(enforceHomeSelection),
+      beforeEnter: withStore(enforceAuthorization(enforceHomeSelection)),
     },
     {
       path: '/auto-hub',
       name: 'Auto Hub',
       component: () => import('../views/AutoHub.vue'),
-      beforeEnter: enforceAuthorization(guardAutoPages),
+      beforeEnter: withStore(enforceAuthorization(guardAutoPages)),
     },
     {
       path: '/driver/:id',
       name: 'driver',
       component: () => import('../views/AutoSpoke.vue'),
-      beforeEnter: enforceAuthorization(guardAutoCount('driver')),
+      beforeEnter: withStore(enforceAuthorization(guardAutoCount('driver'))),
     },
     {
       path: '/vehicle/:id',
       name: 'vehicle',
       component: () => import('../views/AutoSpoke.vue'),
-      beforeEnter: enforceAuthorization(guardAutoCount('auto')),
+      beforeEnter: withStore(enforceAuthorization(guardAutoCount('auto'))),
     },
     {
       path: '/auto-summary',
       name: 'Auto Summary',
       component: () => import('../views/AutoReview.vue'),
-      beforeEnter: enforceAuthorization(guardAutoPages),
+      beforeEnter: withStore(enforceAuthorization(guardAutoPages)),
     },
     {
       path: '/submit',
       name: 'Submit',
       component: () => import('../views/Submit.vue'),
-      beforeEnter: enforceValidPortfolio,
+      beforeEnter: withStore(enforceValidPortfolio),
     },
   ],
 })

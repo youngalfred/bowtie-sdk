@@ -4,8 +4,8 @@ import { storeToRefs } from 'pinia'
 import HubController from '../components/fieldgroups/HubController.vue'
 import NavBar from '../components/NavBar.vue'
 
-const portfolio = usePortfolio()
-const { countOf } = storeToRefs(portfolio)
+const store = usePortfolio()
+const { countOf } = storeToRefs(store)
 
 const makeAutoLink =
   (basePath: 'driver' | 'vehicle', label: string) =>
@@ -29,14 +29,14 @@ const makeDriverLink = makeAutoLink('driver', 'Driver')
 
 <template>
   <HubController
-    :add-entity="() => portfolio.addAutoEntity('driver')"
-    :remove-entity="id => portfolio.removeAutoEntity('driver', id)"
+    :add-entity="() => store.addAutoEntity('driver')"
+    :remove-entity="id => store.removeAutoEntity('driver', id)"
     :make-path-label-pair="() => makeDriverLink(countOf('drivers'))"
   />
   <br />
   <HubController
-    :add-entity="() => portfolio.addAutoEntity('auto')"
-    :remove-entity="id => portfolio.removeAutoEntity('auto', id)"
+    :add-entity="() => store.addAutoEntity('auto')"
+    :remove-entity="id => store.removeAutoEntity('auto', id)"
     :make-path-label-pair="() => makeVehicleLink(countOf('autos'))"
   />
 

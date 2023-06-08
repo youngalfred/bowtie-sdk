@@ -4,7 +4,7 @@ import { onMounted, reactive } from 'vue'
 import NavBar from '../components/NavBar.vue'
 import getPortfolioStatus from '@/api/portfolio-status'
 
-const portfolio = usePortfolio()
+const store = usePortfolio()
 
 const data = reactive({
   isSubmitting: true,
@@ -16,7 +16,7 @@ const data = reactive({
 onMounted(async () => {
   let succeeded = false
   try {
-    const { portfolioId = '', message } = await portfolio.submit()
+    const { portfolioId = '', message } = await store.submit()
     data.portfolioId = portfolioId
     succeeded = true
   } catch (err) {
@@ -25,7 +25,7 @@ onMounted(async () => {
     data.isSubmitting = false
     data.isSuccess = succeeded
     if (succeeded) {
-      portfolio.resetApplication()
+      store.resetApplication()
     }
   }
 })

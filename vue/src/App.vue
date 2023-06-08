@@ -6,12 +6,12 @@ import { usePortfolio } from './store/portfolio'
 import router from './router'
 
 const store = usePortfolio()
-const { app, checkingForStoredApplication } = storeToRefs(store)
+const { portfolio, checkingForStoredApplication } = storeToRefs(store)
 
 const getSubRoutes = (): [string, string][][] => {
-  const driversCount = parseInt(app.value.find('auto.drivers.count')?.value || '0', 10)
-  const vehiclesCount = parseInt(app.value.find('auto.autos.count')?.value || '0', 10)
-  const policyType = app.value.find('start.policyType')?.value
+  const driversCount = parseInt(portfolio.value.find('auto.drivers.count')?.value || '0', 10)
+  const vehiclesCount = parseInt(portfolio.value.find('auto.autos.count')?.value || '0', 10)
+  const policyType = portfolio.value.find('start.policyType')?.value
 
   let routes: Record<string, string>[] = []
   switch (policyType) {
@@ -37,8 +37,8 @@ const getSubRoutes = (): [string, string][][] => {
 }
 
 const getMainRoutes = (): [string, string][] => {
-  const policyType = app.value.find('start.policyType')?.value
-  const homeType = app.value.find('home.propertyType')?.value
+  const policyType = portfolio.value.find('start.policyType')?.value
+  const homeType = portfolio.value.find('home.propertyType')?.value
 
   const home = {
     '/applicant-details': 'Policy Holder(s)',
@@ -82,7 +82,6 @@ onMounted(async () => {
     router.replace('/authenticate')
   }
 })
-
 </script>
 
 <template>
@@ -98,9 +97,7 @@ onMounted(async () => {
     </nav>
   </header>
 
-  <div v-if='checkingForStoredApplication'>
-    ...Checking for a stored application to resume...
-  </div>
+  <div v-if="checkingForStoredApplication">...Checking for a stored application to resume...</div>
   <RouterView v-else />
 </template>
 

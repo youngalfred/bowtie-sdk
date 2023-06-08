@@ -5,7 +5,7 @@ import { usePortfolio } from '@/store/portfolio'
 import type { FieldType } from '@youngalfred/bowtie-sdk'
 import { storeToRefs } from 'pinia'
 
-const { app, request } = storeToRefs(usePortfolio())
+const { portfolio, request } = storeToRefs(usePortfolio())
 const makeNextPath = (policyType = '') => {
   switch (policyType) {
     case 'homeAndAuto':
@@ -37,7 +37,7 @@ const requiredFields = [
     :buttons="[
       {
         label: 'Next',
-        path: `${makeNextPath(app.find('start.policyType')?.value)}`,
+        path: `${makeNextPath(portfolio.find('start.policyType')?.value)}`,
         disabled: Object.entries(request(requiredFields)).some(isIncomplete),
       },
     ]"

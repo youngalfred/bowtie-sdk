@@ -11,7 +11,6 @@ import {
 } from '@youngalfred/bowtie-sdk'
 
 import type {
-  BowtieApiPortfolio,
   BowtieSdkConfig,
   ISubmitResult,
   PortfolioUpdatedCallback,
@@ -81,27 +80,33 @@ const config = (
 
 export const usePortfolio = defineStore('portfolio', {
   state: () => ({
-    app: new Portfolio(),
+    // Warning: if you make the portfolio
+    // a direct property of the Vue state,
+    // the UI will not update correctly when
+    // this.onPortfolioUpdatedBySdk is called
+    // by the sdk.
+    app: { portfolio: new Portfolio() },
     checkingForStoredApplication: true,
     sessionId: getCookies()?.[SESSION_ID] ?? '',
     inReview: false,
     authorizedToAccessApp: true,
   }),
   getters: {
+    portfolio: state => state.app.portfolio,
     // Get the questions for a specific section (or page)
     view:
       state =>
       (section: HomeSection | AutoSection): SDKFieldGroup[] => {
         try {
           return section
-            ? (getQuestionsForPage(state.app.view, section) as SDKFieldGroup[])
-            : state.app.view
+            ? (getQuestionsForPage(state.app.portfolio.view, section) as SDKFieldGroup[])
+            : state.app.portfolio.view
         } catch (err) {
-          return state.app.view
+          return state.app.portfolio.view
         }
       },
     countOf: state => (entity: 'autos' | 'drivers') => {
-      return parseInt(state.app.find(`auto.${entity}.count`)?.value || '0', 10)
+      return parseInt(state.app.portfolio.find(`auto.${entity}.count`)?.value || '0', 10)
     },
     // Get a map of fields by their ids
     request:
@@ -111,7 +116,7 @@ export const usePortfolio = defineStore('portfolio', {
           acc: Record<string, SDKField>,
           fieldname: string,
         ): Record<string, SDKField> => {
-          const field = state.app.find(fieldname)
+          const field = state.app.portfolio.find(fieldname)
           if (field) {
             acc[fieldname] = field
           }
@@ -127,7 +132,7 @@ export const usePortfolio = defineStore('portfolio', {
         value: string | null,
         { negate }: { negate: boolean } = { negate: false },
       ): boolean => {
-        const isEqual = state.app.find(id)?.value === value
+        const isEqual = state.app.portfolio.find(id)?.value === value
         return negate ? !isEqual : isEqual
       },
   },
@@ -140,8 +145,11 @@ export const usePortfolio = defineStore('portfolio', {
           // lockedOut,
           // lockExpirationDate,
           // expirationDate
-        } = await authenticateSession({ url: `${base}session/${this.sessionId}/authenticate`, credentials: { email, birthDate } })
-        
+        } = await authenticateSession({
+          url: `${base}session/${this.sessionId}/authenticate`,
+          credentials: { email, birthDate },
+        })
+
         if (authenticated) {
           this.authorizedToAccessApp = true
           return true
@@ -156,16 +164,17 @@ export const usePortfolio = defineStore('portfolio', {
       document.cookie = `${SESSION_ID}=${id}`
     },
     async initPortfolio() {
-
       if (!this.sessionId) {
         // Create new session
         const newSessionId = await getNewSessionId()
 
         this.updateSessionId(newSessionId)
-        this.app = new Portfolio({
-          ...config(newSessionId, this.onPortfolioUpdatedBySdk),
-          application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}'),
-        })
+        this.app = {
+          portfolio: new Portfolio({
+            ...config(newSessionId, this.onPortfolioUpdatedBySdk),
+            application: JSON.parse(window.localStorage.getItem('bowtie_sdk_demo') || '{}'),
+          }),
+        }
         this.checkingForStoredApplication = false
 
         // return early as no partial app exists in the backend yet
@@ -175,11 +184,15 @@ export const usePortfolio = defineStore('portfolio', {
 
       try {
         // Resume the partial portfolio associated with the session
-        const { data: application } = await getPartialPortfolio({ url: `${base}session/${this.sessionId}/progress`})
-        this.app = new Portfolio({
-          ...config(this.sessionId, this.onPortfolioUpdatedBySdk),
-          application,
+        const { data: application } = await getPartialPortfolio({
+          url: `${base}session/${this.sessionId}/progress`,
         })
+        this.app = {
+          portfolio: new Portfolio({
+            ...config(this.sessionId, this.onPortfolioUpdatedBySdk),
+            application,
+          }),
+        }
       } catch (_err) {
         const error = _err as { statusCode?: number }
         if (error?.statusCode === 401) {
@@ -196,7 +209,7 @@ export const usePortfolio = defineStore('portfolio', {
       if (err) {
         console.error('SDK emitted an error after a field was updated.', err)
       }
-      this.app = portfolio
+      this.app = { portfolio }
     },
     async updateApp(cb: (_app: Portfolio) => Portfolio | null) {
       /**
@@ -206,23 +219,23 @@ export const usePortfolio = defineStore('portfolio', {
        * is to unwrap the proxy object with "reactive". After we have access to the true portfolio
        * object, we're able to then manipulate it (with portfolio.set(field, value)) and then
        * update vue's state with this.app = updatedApp.
-       * 
+       *
        * For more info on reactive, see the following:
        * https://vuejs.org/guide/essentials/reactivity-fundamentals.html#reactive-proxy-vs-original-1
        */
-      const app = cb(reactive(this.app) as Portfolio)
+      const portfolio = cb(reactive(this.app).portfolio as Portfolio)
 
-      if (app) {
-        window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(app.application))
-        this.app = app
+      if (portfolio) {
+        window.localStorage.setItem('bowtie_sdk_demo', JSON.stringify(portfolio.application))
+        this.app = { portfolio }
       }
     },
     async resetApplication() {
-      this.app = new Portfolio()
+      this.app = { portfolio: new Portfolio() }
       window.localStorage.removeItem('bowtie_sdk_demo')
       this.updateSessionId('')
     },
-    updateField(fieldname = '') {
+    updateField(fieldname: string) {
       const self = this
       return (value = '') => {
         self.updateApp(app => {
@@ -239,7 +252,7 @@ export const usePortfolio = defineStore('portfolio', {
     },
     addAutoEntity(entity: 'driver' | 'auto') {
       const id = `auto.${entity}s.count`
-      const count = parseInt(this.app.find(id)?.value || '0', 10)
+      const count = parseInt(this.app.portfolio.find(id)?.value || '0', 10)
 
       this.updateField(id)(`${count + 1}`)
     },
@@ -254,10 +267,10 @@ export const usePortfolio = defineStore('portfolio', {
       this.inReview = inReview
     },
     async submit(): Promise<ISubmitResult> {
-      return this.app.submit({
+      return this.app.portfolio.submit({
         url: `${base}portfolio`,
         headers: {
-          'x-session-id': this.sessionId
+          'x-session-id': this.sessionId,
           // any headers you might need to send
         },
       })

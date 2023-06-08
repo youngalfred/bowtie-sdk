@@ -8,8 +8,8 @@ import type { ButtonAction } from '@/types/props'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const portfolio = usePortfolio()
-const { app, request, inReview } = storeToRefs(portfolio)
+const store = usePortfolio()
+const { portfolio, request, inReview } = storeToRefs(store)
 
 const makeNextButton = (
   valid: boolean,
@@ -20,7 +20,7 @@ const makeNextButton = (
     return {
       label: inReview ? 'Hide Invalid Highlighting' : 'Highlight Invalid',
       path: route.path,
-      onClick: () => portfolio.setInReview(!inReview),
+      onClick: () => store.setInReview(!inReview),
       disabled: false,
     }
   }
@@ -54,7 +54,7 @@ const makeNextButton = (
         path: '/policy-details',
         disabled: false
       },
-      makeNextButton(app.valid, inReview, request(['start.policyType']))
+      makeNextButton(portfolio.valid, inReview, request(['start.policyType']))
       
     ].filter(b => b) as ButtonAction[])"
   />
