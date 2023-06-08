@@ -24,6 +24,22 @@ const getSessionRoutes = (BOWTIE_API_URL = '', api_key = '') => {
     }
   })
 
+  router.post('/macro', async (req, res) => {
+    console.log('hitting endpoint')
+    try {
+      const { data } = await axios.post(`${BOWTIE_API_URL}/v1/macro/session`, req.body, {
+        headers: {
+          ...commonHeaders,
+        },
+      })
+
+      res.status(200).send(data)
+    } catch (err) {
+      const { status, data } = getErrorData(err)
+      res.status(status).json(data)
+    }
+  })
+
   router.post('/:sessionId/authenticate', async (req, res) => {
     const { sessionId = '' } = req.params
 

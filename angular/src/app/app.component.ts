@@ -13,8 +13,7 @@ import {
   BowtieAutoModelsDataService,
   BowtieAutoBodyTypesDataService,
   getPartialPortfolio,
-  authenticateSession,
-  BowtieAuthSession,
+  authenticateSession
 } from '@youngalfred/bowtie-sdk'
 import { Node, SDKField, SDKFieldGroup, SDKInputField } from 'src/types'
 import { combineClasses } from './shared/fields'
@@ -157,7 +156,7 @@ export class AppComponent implements OnInit {
 
     // Optional: prefill aspects of the portfolio here.
     // You will likely require a "mapper" to map your data's ids
-    // to the tlano-sdk's portfolio ids (customer.email -> start.emailAddress)
+    // to the bowtie-sdk's portfolio ids (customer.email -> start.emailAddress)
     // Object.entries(this.prefilledFields).forEach(([fieldname, prefilledValue]) => {
     //   this.updateField(fieldname)(prefilledValue)
     // })
