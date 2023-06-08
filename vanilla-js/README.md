@@ -48,7 +48,7 @@ service for the built implementation.
 
 1. After cloning the repo, you should update the `.npmrc` file by replacing
    `<github-auth-token>` with your actual github personal token. Keep in mind
-   that the <github-auth-token> you use must have the `read:packages` scope,
+   that the `<github-auth-token>` you use must have the `read:packages` scope,
    which allows you to download packages from GitHub Package Registry. If
    you omit an authToken in your `.npmrc`, you’ll encounter a 401 or 403 error
    when attempting to install the bowtie-sdk.
