@@ -6,7 +6,7 @@ export type HomeSection =
   | 'policy-details'
   | 'property-details'
   | 'home-summary'
-export const getStarted: StartStopPair = ['get-started', 'policy-type']
+export const getStarted: StartStopPair = ['policy-type', 'get-started-user-info']
 export const home1: StartStopPair = ['birthdate', 'family-units|occupants']
 export const home2: StartStopPair = ['property-usage', 'farm-activity']
 export const home3: StartStopPair = ['extras', 'short-term-rental']

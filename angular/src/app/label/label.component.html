@@ -2,6 +2,7 @@
   <div [ngClass]="{ 'image-box': !!field.image }">
     <img *ngIf="field.image" [src]="field.image" />
     <info-hover [fieldname]="field.id"></info-hover>
+    <label [innerHtml]="field.label"></label>
     <ng-content></ng-content>
   </div>
 </label>

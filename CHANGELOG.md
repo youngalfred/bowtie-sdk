@@ -169,7 +169,7 @@ Also note that prior to version 1.1.0, the SDK incorrectly allowed invalid appli
 
 ## 1.0.6 (December 6, 2021)
 ### Added:
-* file upload capability for insurance declarations (file fields expect values that look like: `'{"file1.name": "fileId1", "file2.name": "fileId2", ...}'`); fileIds are provided by the tlano API's `/v1/file` endpoint.
+* file upload capability for insurance declarations (file fields expect values that look like: `'{"file1.name": "fileId1", "file2.name": "fileId2", ...}'`); fileIds are provided by the Bowtie API's `/v1/file` endpoint.
 * question that asks in which state the vehicle is registered.
 * several home insurers now included in Young Alfred.
 * several accredited contractors to home builders table.

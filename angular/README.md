@@ -48,17 +48,32 @@ service for the built Angular implementation.
 
 ## Running the demonstration
 
-After unpacking this archive and running `npm install` to acquire all
-dependencies, open a new terminal session and run the following:
+1. After cloning the repo, you should update the `.npmrc` file by replacing
+   `<github-auth-token>` with your actual github personal token. Keep in mind
+   that the <github-auth-token> you use must have the `read:packages` scope,
+   which allows you to download packages from GitHub Package Registry. If
+   you omit an authToken in your `.npmrc`, you’ll encounter a 401 or 403 error
+   when attempting to install the bowtie-sdk.
+
+   For more info on creating a personal access token (we normally use classic
+   tokens instead of fine-grained), see [GitHub's instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
+
+2. After updating the `.npmrc`, you can successfully run `npm install` to acquire all
+   dependencies.
+
+3. Next, run the following:
 
 ```shellsession
-$ export BOWTIE_API_KEY="<Your Bowtie API Key>"
-$ npm run server
+# Windows
+$ export BOWTIE_API_KEY="<Your Bowtie API Key>" && npm run server
+
+# Mac
+$ BOWTIE_API_KEY="<Your Bowtie API Key>" npm run server
 ```
 
-The BOWTIE_API_KEY environment variable is required and has no default.
-The running application will be available on your local machine at port
-3001: [http://localhost:3001/](http://localhost:3001/).
+_Note_: The BOWTIE_API_KEY environment variable is required and has no default.
+
+4. Visit [http://localhost:3001/](http://localhost:3001/) to see the running application.
 
 ### Running the test
 

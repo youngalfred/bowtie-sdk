@@ -12,7 +12,14 @@ defineProps({
 </script>
 
 <template>
-  <div class="question" :id="field.id" v-for="child of field.children" :key="child.id">
+  <div class="question fg" :id="field.id" v-for="child of field.children" :key="child.id">
     <Renderer :field="child" />
   </div>
 </template>
+
+<style>
+  .fg {
+    padding-left: 0.5rem;
+    margin-left: 1.5rem;
+  }
+</style>

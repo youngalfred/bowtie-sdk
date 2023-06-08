@@ -40,6 +40,7 @@ const handleClick = () => {
 h3 {
   margin-top: 1em;
   align-self: center;
+  color: #014452;
 }
 img {
   margin-top: 1em !important;

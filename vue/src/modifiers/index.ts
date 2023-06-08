@@ -65,7 +65,6 @@ export const makeFieldGroups = (fields: SDKFieldGroup[], store: any, inReview: b
     }
 
     const decorationTarget = getDecorationTarget(id)
-    const { [id]: override } = store.fieldOverrides
 
     return [
       ...acc,
@@ -81,13 +80,6 @@ export const makeFieldGroups = (fields: SDKFieldGroup[], store: any, inReview: b
           warning: inReview ? warning : '',
           valid,
           onChange: store.updateField(id),
-          /*
-           * Unfortunately, the sdk overrides are lost on each portfolio update;
-           * to preserve the sdk's overrides, we keep our own copy in the portfolio store
-           * and use those overrides when available (such as the options for an auto's make,
-           * model, and body type, etc...)
-           */
-          ...override,
         },
         store,
       ),

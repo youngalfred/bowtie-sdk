@@ -2,9 +2,10 @@
 import NavBar from '@/components/NavBar.vue'
 import PolicySection from '@/components/PolicySection.vue'
 import { usePortfolio } from '@/store/portfolio'
+import type { FieldType } from '@youngalfred/bowtie-sdk'
 import { storeToRefs } from 'pinia'
 
-const { app } = storeToRefs(usePortfolio())
+const { portfolio, request } = storeToRefs(usePortfolio())
 const makeNextPath = (policyType = '') => {
   switch (policyType) {
     case 'homeAndAuto':
@@ -16,6 +17,18 @@ const makeNextPath = (policyType = '') => {
       return '/'
   }
 }
+
+const isIncomplete = ([_id, f]: [id: string, f: FieldType | undefined]) => !f?.valid.valid
+const requiredFields = [
+  'start.policyType',
+  'start.firstName',
+  'start.lastName',
+  'start.emailAddress',
+  'start.address.streetAddress',
+  'start.address.city',
+  'start.address.state',
+  'start.address.zipCode',
+]
 </script>
 
 <template>
@@ -24,8 +37,8 @@ const makeNextPath = (policyType = '') => {
     :buttons="[
       {
         label: 'Next',
-        path: `${makeNextPath(app.find('start.policyType')?.value)}`,
-        disabled: false,
+        path: `${makeNextPath(portfolio.find('start.policyType')?.value)}`,
+        disabled: Object.entries(request(requiredFields)).some(isIncomplete),
       },
     ]"
   />

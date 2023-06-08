@@ -1,0 +1,5 @@
+<h2>Continue your application</h2>
+<form (submit)="handleSubmit($event)">
+    <renderer [node]="fg" depth="0"></renderer>
+    <button type="submit" [disabled]="disabled">Submit</button>
+</form>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Observable } from 'rxjs'
+import { BowtieApiPortfolio, NewBowtieSession } from '@youngalfred/bowtie-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -48,4 +48,5 @@ export class HttpService {
 
     return results
   }
+  
 }

@@ -30,42 +30,20 @@
            well-supported by every major browser released after 2015, with the
            exception of Opera Mini.  See: https://caniuse.com/template-literals
 */
-const { Portfolio } = require('@youngalfred/bowtie-sdk')
+import {
+  Portfolio,
+  BowtieHomePropertyDataService,
+  BowtieAutoIdentityDataService,
+  BowtieAutoMakesDataService,
+  BowtieAutoModelsDataService,
+  BowtieAutoBodyTypesDataService,
+  // authenticateSession,
+  getPartialPortfolio,
+  startBowtieSession,
+} from '@youngalfred/bowtie-sdk'
+const { getCookies, SESSION_ID } = require('./cookie')
 const FileField = require('./file-field')
-const getSideEffectFor = require('./side-effects')
 const modifyNode = require('./modifiers.js')
-
-const prevFields = {}
-const bowtieConfig = {
-  // We provide defaults values for the below endpoints,
-  // but feel free to customize as needed:
-  apiUrls: {
-    submit: '/portfolio/submit',
-    getAutoByVin: '/auto/vin/', // notice the trailing "/"
-    getAutoMakesByYear: '/auto/makes',
-    getAutoModelsByYearAndMake: '/auto/models',
-    getAutoBodyTypesByYearMakeAndModel: '/auto/bodystyles',
-  },
-  /**
-   * The sdk will retry failed requests (for the above api endpoints)
-   * three times at most (after the initial failure) when one of the following conditions is met:
-   * - an http error code that you specified in the retryErrorCodes section below is received
-   * - the request fails to send
-   * - no response is received (timeout)
-   */
-  retryErrorCodes: {
-    submit: [500, 503, 504],
-    /**
-     * By omitting retry codes for the following endpoints,
-     * you are signaling not to retry failed requests:
-     *
-     * - getAutoByVin: [],
-     * - getAutoMakesByYear: [],
-     * - getAutoModelsByYearAndMake: [],
-     * - getAutoBodyTypesByYearMakeAndModel: [],
-     */
-  },
-}
 
 // Attempt to recover an item from the localStorage (the current
 // live browser tab or window _only_; this information will disappear
@@ -81,43 +59,42 @@ function maybeLocalstore() {
   }
 }
 
-;(async function () {
+function updateSessionId(id) {
+  // Remember the Bowtie Session Id to resume it later
+  document.cookie = `${SESSION_ID}=${id}`
+}
+
+;(function () {
   // The portfolio object this session is managing.
 
-  portfolio = new Portfolio({ ...bowtieConfig, application: maybeLocalstore() })
-
-  // The initial html and input events
-
-  makeInitialResult = () => ({ events: [], innerHTML: '' })
+  let portfolio = new Portfolio()
 
   // When complete, we should get back a valid portfolio ID.
 
-  portfolioId = null
-
-  sideEffects = []
+  let portfolioId = null
 
   // After a round-trip through your local service, this will be
   // populated with the results of your submission.
 
-  validationDetails = null
+  let validationDetails = null
 
   // The next two fields are to help keep track of which field the
   // user recently touched.  Normally, a good framework such as
   // React or Vue keeps track of this for us.
 
-  tabIndex = 0
-  lastTabEvent = null
+  let tabIndex = 0
+  let lastTabEvent = null
 
   // If set to true, adds the 'invalid' class to any fieldgroups that
   // are invalid.
 
-  highlightValidity = false
+  let highlightValidity = false
 
   // These are special renderers or overrides.
   // Notice that the fieldgroup with id 'wind-mitigation-fl' renders with a .png
   // instead of the normal tree of select, check, and text inputs.
 
-  renderers = {
+  let renderers = {
     'wind-mitigation-fl': renderFLWindMitFieldGroup,
   }
 
@@ -506,12 +483,6 @@ function maybeLocalstore() {
     const node = modifyNode(rawNode)
     const newDepth = depth + 1
 
-    const sideEffect = getSideEffectFor(portfolio, node)
-    if (sideEffect && prevFields[node.id]?.value !== node.value) {
-      sideEffects.push(sideEffect)
-      prevFields[node.id] = node
-    }
-
     const customRenderer = renderers[node.id]
     if (customRenderer) {
       return customRenderer(node, newDepth)
@@ -519,7 +490,7 @@ function maybeLocalstore() {
 
     switch (node.kind) {
       case 'hidden':
-        return makeInitialResult()
+        return { events: [], innerHTML: '' }
       case 'file':
         return renderFile(node, newDepth).reduce(combineResults)
       case 'select':
@@ -560,9 +531,9 @@ function maybeLocalstore() {
   function setupSubmitButton() {
     document.getElementById('ya-submit-button').addEventListener('click', function () {
       portfolio
-        .submit()
+        .submit({ url: '/portfolio' })
         .then(function (response) {
-          response.json().then(async function (result) {
+          response.json().then(function (result) {
             portfolioId = result.portfolioId
             validationDetails = {
               valid: result.kind === 'success',
@@ -578,7 +549,7 @@ function maybeLocalstore() {
                 : [],
             }
             console.log(validationDetails)
-            await renderPortfolio()
+            renderPortfolio()
           })
         })
         .catch(function (response) {
@@ -640,7 +611,7 @@ function maybeLocalstore() {
   // The root renderer.  One thing you can be assured of is that
   // all objects of the `portfolio.view` root are Fieldgroups.
 
-  async function renderPortfolio() {
+  function renderPortfolio() {
     tabIndex = 0
 
     // This frees the event/input relationship, which saves memory
@@ -733,24 +704,101 @@ function maybeLocalstore() {
           }
         }
       }
-
-      ;(async function applySideEffects() {
-        let shouldRerender = false
-
-        for (let i = 0; i < sideEffects.length; i++) {
-          if (await sideEffects[i]()) {
-            shouldRerender = true
-          }
-        }
-
-        sideEffects = []
-        if (shouldRerender) {
-          await renderPortfolio()
-        }
-      })()
     }, 0)
   }
 
+  function onPortfolioUpdated(_error, portfolio) {
+    // The portfolio needs to be overwritten even if an error occurs
+    // (such as when select fields become text fields due
+    // to a data service erroring out).
+    portfolio = portfolio
+    renderPortfolio()
+  }
+
+  function bowtieConfig(sessionId) {
+    return {
+      onPortfolioUpdated,
+      dataFillServices: {
+        autoIdentityDataService: new BowtieAutoIdentityDataService({
+          url: `/auto/vin/`,
+        }),
+        autoMakesDataService: new BowtieAutoMakesDataService({
+          url: `/auto/makes`,
+        }),
+        autoModelsDataService: new BowtieAutoModelsDataService({
+          url: `/auto/models`,
+        }),
+        autoBodyTypesDataService: new BowtieAutoBodyTypesDataService({
+          url: `/auto/bodystyles`,
+        }),
+        homePropertyDataService: new BowtieHomePropertyDataService({
+          url: `/property`,
+        }),
+      },
+      partialUpdateOptions: {
+        // configure the sdk send partial portfolio updates
+        // as the customer completes the form. That way no
+        // custoemr progress is lost if/when they resume the app later.
+        sendPartialUpdates: true,
+        url: `/session/${sessionId ?? ''}/progress`,
+        handleError: (error) => {
+          if (error?.statusCode === 401) {
+            // Reload to force user to re-authenticate
+            window.location.reload()
+          }
+        },
+      },
+    }
+  }
+
+  async function manageSession() {
+    let sessionId = getCookies()[SESSION_ID] ?? ''
+
+    if (!sessionId) {
+      // Create new session
+      const { sessionId: newSessionId } = await startBowtieSession({ url: `/session` })
+
+      updateSessionId(newSessionId)
+      portfolio = new Portfolio({
+        ...bowtieConfig(newSessionId),
+        application: maybeLocalstore(),
+      })
+      renderPortfolio()
+
+      // return early as no partial app exists in the backend yet
+      // (the session was just now created)
+      return
+    }
+
+    try {
+      // Resume the partial portfolio associated with the session
+      const { data: application } = await getPartialPortfolio({ url: `/session/${sessionId}/progress`})
+  
+      portfolio = new Portfolio({
+        ...bowtieConfig(sessionId),
+        application,
+      })
+      renderPortfolio()
+    } catch (error) {
+      // The Vanilla JS demo does not show an
+      // authentication screen like the Vue and Angular demos.
+      // Instead, it offers light instructions below for how you
+      // can authenticate the session again by calling the authenticateSession() method.
+      updateSessionId('')
+      window.location.reload()
+
+      if (error?.statusCode === 401) {
+        // 1. Require the customer to complete a custom form
+        //    with email and birthdate fields
+        // 2. Call authenticateSession({ url: `/session/${sessionId}/authenticate` }).
+        //    Also keep in mind the following, when handling the response:
+        //    const { authenticated, attemtpsRemaining, lockedOut, ...rest } = await authenticateSession(...)
+        // 3. See the Vue or Angular demo for more details on how to handle the response object.
+      }
+    }
+  }
+
   // Kickstart the Application process.
-  await renderPortfolio()
+  renderPortfolio()
+  manageSession()
 })()

@@ -10,7 +10,7 @@ export const defineFieldProps = <Node>() =>
 
 export type ButtonAction = {
   path: string
-  onClick?: () => void
+  onClick?: () => (Promise<void> | void)
   label: string
   disabled: boolean
 }

@@ -1,6 +1,5 @@
 import Text from '../fields/input/Text.vue'
 import Check from '../fields/input/Check.vue'
-import FieldWithSideEffect from '../fields/FieldWithSideEffect.vue'
 import File from '../fields/input/File.vue'
 import MultiSelect from '../fields/input/MultiSelect.vue'
 import Radio from '../fields/input/Radio.vue'
@@ -24,7 +23,6 @@ export const TYPE_HANDLERS: TypeHandler = {
 
 export const CUSTOM_RENDERER_HANDLERS: CustomRendererHandler = {
   'grid-group': GridGroup,
-  'async-field': FieldWithSideEffect,
   card: Card,
   'multi-select': MultiSelect,
   'fl-windmit': WindMit,

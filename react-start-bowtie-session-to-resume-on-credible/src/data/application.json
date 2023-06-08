@@ -1,0 +1,676 @@
+{
+  "partner": {
+    "callbackUrl": "",
+    "referenceId": ""
+  },
+  "start": {
+    "policyType": "homeAndAuto",
+    "firstName": "John",
+    "lastName": "Doe",
+    "emailAddress": "krosquist@credible.com",
+    "address": {
+      "id": "",
+      "streetAddress": "123 Hughes Center Drive",
+      "unit": "",
+      "city": "Last Vegas",
+      "state": "NE",
+      "zipCode": "89158",
+      "county": "Clark County",
+      "country": "USA"
+    }
+  },
+  "common": {
+    "disclaimer": "yes"
+  },
+  "auto": {
+    "id": "",
+    "requestedComprehensiveDeductible": "",
+    "requestedCollisionDeductible": "",
+    "plan": {
+      "id": "",
+      "requestedPlanType": "standard",
+      "requestedPolicyStart": "",
+      "requestedPolicyStartDate": ""
+    },
+    "drivers": {
+      "0": {
+        "driverId": "2b8f2846-c722-41f1-9b2b-167b4dc70696",
+        "currentlyInsured": "noNotNeeded",
+        "expirationDate": "",
+        "lengthContinuousCoverage": "",
+        "insurer": "",
+        "coverageLevel": "",
+        "sixMonthPremium": "",
+        "lengthWithCurrentInsurer": "",
+        "firstName": "Kyler",
+        "lastName": "Test",
+        "emailAddress": "krosquist@credible.com",
+        "birthDate": "1982-02-02",
+        "phoneNumber": "435-879-9908",
+        "gender": "male",
+        "maritalStatus": "married",
+        "careerStatus": "unemployed",
+        "occupation": "",
+        "violations": {
+          "count": "",
+          "violation": {},
+          "ticketsAccidentsClaims": "no"
+        },
+        "person": {
+          "id": ""
+        },
+        "highestLevelOfEducation": "n4YearCollege",
+        "completedDriverImprovementProgramDate": "",
+        "propertyType": "House",
+        "relationshipToPrimary": "",
+        "ownsProperty": "yes",
+        "hasPropertyInsurance": "yes",
+        "ageFirstLicensed": "16",
+        "driversLicenseNumber": "",
+        "driversLicenseStatus": "valid",
+        "driversLicenseState": "",
+        "veteran": "no"
+      },
+      "1": {
+        "driverId": "0fb8e9f0-166e-4f1d-b80f-8c0a997fe217",
+        "firstName": "Gina",
+        "lastName": "Test",
+        "emailAddress": "",
+        "birthDate": "1982-08-08",
+        "phoneNumber": "",
+        "gender": "female",
+        "maritalStatus": "married",
+        "careerStatus": "employed",
+        "occupation": "",
+        "violations": {
+          "count": "",
+          "violation": {},
+          "ticketsAccidentsClaims": "no"
+        },
+        "person": {
+          "id": ""
+        },
+        "highestLevelOfEducation": "someCollege",
+        "completedDriverImprovementProgramDate": "",
+        "propertyType": "",
+        "relationshipToPrimary": "spouse",
+        "ageFirstLicensed": "17",
+        "driversLicenseNumber": "",
+        "driversLicenseStatus": "valid",
+        "driversLicenseState": "",
+        "veteran": "no",
+        "livesWithPrimaryApplicant": "yes"
+      },
+      "count": "2"
+    },
+    "primaryApplicantId": "2b8f2846-c722-41f1-9b2b-167b4dc70696",
+    "email": "krosquist@credible.com",
+    "hasOccupants": {
+      "_adults": "1",
+      "_children": "1"
+    },
+    "occupants": {
+      "adults": "n2",
+      "children": "n2",
+      "tenants": "",
+      "otherFamilies": ""
+    },
+    "ut": {},
+    "mi": {
+      "healthInsurancePlan": "",
+      "requestedPipCoverage": "",
+      "requestedPipDeductible": "",
+      "requestedDriverExclusion": ""
+    },
+    "comments": "",
+    "estimatedNetWorth": "",
+    "occupiedSince": "2010-05-05",
+    "requestedTort": "",
+    "autos": {
+      "0": {
+        "autoWithPlan": {
+          "id": ""
+        },
+        "id": "",
+        "dateOfPurchase": "1998-08-08",
+        "vehicleOwnership": "owned",
+        "lienholderName": "",
+        "hasVinNumber": "no",
+        "vinNumber": "",
+        "year": "2022",
+        "make": "BMW",
+        "model": "330I",
+        "bodyType": "4-Door Sedan",
+        "vehicleState": "used",
+        "primaryDriverId": "2b8f2846-c722-41f1-9b2b-167b4dc70696",
+        "primaryUse": "business",
+        "commuteMilesPerDay": "",
+        "commuteDaysPerWeek": "",
+        "yearlyMileage": "",
+        "usedForDelivery": "yes",
+        "deliveryCompanyNames": "Jonas Brothers Delivery",
+        "deliveryHoursPerWeek": "30",
+        "requestedComprehensiveDeductible": "",
+        "requestedCollisionDeductible": "",
+        "deliveryCompanyType-rideshare": "yes",
+        "deliveryCompanyType-foodDelivery": "yes",
+        "deliveryCompanyType-conventional": "yes",
+        "deliveryCompanyType-other": "no",
+        "lienholderAddress": {
+          "id": "",
+          "streetAddress": "",
+          "unit": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "county": "",
+          "country": ""
+        },
+        "garageAddress": {
+          "id": "",
+          "streetAddress": "",
+          "unit": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "county": "",
+          "country": "USA"
+        },
+        "driverIds": "2b8f2846-c722-41f1-9b2b-167b4dc70696",
+        "registeredState": "NE",
+        "_registeredInDifferentState": "no",
+        "antiTheftProtections": {
+          "none": "",
+          "passiveCarAlarm": "1",
+          "automaticCarAlarm": "1",
+          "vinEtchings": "1",
+          "starterCutoffSwitch": "1",
+          "loJackOrOnStar": "1"
+        },
+        "hasAccidentHistory": "no",
+        "garagedAtPrimaryAddress": "yes",
+        "requestComprehensiveCollisionCov": "no",
+        "requestDriverMonitoringProgram": "no"
+      },
+      "1": {
+        "autoWithPlan": {
+          "id": ""
+        },
+        "id": "",
+        "dateOfPurchase": "2015-05-05",
+        "vehicleOwnership": "owned",
+        "lienholderName": "",
+        "hasVinNumber": "no",
+        "vinNumber": "",
+        "year": "2021",
+        "make": "BUICK",
+        "model": "ENCLAVE ESSENCE AWD",
+        "bodyType": "Utility Vehicle - Four-Wheel Drive 4-Door",
+        "vehicleState": "used",
+        "hasAccidentHistory": "no",
+        "primaryDriverId": "2b8f2846-c722-41f1-9b2b-167b4dc70696",
+        "primaryUse": "pleasure",
+        "commuteMilesPerDay": "",
+        "commuteDaysPerWeek": "",
+        "yearlyMileage": "n5k0To5k999",
+        "deliveryCompanyNames": "",
+        "deliveryHoursPerWeek": "",
+        "requestedComprehensiveDeductible": "n100",
+        "requestedCollisionDeductible": "n250",
+        "lienholderAddress": {
+          "id": "",
+          "streetAddress": "",
+          "unit": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "county": "",
+          "country": ""
+        },
+        "garageAddress": {
+          "id": "",
+          "streetAddress": "",
+          "unit": "",
+          "city": "",
+          "state": "",
+          "zipCode": "",
+          "county": "",
+          "country": ""
+        },
+        "driverIds": "2b8f2846-c722-41f1-9b2b-167b4dc70696;0fb8e9f0-166e-4f1d-b80f-8c0a997fe217",
+        "registeredState": "NE",
+        "_registeredInDifferentState": "no",
+        "antiTheftProtections": {
+          "passiveCarAlarm": "1",
+          "automaticCarAlarm": "1",
+          "vinEtchings": "1",
+          "starterCutoffSwitch": "1",
+          "loJackOrOnStar": "1",
+          "none": ""
+        },
+        "usedForDelivery": "no",
+        "garagedAtPrimaryAddress": "yes",
+        "requestComprehensiveCollisionCov": "yes",
+        "requestDriverMonitoringProgram": "no"
+      },
+      "count": "2"
+    },
+    "phoneNumber": "435-879-9908",
+    "previousAddress": {
+      "id": "",
+      "streetAddress": "",
+      "unit": "",
+      "city": "",
+      "state": "",
+      "zipCode": "",
+      "county": "",
+      "country": ""
+    }
+  },
+  "home": {
+    "numberOfMortgages": "n1",
+    "estimatedNetWorth": "",
+    "comments": "",
+    "reasonForLapse": "",
+    "reasonNoPriorInsurance": null,
+    "loanOfficerEmail": "",
+    "hasOccupants": {
+      "_adults": "1",
+      "_children": "1",
+      "_tenants": "",
+      "_otherFamilies": ""
+    },
+    "occupants": {
+      "adults": "n2",
+      "children": "n2",
+      "tenants": "",
+      "otherFamilies": ""
+    },
+    "primaryPolicyHolder": {
+      "id": "",
+      "birthDate": "1982-02-02",
+      "phoneNumber": "435-879-9908",
+      "gender": "male",
+      "maritalStatus": "married",
+      "careerStatus": "unemployed",
+      "occupation": "unemployed"
+    },
+    "secondaryPolicyHolder": "yes",
+    "secondaryApplicant": {
+      "id": "",
+      "firstName": "Gina",
+      "lastName": "Test",
+      "birthDate": "1982-08-08",
+      "gender": "female",
+      "maritalStatus": "married",
+      "careerStatus": "",
+      "occupation": "",
+      "secondaryApplicantRelationship": "spouse"
+    },
+    "yearBuilt": "1995",
+    "dateOfPurchase": "2010-05-05",
+    "legalEntityOwnership": {
+      "typeOfEntity": "",
+      "deedName": "",
+      "otherEntitiesOnDeed": "",
+      "hasLegalEntityOwnership": "no"
+    },
+    "roof": {
+      "id": "",
+      "hasUpdate": "yes",
+      "updatedYear": "2022",
+      "updateComplete": "partial",
+      "roofShape": "gable",
+      "roofMaterial": "architecturalAsphaltShingles",
+      "roofMaterialType": ""
+    },
+    "electrical": {
+      "id": "",
+      "updatedYear": "",
+      "updateComplete": "",
+      "hasUpdate": ""
+    },
+    "waterHeater": {
+      "id": "",
+      "updatedYear": "",
+      "updateComplete": "",
+      "hasUpdate": ""
+    },
+    "heating": {
+      "id": "",
+      "updatedYear": "",
+      "updateComplete": "",
+      "primarySource": "heatPump",
+      "fuelType": "",
+      "hasUpdate": ""
+    },
+    "plumbing": {
+      "id": "",
+      "updatedYear": "",
+      "updateComplete": "",
+      "hasUpdate": ""
+    },
+    "hasNoUpdates": "no",
+    "discounts": {
+      "deadbolts": "no",
+      "smokerFree": "yes",
+      "stormShutters": "no",
+      "hailResistantRoof": "no",
+      "gatedCommunity": {
+        "id": "",
+        "inGatedCommunity": "no"
+      }
+    },
+    "windmit": {
+      "files": "{}",
+      "hasReport": "yes",
+      "buildingCode": "",
+      "roofCovering": "",
+      "roofDeckAttachment": "",
+      "eOtherDescription": "",
+      "roofToWallAttachment": "",
+      "fOtherDescription": "",
+      "roofGeometry": "",
+      "aHipRoofTotalLengthOfNonHipFeatures": "",
+      "aHipRoofTotalRoofSystemPerimeter": "",
+      "bFlatRoofSlopeLessThan212": "",
+      "bFlatRoofTotalRoofArea": "",
+      "openingProtection": "",
+      "openingProtectionA": "",
+      "openingProtectionB": "",
+      "openingProtectionC": "",
+      "openingProtectionN": "",
+      "inspectionCompany": "",
+      "inspectorName": "",
+      "inspectorLicense": "",
+      "inspectionDate": "",
+      "secondaryWaterResistance": ""
+    },
+    "pets": {
+      "countOf": {
+        "_cat": "",
+        "_other": "",
+        "_exoticPet": "",
+        "_akita": "",
+        "_chowChow": "",
+        "_doberman": "",
+        "_alaskanMalamute": "",
+        "_pitBull": "",
+        "_rottweiler": "",
+        "_staffordshireBullTerrier": "",
+        "_germanShepherd": "",
+        "_presaCanario": "",
+        "_wolfHybrid": "",
+        "_husky": "",
+        "_otherDogBreed": ""
+      },
+      "pet": {
+        "cat": {},
+        "other": {},
+        "exoticPet": {}
+      },
+      "hasPets": {
+        "_cat": "",
+        "_other": "",
+        "_exoticPet": "",
+        "none": "1",
+        "_akita": "",
+        "_chowChow": "",
+        "_doberman": "",
+        "_alaskanMalamute": "",
+        "_pitBull": "",
+        "_rottweiler": "",
+        "_staffordshireBullTerrier": "",
+        "_germanShepherd": "",
+        "_presaCanario": "",
+        "_wolfHybrid": "",
+        "_husky": "",
+        "_otherDogBreed": ""
+      }
+    },
+    "risks": {
+      "hasPets": "no",
+      "trampoline": "no",
+      "sumpPump": "no",
+      "unrepairedDamages": "no",
+      "electricalFuseBox": "no",
+      "knobAndTubeOrClothWiring": "no",
+      "pexPipingPrior2010": "no",
+      "polybutylenePiping": "no",
+      "aluminumWiring": "no",
+      "eifsOrSyntheticStuccoSiding": "no",
+      "galvanizedPiping": "no",
+      "fireStationDistance": "1.08",
+      "unrepairedDamagesDescription": "",
+      "fireHydrantWithin1000ft": "no",
+      "swimmingPool": {
+        "id": "",
+        "hasSwimmingPool": "no"
+      },
+      "none": "",
+      "_no_extras": "no",
+      "sinkholeOrEarthMovementLoss": "no"
+    },
+    "hasRecentPolicy": "yes",
+    "carrierCanceledLast5years": "no",
+    "carrierCancellationReason": {},
+    "mostRecentPolicy": {
+      "policyNumber": "",
+      "expirationDate": "2024-07-07",
+      "insurer": "aaa",
+      "liability": "n300",
+      "annualPremium": "",
+      "declarationPageFileIds": "{}",
+      "id": ""
+    },
+    "claimsLast5YearsCount": "n0",
+    "claims": {},
+    "plan": {
+      "id": "",
+      "requestedPlanType": "standard",
+      "requestedPolicyStart": "immediately",
+      "requestedPolicyStartDate": "",
+      "requestedCoverage": "",
+      "requestedDeductible": "n1000",
+      "requestedCoverageVacant": "",
+      "requiredCoverage": ""
+    },
+    "protectionSystems": {
+      "hasBurglarAlarmSystem": "yes",
+      "hasSprinklerSystem": "yes",
+      "hasFireExtinguisher": "no",
+      "hasFireAlarmSystem": "no",
+      "hasSmokeDetector": "yes",
+      "hasCoDetector": "yes",
+      "smokeDetectorType": "battery",
+      "burglarAlarmSystemType": "central",
+      "sprinklerSystemCoverage": "n0_75",
+      "fireAlarmSystemType": ""
+    },
+    "deck": {
+      "id": "",
+      "material": "",
+      "hasDeck": "no",
+      "deckArea": ""
+    },
+    "additionalCoverageRequests": {
+      "flood": "",
+      "waterBackup": "",
+      "personalProperty": "",
+      "mold": "",
+      "jewelry": "",
+      "identityTheft": "",
+      "animalLiability": ""
+    },
+    "currentlyConstructionOnProperty": "no",
+    "homeBuilder": "",
+    "newBuildOrRenovation": "renovation",
+    "valuables": {
+      "totalValueOfBelongings": "",
+      "belongingsOver2k": {
+        "jewelry": {
+          "id": "",
+          "value": ""
+        },
+        "fur": {
+          "id": "",
+          "value": ""
+        },
+        "photoVideoEquipment": {
+          "id": "",
+          "value": ""
+        },
+        "musicalInstruments": {
+          "id": "",
+          "value": ""
+        },
+        "arts": {
+          "id": "",
+          "value": ""
+        },
+        "silverware": {
+          "id": "",
+          "value": ""
+        },
+        "golfEquipment": {
+          "id": "",
+          "value": ""
+        },
+        "postageStamps": {
+          "id": "",
+          "value": ""
+        },
+        "coins": {
+          "id": "",
+          "value": ""
+        },
+        "firearms": {
+          "id": "",
+          "value": ""
+        },
+        "computerEquipment": {
+          "id": "",
+          "value": ""
+        }
+      },
+      "hasBelongingsOver2k": {
+        "none": "1",
+        "_jewelry": "",
+        "_fur": "",
+        "_photoVideoEquipment": "",
+        "_musicalInstruments": "",
+        "_arts": "",
+        "_silverware": "",
+        "_golfEquipment": "",
+        "_postageStamps": "",
+        "_coins": "",
+        "_firearms": "",
+        "_computerEquipment": ""
+      }
+    },
+    "additionalJewelryCoverageRequest": {
+      "count": "0"
+    },
+    "livingArea": "4000",
+    "constructionType": "frame",
+    "bathrooms": "n2_5",
+    "stories": "n2",
+    "familyUnits": "",
+    "percentageOfBasementFinished": "n0_5",
+    "exteriorSiding": "brickVeneer",
+    "interiorFinishingQuality": "builder",
+    "propertyStyle": "splitLevel",
+    "foundation": "closed",
+    "fireplace": {
+      "id": "",
+      "fireplaceOrSolidFuel": "none"
+    },
+    "screenedEnclosure": {
+      "id": "",
+      "hasScreenEnclosure": "no",
+      "enclosedArea": "",
+      "enclosedHeight": "",
+      "requestedCoverage": ""
+    },
+    "solarPanels": {
+      "id": "",
+      "panelArea": "",
+      "ownedOrLeased": "",
+      "hasSolarPanels": "no",
+      "count": ""
+    },
+    "garage": {
+      "id": "",
+      "type": "attached",
+      "size": "n2",
+      "hasGarage": "yes"
+    },
+    "id": "",
+    "email": "krosquist@credible.com",
+    "previousAddress": {
+      "id": "",
+      "streetAddress": "",
+      "unit": "",
+      "city": "",
+      "state": "",
+      "zipCode": "",
+      "county": "",
+      "country": ""
+    },
+    "primaryAddress": {
+      "id": "",
+      "streetAddress": "123 Hughes Center Drive",
+      "unit": "",
+      "city": "Last Vegas",
+      "state": "NE",
+      "zipCode": "89158",
+      "county": "Clark County",
+      "country": "USA"
+    },
+    "propertyType": "House",
+    "propertyUse": {
+      "businessAtHome": {
+        "farmOrRanchActivity": "no",
+        "homeBusiness": "no",
+        "customersVisitPerWeek": "",
+        "kidsAttendDayCare": "",
+        "businessType": "",
+        "describeBusiness": ""
+      },
+      "shortTermRental": {
+        "timesRentedOutPerYear": "",
+        "daysRentedOutPerYear": "",
+        "maxRentersAtOneTime": "",
+        "minimumLeaseTerm": "",
+        "rentalRoomsLocation": "",
+        "rentalUnitsRentedOut": ""
+      },
+      "rental": {
+        "adultTenants": "",
+        "tenantsUnder21": "",
+        "numberOfUnrelatedTenants": ""
+      },
+      "typeOfUse": "primary",
+      "domesticWorkersType": "",
+      "careTakerVisitsPerMonth": "",
+      "isShortTermRental": "no",
+      "farmingActivity": "yes",
+      "portionLeasedTo3rdParty": "yes",
+      "anyPartRentedOut": "no",
+      "domesticWorkers": "no",
+      "_rentToOthers": "no"
+    },
+    "seasonalUse": {
+      "monthsOccupiedByOwner": "",
+      "monthsOccupiedByTenant": "",
+      "monthsVacant": ""
+    },
+    "vacancy": {
+      "propertyIntention": "",
+      "reasonForVacancy": ""
+    },
+    "property": {
+      "id": ""
+    }
+  }
+}

@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { usePortfolio } from './store/portfolio'
+import router from './router'
 
-const { app } = storeToRefs(usePortfolio())
+const store = usePortfolio()
+const { portfolio, checkingForStoredApplication } = storeToRefs(store)
 
 const getSubRoutes = (): [string, string][][] => {
-  const driversCount = parseInt(app.value.find('auto.drivers.count')?.value || '0', 10)
-  const vehiclesCount = parseInt(app.value.find('auto.autos.count')?.value || '0', 10)
-  const policyType = app.value.find('start.policyType')?.value
+  const driversCount = parseInt(portfolio.value.find('auto.drivers.count')?.value || '0', 10)
+  const vehiclesCount = parseInt(portfolio.value.find('auto.autos.count')?.value || '0', 10)
+  const policyType = portfolio.value.find('start.policyType')?.value
 
   let routes: Record<string, string>[] = []
   switch (policyType) {
@@ -34,8 +37,8 @@ const getSubRoutes = (): [string, string][][] => {
 }
 
 const getMainRoutes = (): [string, string][] => {
-  const policyType = app.value.find('start.policyType')?.value
-  const homeType = app.value.find('home.propertyType')?.value
+  const policyType = portfolio.value.find('start.policyType')?.value
+  const homeType = portfolio.value.find('home.propertyType')?.value
 
   const home = {
     '/applicant-details': 'Policy Holder(s)',
@@ -72,11 +75,18 @@ const getMainRoutes = (): [string, string][] => {
 
   return Object.entries(routes)
 }
+
+onMounted(async () => {
+  await store.initPortfolio()
+  if (!store.authorizedToAccessApp) {
+    router.replace('/authenticate')
+  }
+})
 </script>
 
 <template>
   <header>
-    <img alt="Young Alfred logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img alt="Young Alfred logo" class="logo" src="@/assets/logo.png" />
 
     <nav>
       <RouterLink to="/">Get Started</RouterLink>
@@ -87,7 +97,8 @@ const getMainRoutes = (): [string, string][] => {
     </nav>
   </header>
 
-  <RouterView />
+  <div v-if="checkingForStoredApplication">...Checking for a stored application to resume...</div>
+  <RouterView v-else />
 </template>
 
 <style lang="scss">
@@ -106,13 +117,13 @@ header {
 
 .logo {
   display: block;
-  margin: 0 auto 2rem;
+  margin: 1rem auto;
 }
 
 nav a.router-link-exact-active,
 .green {
   text-decoration: none;
-  color: #559d29;
+  color: #014452;
   transition: 0.4s;
 }
 

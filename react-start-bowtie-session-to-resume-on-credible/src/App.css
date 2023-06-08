@@ -1,0 +1,100 @@
+body {
+  overflow: hidden;
+}
+
+main {
+  max-width: 800px;
+  padding: 1rem;
+}
+
+.App {
+  text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  font-size: 16px;
+}
+
+.Credible-logo {
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  background-color: #f6f8fa;
+  margin-top: 2rem;
+}
+
+.instructions {
+  text-align: left;
+}
+
+#client-info {
+  color: #282c34;
+  max-width: 700px;
+  padding: 1rem;
+  border-radius: 4px;
+  background-color: rgb(255, 255, 255, 0.9);
+  margin: 0 auto;
+}
+
+#input-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  list-style: none;
+  gap: 1rem;
+  align-items: flex-end;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  padding: 0;
+}
+
+#input-container > li {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  max-width: 300px;
+  width: 100%;
+}
+
+.submit-wrapper {
+  text-align: right;
+  margin-right: 1rem;
+}
+
+.warning {
+  color: #d43516;
+}
+
+label {
+  font-size: 21px;
+  margin-bottom: 0.5rem;
+}
+
+input,
+button,
+select {
+  height: 30px;
+  border-radius: 4px;
+  border: none;
+  padding: 0 0.5rem;
+  border: 1px solid #282c34;
+}
+
+button {
+  background-color: #0f94a1;
+  color: white;
+  font-size: 18px;
+}
+
+button:disabled {
+  background-color: initial;
+  color: initial;
+}

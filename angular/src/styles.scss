@@ -1,5 +1,10 @@
+body {
+  background-color: #fafafa;
+  font-family: 'Inter', sans-serif;
+}
+
 .fg {
-  box-shadow: 0 0 5px #1e1e1e;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   border-radius: 5px;
   margin-bottom: 10px;
   padding: 5px 10px;
@@ -14,13 +19,13 @@
 }
 
 .flex-wrap {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 
 .flex-wrap > * {
-  max-width: 25%;
+  height: 100%;
 }
 
 .question-no-padding {
