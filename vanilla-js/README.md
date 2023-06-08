@@ -59,16 +59,19 @@ service for the built implementation.
 2. After updating the `.npmrc`, you can successfully run `npm install` to acquire all
    dependencies.
 
-3. Next, open a new terminal session and run the following:
+3. Next, run the following:
 
 ```shellsession
-$ export BOWTIE_API_KEY="<Your Bowtie API Key>"
-$ npm run server
+# Windows
+$ export BOWTIE_API_KEY="<Your Bowtie API Key>" && npm run server
+
+# Mac
+$ BOWTIE_API_KEY="<Your Bowtie API Key>" npm run server
 ```
 
-The BOWTIE_API_KEY environment variable is required and has no default.
-The running application will be available on your local machine at port
-3001: [http://localhost:3001/](http://localhost:3001/).
+_Note_: The BOWTIE_API_KEY environment variable is required and has no default.
+
+4. Visit [http://localhost:3001/](http://localhost:3001/) to see the running application.
 
 ### Running the test
 
