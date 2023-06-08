@@ -1,46 +1,67 @@
-# Getting Started with Create React App
+![Language: TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![JS Framework: React](https://img.shields.io/badge/-ReactJs-61DAFB?logo=react&logoColor=white&style=for-the-badge)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# The Young Alfred Bowtie SDK: A Basic React Implementation Demo
 
-## Available Scripts
+This repository is different than the other demos found in the repository. Instead of
+implementing a complete, customer-facing UI, this demo implements a basic UI your
+organization might use internally. The UI prompts you for basic information
+required by the Bowtie API before accepting a partial application.
 
-In the project directory, you can run:
+Your organization's might do something similar to start applciations on behalf of customers
+by answering a number of basic questions about the customer before submitting the partial application.Once submitted, the Bowtie API triggers an email (it parses the partial portfolio to find the customer's email) inviting the customer to continue his/her application on Credible. This demo asks for the following
+information about a customer before allowing you to submit a partial application to the Bowtie API:
 
-### `npm start`
+1. customer's insurance policy type (home, auto, or home & auto)
+2. customer's email
+3. customer's first name
+4. customer's birthday
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## The implementation
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+In the `./src` folder, you will find a complete React implementation of the
+application process.
 
-### `npm test`
+## The forwarding server
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+As a Young Alfred partner, you should have acquired a Young Alfred
+API Key. The API Key is _private_, and should not be exposed to the
+web. The forwarding server included in this repository serves as a basic
+demonstration of how to receive the content from the Bowtie SDK and
+forward that content to the Young Alfred Bowtie API with your
+API Key.
 
-### `npm run build`
+This instance of the forwarding server also includes a static file
+service for the built Angular implementation.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Running the demonstration
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. After cloning the repo, you should update the `.npmrc` file by replacing
+   `<github-auth-token>` with your actual github personal token. Keep in mind
+   that the <github-auth-token> you use must have the `read:packages` scope,
+   which allows you to download packages from GitHub Package Registry. If
+   you omit an authToken in your `.npmrc`, you’ll encounter a 401 or 403 error
+   when attempting to install the bowtie-sdk.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+   For more info on creating a personal access token (we normally use classic
+   tokens instead of fine-grained), see [GitHub's instructions](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic).
 
-### `npm run eject`
+2. After updating the `.npmrc`, you can successfully run `npm install` to acquire all
+   dependencies.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+3. Next, open a new terminal session and run the following:
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```shellsession
+$ export BOWTIE_API_KEY="<Your Bowtie API Key>"
+$ npm run server
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+The `BOWTIE_API_KEY` environment variable is required and has no default.
+The running application will be available on your local machine at port
+3001: [http://localhost:3001/](http://localhost:3001/).
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## LICENSE
 
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This repository constitutes "explanatory related materials for the
+Bowtie SDK," and as such is covered under the Bowtie SDK END USER
+LICENSE AGREEMENT. [A copy of that license has been provided.](./LICENSE.md)
