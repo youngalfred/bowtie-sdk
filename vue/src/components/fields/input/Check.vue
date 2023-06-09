@@ -2,6 +2,7 @@
 import type { PropType } from 'vue'
 import type { Field } from '../../../types'
 import { computed } from '@vue/reactivity'
+import Warning from '@/components/Warning.vue'
 
 const props = defineProps({
   field: {
@@ -18,4 +19,5 @@ const checked = computed({
 
 <template>
   <input type="checkbox" v-model="checked" />
+  <Warning :field="field" />
 </template>

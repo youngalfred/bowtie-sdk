@@ -3,6 +3,7 @@ import Multiselect from '@vueform/multiselect'
 import { computed } from '@vue/reactivity'
 import type { PropType } from 'vue'
 import type { Select } from '../../../types'
+import Warning from '@/components/Warning.vue'
 
 const props = defineProps({
   field: {
@@ -45,6 +46,7 @@ const options = computed(() =>
     :options="options"
     class="multiselect-green"
   />
+  <Warning :field="field" />
 </template>
 
 <style src="@vueform/multiselect/themes/default.css">

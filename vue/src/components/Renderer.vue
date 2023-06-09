@@ -3,7 +3,6 @@ import type { PropType } from 'vue'
 import Label from './Label.vue'
 import type { CustomRenderer, Node, CustomRendererHandler, TypeHandler } from '../types'
 import { CUSTOM_RENDERER_HANDLERS, TYPE_HANDLERS } from './fieldgroups/handlers'
-import Warning from './Warning.vue'
 
 const props = defineProps({
   field: {
@@ -36,7 +35,6 @@ const Component = props.renderByKindOnly
     <template v-if="field.renderer !== 'card' || withLabel">
       <Label :field="field" />
     </template>
-    <Warning :field="field" />
     <Component :field="field" />
   </div>
 </template>

@@ -43,7 +43,10 @@ const StarterForm = () => {
     let success = true
     try {
       const application = portfolio.application as BowtieApiPortfolio
-      await startBowtieSessionToResumeOnCredible({ url: `${base}session/macro`, application })
+      await startBowtieSessionToResumeOnCredible({
+        url: `${base}session/macro`,
+        application,
+      })
     } catch (err) {
       console.error(err)
       success = false

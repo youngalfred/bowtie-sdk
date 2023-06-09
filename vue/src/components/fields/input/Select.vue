@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from '@vue/reactivity'
+import Warning from '@/components/Warning.vue'
 import type { PropType } from 'vue'
 import type { Select } from '../../../types'
 
@@ -20,4 +21,6 @@ const value = computed({
   <select v-model="value">
     <option v-for="o of field.options" :value="o.name">{{ o.label }}</option>
   </select>
+
+  <Warning :field="field" />
 </template>

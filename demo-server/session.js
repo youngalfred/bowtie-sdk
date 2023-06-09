@@ -30,6 +30,7 @@ const getSessionRoutes = (BOWTIE_API_URL = '', api_key = '') => {
       const { data } = await axios.post(`${BOWTIE_API_URL}/v1/macro/session`, req.body, {
         headers: {
           ...commonHeaders,
+          'bowtie-api-version': req.headers['bowtie-api-version'], // automatically sent by the sdk
         },
       })
 
@@ -97,7 +98,10 @@ const getSessionRoutes = (BOWTIE_API_URL = '', api_key = '') => {
 
     try {
       await axios.patch(`${BOWTIE_API_URL}/v1/session/${sessionId}/progress`, req.body, {
-        headers: commonHeaders,
+        headers: {
+          ...commonHeaders,
+          'bowtie-api-version': req.headers['bowtie-api-version'], // automatically sent by the sdk
+        },
       })
       res.sendStatus(204)
     } catch (error) {
