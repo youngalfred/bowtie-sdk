@@ -2,6 +2,7 @@
 import type { PropType } from 'vue'
 import { computed } from 'vue'
 import type { Field } from '../../../types'
+import Warning from '@/components/Warning.vue'
 
 const props = defineProps({
   field: {
@@ -28,4 +29,5 @@ const value = computed({
     v-model="value"
     type="text"
   />
+  <Warning :field="field" />
 </template>

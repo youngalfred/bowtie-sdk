@@ -7,6 +7,7 @@ import {
   type UploadResult,
   validFileTypes,
 } from '@/utils/file-upload'
+import Warning from '@/components/Warning.vue'
 import { reactive, type PropType } from 'vue'
 import { computed } from 'vue'
 import type { Field } from '../../../types'
@@ -109,6 +110,8 @@ const data = reactive<FileUploader>({
       <Button @click="data.uploadFiles" :disabled="data.isUploadDisabled"> Upload </Button>
     </div>
   </div>
+
+  <Warning :field="field" />
 
   <div class="files-container">
     <div>
