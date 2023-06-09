@@ -3,19 +3,22 @@
 
 # The Young Alfred Bowtie SDK: A Basic React Implementation Demo
 
-This repository is different than the other demos found in the repository. Instead of
+The React demo is different than the other demos in this repository. Instead of
 implementing a complete, customer-facing UI, this demo implements a basic UI your
-organization might use internally. The UI prompts you for basic information
-required by the Bowtie API before accepting a partial application.
+organization might use internally. The UI prompts you for the most basic pieces of
+application information required by the Bowtie API before accepting a partial submission.
 
-Your organization's might do something similar to start applciations on behalf of customers
-by answering a number of basic questions about the customer before submitting the partial application.Once submitted, the Bowtie API triggers an email (it parses the partial portfolio to find the customer's email) inviting the customer to continue his/her application on Credible. This demo asks for the following
-information about a customer before allowing you to submit a partial application to the Bowtie API:
+Your organization might do something similar to this demo by starting applciations on behalf of customers
+by answering a number of basic questions about the customer before submitting the partial application.
+Once the partial app is submitted, the Bowtie API triggers an email (it parses the partial portfolio to find the customer's email)
+to invite the customer to continue his/her application on www.credible.com/insurance/get-started.
+The React demo asks for the following customer info before allowing you to submit a partial application
+to the Bowtie API:
 
-1. customer's insurance policy type (home, auto, or home & auto)
-2. customer's email
-3. customer's first name
-4. customer's birthday
+1. insurance policy type (home, auto, or home & auto)
+2. email
+3. first name
+4. birthday
 
 ## The implementation
 
@@ -32,7 +35,7 @@ forward that content to the Young Alfred Bowtie API with your
 API Key.
 
 This instance of the forwarding server also includes a static file
-service for the built Angular implementation.
+service for the built React implementation.
 
 ## Running the demonstration
 
