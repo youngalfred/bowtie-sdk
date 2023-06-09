@@ -33,7 +33,7 @@ process. It is intended as a starting point and a reference for your
 developers.
 
 The examples in this repository are currently written to conform to
-the _Young Alfred API 1.2021-10-25_.
+the _Young Alfred API 1.2022-01-07_.
 
 ## Running a demonstration
 
