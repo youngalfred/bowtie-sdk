@@ -8,7 +8,7 @@ implementing a complete, customer-facing UI, this demo implements a basic UI you
 organization might use internally. The UI prompts you for the most basic pieces of
 application information required by the Bowtie API before accepting a partial submission.
 
-Your organization might do something similar to this demo by starting applciations on behalf of customers
+Your organization might do something similar to this demo by starting applications on behalf of customers
 by answering a number of basic questions about the customer before submitting the partial application.
 Once the partial app is submitted, the Bowtie API triggers an email (it parses the partial portfolio to find the customer's email)
 to invite the customer to continue his/her application on www.credible.com/insurance/get-started.
@@ -31,7 +31,7 @@ As a Young Alfred partner, you should have acquired a Young Alfred
 API Key. The API Key is _private_, and should not be exposed to the
 web. The forwarding server included in this repository serves as a basic
 demonstration of how to receive the content from the Bowtie SDK and
-forward that content to the Young Alfred Bowtie API with your
+forward that content to the Bowtie API with your
 API Key.
 
 This instance of the forwarding server also includes a static file
